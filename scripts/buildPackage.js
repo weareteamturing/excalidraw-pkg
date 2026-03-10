@@ -2,12 +2,17 @@ const path = require("path");
 const fs = require("fs");
 const { pathToFileURL } = require("url");
 
+const ROOT = path.resolve(__dirname, "..");
+
+// esbuild uses process.cwd() for package resolution. Set it to the monorepo
+// root so resolution is identical regardless of which directory this script
+// is invoked from.
+process.chdir(ROOT);
+
 const { build } = require("esbuild");
 const { sassPlugin } = require("esbuild-sass-plugin");
 
 const { parseEnvVariables } = require("../packages/excalidraw/env.cjs");
-
-const ROOT = path.resolve(__dirname, "..");
 
 const ENV_VARS = {
   development: {
@@ -149,36 +154,24 @@ const getConfig = (outdir) => ({
   conditions: ["browser", "module", "default"],
 });
 
-function buildDev(config) {
-  return build({
-    ...config,
-    sourcemap: true,
-    define: { "import.meta.env": JSON.stringify(ENV_VARS.development) },
-  });
-}
-
-function buildProd(config) {
-  return build({
-    ...config,
-    minify: true,
-    define: { "import.meta.env": JSON.stringify(ENV_VARS.production) },
-  });
-}
-
 const createESMRawBuild = async () => {
   const chunksConfig = {
     entryPoints: ["index.tsx", "**/*.chunk.ts"],
     entryNames: "[name]",
   };
 
-  await buildDev({
+  await build({
     ...getConfig(`${PKG_DIR}/dist/dev`),
     ...chunksConfig,
+    sourcemap: true,
+    define: { "import.meta.env": JSON.stringify(ENV_VARS.development) },
   });
 
-  await buildProd({
+  await build({
     ...getConfig(`${PKG_DIR}/dist/prod`),
     ...chunksConfig,
+    minify: true,
+    define: { "import.meta.env": JSON.stringify(ENV_VARS.production) },
   });
 };
 
