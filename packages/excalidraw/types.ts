@@ -641,6 +641,23 @@ export interface ExcalidrawProps {
   aiEnabled?: boolean;
   showDeprecatedFonts?: boolean;
   renderScrollbars?: boolean;
+  showRotationHandle?: boolean;
+  /** Color customization. CSS variables supported: e.g. 'var(--my-color)' or '--my-color' */
+  colors?: {
+    /** Selection border, resize handle stroke, drag selection border. Default: #6965db */
+    selection?: string;
+    /** Resize / rotation handle fill. Default: #ffffff */
+    handleFill?: string;
+    /** Binding / frame highlight color. Default: rgb(0,118,255) */
+    bindingHighlight?: string;
+  };
+  bindingGap?: number;
+  keepLassoTrailOnComplete?: boolean;
+  contextMenuConfig?: {
+    canvas?: (defaultItems: ContextMenuItems) => ContextMenuItems;
+    element?: (defaultItems: ContextMenuItems) => ContextMenuItems;
+  };
+  onLassoComplete?: (path: [number, number][]) => void;
 }
 
 export type SceneData = {
@@ -904,6 +921,7 @@ export interface ExcalidrawImperativeAPI {
   onUserFollow: (
     callback: (payload: OnUserFollowedPayload) => void,
   ) => UnsubscribeCallback;
+  clearLassoTrail: InstanceType<typeof App>["clearLassoTrail"];
 }
 
 export type FrameNameBounds = {

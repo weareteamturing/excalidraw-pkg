@@ -256,6 +256,7 @@ import {
   handleFocusPointPointerUp,
   maybeHandleArrowPointlikeDrag,
   getUncroppedWidthAndHeight,
+  setBaseBindingGap,
 } from "@excalidraw/element";
 
 import type { GlobalPoint, LocalPoint, Radians } from "@excalidraw/math";
@@ -439,7 +440,6 @@ import BraveMeasureTextError from "./BraveMeasureTextError";
 import { ContextMenu, CONTEXT_MENU_SEPARATOR } from "./ContextMenu";
 import { activeEyeDropperAtom } from "./EyeDropper";
 import FollowMode from "./FollowMode/FollowMode";
-import LayerUI from "./LayerUI";
 import { ElementCanvasButton } from "./MagicButton";
 import { SVGLayer } from "./SVGLayer";
 import { searchItemInFocusAtom } from "./SearchMenu";
@@ -779,6 +779,7 @@ class App extends React.Component<AppProps, AppState> {
         onPointerUp: (cb) => this.onPointerUpEmitter.on(cb),
         onScrollChange: (cb) => this.onScrollChangeEmitter.on(cb),
         onUserFollow: (cb) => this.onUserFollowEmitter.on(cb),
+        clearLassoTrail: this.clearLassoTrail,
       } as const;
       if (typeof excalidrawAPI === "function") {
         excalidrawAPI(api);
@@ -2054,42 +2055,7 @@ class App extends React.Component<AppProps, AppState> {
                       <ExcalidrawActionManagerContext.Provider
                         value={this.actionManager}
                       >
-                        <LayerUI
-                          canvas={this.canvas}
-                          appState={this.state}
-                          files={this.files}
-                          setAppState={this.setAppState}
-                          actionManager={this.actionManager}
-                          elements={this.scene.getNonDeletedElements()}
-                          onLockToggle={this.toggleLock}
-                          onPenModeToggle={this.togglePenMode}
-                          onHandToolToggle={this.onHandToolToggle}
-                          langCode={getLanguage().code}
-                          renderTopLeftUI={renderTopLeftUI}
-                          renderTopRightUI={renderTopRightUI}
-                          renderCustomStats={renderCustomStats}
-                          showExitZenModeBtn={
-                            typeof this.props?.zenModeEnabled === "undefined" &&
-                            this.state.zenModeEnabled
-                          }
-                          UIOptions={this.props.UIOptions}
-                          onExportImage={this.onExportImage}
-                          renderWelcomeScreen={
-                            !this.state.isLoading &&
-                            this.state.showWelcomeScreen &&
-                            this.state.activeTool.type ===
-                              this.state.preferredSelectionTool.type &&
-                            !this.state.zenModeEnabled &&
-                            !this.scene.getElementsIncludingDeleted().length
-                          }
-                          app={this}
-                          isCollaborating={this.props.isCollaborating}
-                          generateLinkForSelection={
-                            this.props.generateLinkForSelection
-                          }
-                        >
-                          {this.props.children}
-                        </LayerUI>
+                        {this.props.children}
 
                         <div className="excalidraw-textEditorContainer" />
                         <div className="excalidraw-contextMenuContainer" />
@@ -2276,6 +2242,12 @@ class App extends React.Component<AppProps, AppState> {
                           renderScrollbars={
                             this.props.renderScrollbars === true
                           }
+                          showRotationHandle={
+                            this.props.showRotationHandle !== false
+                          }
+                          selectionColor={this.resolveColor(this.props.colors?.selection) ?? "#6965db"}
+                          handleFillColor={this.resolveColor(this.props.colors?.handleFill) ?? "#ffffff"}
+                          bindingHighlightColor={this.resolveColor(this.props.colors?.bindingHighlight) ?? "rgb(0,118,255)"}
                           editorInterface={this.editorInterface}
                           renderInteractiveSceneCallback={
                             this.renderInteractiveSceneCallback
@@ -2970,8 +2942,25 @@ class App extends React.Component<AppProps, AppState> {
     });
   }
 
+  private resolveColor(value: string | undefined): string | undefined {
+    if (!value) { return undefined; }
+    const container = this.excalidrawContainerRef.current;
+    const varName = value.startsWith("var(")
+      ? value.match(/var\((--[^)]+)\)/)?.[1]
+      : value.startsWith("--")
+      ? value
+      : null;
+    if (varName && container) {
+      return getComputedStyle(container).getPropertyValue(varName).trim() || undefined;
+    }
+    return value;
+  }
+
   public async componentDidMount() {
     this.unmounted = false;
+    if (this.props.bindingGap !== undefined) {
+      setBaseBindingGap(this.props.bindingGap);
+    }
     this.excalidrawContainerValue.container =
       this.excalidrawContainerRef.current;
 
@@ -3237,6 +3226,9 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    if (this.props.bindingGap !== prevProps.bindingGap && this.props.bindingGap !== undefined) {
+      setBaseBindingGap(this.props.bindingGap);
+    }
     this.updateEmbeddables();
     const elements = this.scene.getElementsIncludingDeleted();
     const elementsMap = this.scene.getElementsMapIncludingDeleted();
@@ -5442,6 +5434,10 @@ class App extends React.Component<AppProps, AppState> {
 
   private resetCursor = () => {
     resetCursor(this.interactiveCanvas);
+  };
+
+  clearLassoTrail = () => {
+    this.lassoTrail.endPath();
   };
   /**
    * returns whether user is making a gesture with >= 2 fingers (points)
@@ -7980,11 +7976,15 @@ class App extends React.Component<AppProps, AppState> {
           if (
             elementWithTransformHandleType.transformHandleType === "rotation"
           ) {
-            this.setState({
-              resizingElement: elementWithTransformHandleType.element,
-            });
-            pointerDownState.resize.handleType =
-              elementWithTransformHandleType.transformHandleType;
+            if (this.props.showRotationHandle === false) {
+              // rotation handle is disabled — treat as no-op
+            } else {
+              this.setState({
+                resizingElement: elementWithTransformHandleType.element,
+              });
+              pointerDownState.resize.handleType =
+                elementWithTransformHandleType.transformHandleType;
+            }
           } else if (this.state.croppingElementId) {
             pointerDownState.resize.handleType =
               elementWithTransformHandleType.transformHandleType;
@@ -10057,7 +10057,19 @@ class App extends React.Component<AppProps, AppState> {
       }));
 
       // just in case, tool changes mid drag, always clean up
-      this.lassoTrail.endPath();
+      if (activeTool.type === "lasso" && this.lassoTrail.hasCurrentTrail && this.props.onLassoComplete) {
+        const lassoPath = this.lassoTrail.getCurrentPath();
+        if (lassoPath && lassoPath.length >= 3) {
+          this.props.onLassoComplete(lassoPath);
+          if (!this.props.keepLassoTrailOnComplete) {
+            this.lassoTrail.endPath();
+          }
+        } else {
+          this.lassoTrail.endPath();
+        }
+      } else {
+        this.lassoTrail.endPath();
+      }
       this.previousPointerMoveCoords = null;
 
       SnapCache.setReferenceSnapPoints(null);
@@ -12083,6 +12095,17 @@ class App extends React.Component<AppProps, AppState> {
   };
 
   private getContextMenuItems = (
+    type: "canvas" | "element",
+  ): ContextMenuItems => {
+    const defaultItems = this.getDefaultContextMenuItems(type);
+    const transform =
+      type === "canvas"
+        ? this.props.contextMenuConfig?.canvas
+        : this.props.contextMenuConfig?.element;
+    return transform ? transform(defaultItems) : defaultItems;
+  };
+
+  private getDefaultContextMenuItems = (
     type: "canvas" | "element",
   ): ContextMenuItems => {
     const options: ContextMenuItems = [];

@@ -67,10 +67,13 @@ export type InteractiveCanvasRenderConfig = {
   remotePointerUsernames: Map<SocketId, string>;
   remotePointerButton: Map<SocketId, string | undefined>;
   selectionColor: string;
+  handleFillColor: string;
+  bindingHighlightColor: string;
   lastViewportPosition: { x: number; y: number };
   // extra options passed to the renderer
   // ---------------------------------------------------------------------------
   renderScrollbars?: boolean;
+  showRotationHandle?: boolean;
 };
 
 export type RenderInteractiveSceneCallback = {

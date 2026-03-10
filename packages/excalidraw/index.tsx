@@ -56,6 +56,12 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     aiEnabled,
     showDeprecatedFonts,
     renderScrollbars,
+    showRotationHandle,
+    colors,
+    bindingGap,
+    keepLassoTrailOnComplete,
+    contextMenuConfig,
+    onLassoComplete,
   } = props;
 
   const canvasActions = props.UIOptions?.canvasActions;
@@ -149,6 +155,12 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           aiEnabled={aiEnabled !== false}
           showDeprecatedFonts={showDeprecatedFonts}
           renderScrollbars={renderScrollbars}
+          showRotationHandle={showRotationHandle}
+          colors={colors}
+          bindingGap={bindingGap}
+          keepLassoTrailOnComplete={keepLassoTrailOnComplete}
+          contextMenuConfig={contextMenuConfig}
+          onLassoComplete={onLassoComplete}
         >
           {children}
         </App>

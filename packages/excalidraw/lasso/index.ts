@@ -210,6 +210,12 @@ export class LassoTrail extends AnimatedTrail {
     }
   };
 
+  getCurrentPath(): [number, number][] | null {
+    const trail = super.getCurrentTrail();
+    if (!trail?.originalPoints?.length) { return null; }
+    return trail.originalPoints.map(([x, y]) => [x, y]);
+  }
+
   endPath(): void {
     super.endPath();
     super.clearTrails();
