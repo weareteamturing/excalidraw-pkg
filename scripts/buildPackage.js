@@ -142,6 +142,11 @@ const getConfig = (outdir) => ({
   chunkNames: "[name]-[hash]",
   external: [...EXTERNAL_PACKAGES, "@excalidraw/excalidraw/*"],
   loader: { ".woff2": "file" },
+  // Prevent esbuild from activating the "development" export condition when
+  // sourcemap:true is set. Without this, @excalidraw/element subpath imports
+  // that fall through resolve to packages/element/dist/dev/index.js which
+  // contains externalized @excalidraw/common imports.
+  conditions: ["browser", "module", "default"],
 });
 
 function buildDev(config) {
@@ -166,17 +171,13 @@ const createESMRawBuild = async () => {
     entryNames: "[name]",
   };
 
-  // Prod must run before dev: dev build (sourcemap:true) activates esbuild's
-  // "development" export condition, which can cause the subsequent prod build
-  // to resolve @excalidraw/element via dist/dev pre-built files and overwrite
-  // the dev output with externalized imports.
-  await buildProd({
-    ...getConfig(`${PKG_DIR}/dist/prod`),
+  await buildDev({
+    ...getConfig(`${PKG_DIR}/dist/dev`),
     ...chunksConfig,
   });
 
-  await buildDev({
-    ...getConfig(`${PKG_DIR}/dist/dev`),
+  await buildProd({
+    ...getConfig(`${PKG_DIR}/dist/prod`),
     ...chunksConfig,
   });
 };
