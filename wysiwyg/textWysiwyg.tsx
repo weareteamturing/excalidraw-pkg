@@ -141,8 +141,18 @@ export const textWysiwyg = ({
   };
 
   let LAST_THEME = app.state.theme;
+  let isUpdatingWysiwygStyle = false;
 
   const updateWysiwygStyle = () => {
+    // Guard against re-entrant calls: mutateElement inside this function fires
+    // triggerUpdate synchronously, which would call updateWysiwygStyle again
+    // before the current call returns — causing a call stack overflow on the
+    // second double-click of a shape with bound text.
+    if (isUpdatingWysiwygStyle) {
+      return;
+    }
+    isUpdatingWysiwygStyle = true;
+    try {
     LAST_THEME = app.state.theme;
 
     const appState = app.state;
@@ -291,6 +301,9 @@ export const textWysiwyg = ({
       }
 
       app.scene.mutateElement(updatedTextElement, { x: coordX, y: coordY });
+    }
+    } finally {
+      isUpdatingWysiwygStyle = false;
     }
   };
 
