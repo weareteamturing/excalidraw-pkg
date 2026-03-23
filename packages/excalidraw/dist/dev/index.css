@@ -1517,6 +1517,21 @@
   flex: 0 0 auto;
 }
 
+/* components/ConvertElementTypePopup.scss */
+.excalidraw .ConvertElementTypePopup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.2rem;
+  border-radius: 0.5rem;
+  background: var(--island-bg-color);
+  box-shadow: var(--shadow-island);
+  padding: 0.5rem;
+}
+.excalidraw .ConvertElementTypePopup:focus {
+  outline: none;
+}
+
 /* components/DialogActionButton.scss */
 .excalidraw .Dialog__action-button {
   position: relative;
@@ -3269,21 +3284,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.375rem;
-}
-
-/* components/ConvertElementTypePopup.scss */
-.excalidraw .ConvertElementTypePopup {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.2rem;
-  border-radius: 0.5rem;
-  background: var(--island-bg-color);
-  box-shadow: var(--shadow-island);
-  padding: 0.5rem;
-}
-.excalidraw .ConvertElementTypePopup:focus {
-  outline: none;
 }
 
 /* components/Popover.scss */

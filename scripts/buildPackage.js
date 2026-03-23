@@ -103,6 +103,30 @@ const PKG_SRC = {
 // All subpaths fall back to the package index if the specific file is not found,
 // preventing esbuild from activating the "development" export condition
 // (triggered by sourcemap:true) which would pull in pre-built dist files.
+// Plugin that resolves self-referencing @excalidraw/excalidraw/* subpath imports
+// to the actual source files within the package directory.
+const selfRefPlugin = {
+  name: "self-ref-src",
+  setup(b) {
+    b.onResolve(
+      { filter: /^@excalidraw\/excalidraw\/.+$/ },
+      (args) => {
+        const subpath = args.path.replace(/^@excalidraw\/excalidraw\//, "");
+        const extensions = [".tsx", ".ts", ".js"];
+        for (const ext of extensions) {
+          const resolved = path.resolve(PKG_DIR, `${subpath}${ext}`);
+          if (fs.existsSync(resolved)) return { path: resolved };
+        }
+        const indexTs = path.resolve(PKG_DIR, subpath, "index.ts");
+        if (fs.existsSync(indexTs)) return { path: indexTs };
+        const indexTsx = path.resolve(PKG_DIR, subpath, "index.tsx");
+        if (fs.existsSync(indexTsx)) return { path: indexTsx };
+        return null;
+      },
+    );
+  },
+};
+
 const bundleSrcPlugin = {
   name: "bundle-workspace-src",
   setup(b) {
@@ -139,37 +163,32 @@ const getConfig = (outdir) => ({
   absWorkingDir: PKG_DIR,
   outdir,
   bundle: true,
-  splitting: true,
+  splitting: false,
   format: "esm",
-  plugins: [bundleSrcPlugin, sassPlugin({ precompile })],
+  plugins: [selfRefPlugin, bundleSrcPlugin, sassPlugin({ precompile })],
   target: "es2020",
   assetNames: "[name]",
-  chunkNames: "[name]-[hash]",
-  external: [...EXTERNAL_PACKAGES, "@excalidraw/excalidraw/*"],
+  external: [...EXTERNAL_PACKAGES],
   loader: { ".woff2": "file" },
-  // Prevent esbuild from activating the "development" export condition when
-  // sourcemap:true is set. Without this, @excalidraw/element subpath imports
-  // that fall through resolve to packages/element/dist/dev/index.js which
-  // contains externalized @excalidraw/common imports.
   conditions: ["browser", "module", "default"],
 });
 
 const createESMRawBuild = async () => {
-  const chunksConfig = {
-    entryPoints: ["index.tsx", "**/*.chunk.ts"],
+  const entryConfig = {
+    entryPoints: ["index.tsx"],
     entryNames: "[name]",
   };
 
   await build({
     ...getConfig(`${PKG_DIR}/dist/dev`),
-    ...chunksConfig,
+    ...entryConfig,
     sourcemap: true,
     define: { "import.meta.env": JSON.stringify(ENV_VARS.development) },
   });
 
   await build({
     ...getConfig(`${PKG_DIR}/dist/prod`),
-    ...chunksConfig,
+    ...entryConfig,
     minify: true,
     define: { "import.meta.env": JSON.stringify(ENV_VARS.production) },
   });
