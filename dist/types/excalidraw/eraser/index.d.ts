@@ -6,7 +6,7 @@ export declare class EraserTrail extends AnimatedTrail {
     private groupsToErase;
     constructor(animationFrameHandler: AnimationFrameHandler, app: App);
     startPath(x: number, y: number): void;
-    addPointToPath(x: number, y: number, restore?: boolean): ExcalidrawElement[];
+    addPointToPath(x: number, y: number, restore?: boolean): string[];
     private updateElementsToBeErased;
     endPath(): void;
 }

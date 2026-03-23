@@ -1,4 +1,5 @@
 import type { AppState, InteractiveCanvasAppState } from "@excalidraw/excalidraw/types";
+import { LinearElementEditor } from "./linearElementEditor";
 import type { ElementsMap, ElementsMapOrArray, ExcalidrawElement, NonDeletedExcalidrawElement } from "./types";
 /**
  * Frames and their containing elements are not to be selected at the same time.
@@ -17,7 +18,7 @@ export declare const getSelectedElements: (elements: ElementsMapOrArray, appStat
     includeBoundTextElement?: boolean;
     includeElementsInFrames?: boolean;
 }) => ExcalidrawElement[];
-export declare const getTargetElements: (elements: ElementsMapOrArray, appState: Pick<AppState, "selectedElementIds" | "editingTextElement" | "newElement">) => any[];
+export declare const getTargetElements: (elements: ElementsMapOrArray, appState: Pick<AppState, "selectedElementIds" | "editingTextElement" | "newElement">) => ExcalidrawElement[];
 /**
  * returns prevState's selectedElementids if no change from previous, so as to
  * retain reference identity for memoization
@@ -25,4 +26,9 @@ export declare const getTargetElements: (elements: ElementsMapOrArray, appState:
 export declare const makeNextSelectedElementIds: (nextSelectedElementIds: AppState["selectedElementIds"], prevState: Pick<AppState, "selectedElementIds">) => Readonly<{
     [id: string]: true;
 }>;
-export declare const getSelectionStateForElements: (targetElements: readonly ExcalidrawElement[], allElements: readonly NonDeletedExcalidrawElement[], appState: AppState) => any;
+export declare const getSelectionStateForElements: (targetElements: readonly ExcalidrawElement[], allElements: readonly NonDeletedExcalidrawElement[], appState: AppState) => {
+    editingGroupId: AppState["editingGroupId"];
+    selectedElementIds: AppState["selectedElementIds"];
+    selectedGroupIds: AppState["selectedGroupIds"];
+    selectedLinearElement: LinearElementEditor | null;
+};

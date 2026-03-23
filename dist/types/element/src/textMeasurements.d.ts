@@ -6,7 +6,7 @@ export declare const measureText: (text: string, font: FontString, lineHeight: E
 export declare const getApproxMinLineWidth: (font: FontString, lineHeight: ExcalidrawTextElement["lineHeight"]) => number;
 export declare const getMinTextElementWidth: (font: FontString, lineHeight: ExcalidrawTextElement["lineHeight"]) => number;
 export declare const isMeasureTextSupported: () => boolean;
-export declare const normalizeText: (text: string) => any;
+export declare const normalizeText: (text: string) => string;
 /**
  * To get unitless line-height (if unknown) we can calculate it by dividing
  * height-per-line by fontSize.

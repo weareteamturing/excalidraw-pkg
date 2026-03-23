@@ -12,8 +12,14 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist/types",
     "paths": {
-      "@excalidraw/utils": ["./utils/index.ts"],
-      "@excalidraw/utils/*": ["./utils/*"]
+      "@excalidraw/utils": ["../utils/src/index.ts"],
+      "@excalidraw/utils/*": ["../utils/src/*"],
+      "@excalidraw/element": ["../element/src/index.ts"],
+      "@excalidraw/element/*": ["../element/src/*"],
+      "@excalidraw/common": ["../common/src/index.ts"],
+      "@excalidraw/common/*": ["../common/src/*"],
+      "@excalidraw/math": ["../math/src/index.ts"],
+      "@excalidraw/math/*": ["../math/src/*"]
     }
   },
   "include": ["**/*"],

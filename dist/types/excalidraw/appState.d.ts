@@ -1,23 +1,37 @@
 import type { AppState, NormalizedZoomValue } from "./types";
 export declare const getDefaultAppState: () => Omit<AppState, "offsetTop" | "offsetLeft" | "width" | "height">;
 export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>) => {
-    stats?: {
-        open: boolean;
-        panels: number;
-    } | undefined;
-    exportWithDarkMode?: boolean | undefined;
-    cursorButton?: "up" | "down" | undefined;
+    viewBackgroundColor?: string | undefined;
+    theme?: import("@excalidraw/element/types").Theme | undefined;
+    name?: string | null | undefined;
+    zoom?: Readonly<{
+        value: NormalizedZoomValue;
+    }> | undefined;
     scrollX?: number | undefined;
     scrollY?: number | undefined;
-    showWelcomeScreen?: boolean | undefined;
-    isBindingEnabled?: boolean | undefined;
-    bindingPreference?: "enabled" | "disabled" | undefined;
-    isMidpointSnappingEnabled?: boolean | undefined;
+    editingGroupId?: string | null | undefined;
+    selectedElementIds?: Readonly<{
+        [id: string]: true;
+    }> | undefined;
     activeTool?: ({
         lastActiveTool: import("./types").ActiveTool | null;
         locked: boolean;
         fromSelection: boolean;
     } & import("./types").ActiveTool) | undefined;
+    selectedGroupIds?: {
+        [groupId: string]: boolean;
+    } | undefined;
+    selectedLinearElement?: import("@excalidraw/element").LinearElementEditor | null | undefined;
+    isBindingEnabled?: boolean | undefined;
+    isMidpointSnappingEnabled?: boolean | undefined;
+    zenModeEnabled?: boolean | undefined;
+    shouldCacheIgnoreZoom?: boolean | undefined;
+    exportScale?: number | undefined;
+    currentItemArrowType?: "round" | "sharp" | "elbow" | undefined;
+    bindMode?: import("@excalidraw/element/types").BindMode | undefined;
+    gridSize?: number | undefined;
+    showWelcomeScreen?: boolean | undefined;
+    bindingPreference?: "enabled" | "disabled" | undefined;
     preferredSelectionTool?: {
         type: "selection" | "lasso";
         initialized: boolean;
@@ -26,56 +40,42 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
     penDetected?: boolean | undefined;
     exportBackground?: boolean | undefined;
     exportEmbedScene?: boolean | undefined;
-    exportScale?: number | undefined;
+    exportWithDarkMode?: boolean | undefined;
     currentItemStrokeColor?: string | undefined;
     currentItemBackgroundColor?: string | undefined;
-    currentItemFillStyle?: any;
+    currentItemFillStyle?: import("@excalidraw/element/types").FillStyle | undefined;
     currentItemStrokeWidth?: number | undefined;
-    currentItemStrokeStyle?: any;
+    currentItemStrokeStyle?: import("@excalidraw/element/types").StrokeStyle | undefined;
     currentItemRoughness?: number | undefined;
     currentItemOpacity?: number | undefined;
-    currentItemFontFamily?: any;
+    currentItemFontFamily?: number | undefined;
     currentItemFontSize?: number | undefined;
-    currentItemTextAlign?: any;
-    currentItemStartArrowhead?: any;
-    currentItemEndArrowhead?: any;
-    currentItemRoundness?: any;
-    currentItemArrowType?: "sharp" | "round" | "elbow" | undefined;
-    viewBackgroundColor?: string | undefined;
+    currentItemTextAlign?: string | undefined;
+    currentItemStartArrowhead?: import("@excalidraw/element/types").Arrowhead | null | undefined;
+    currentItemEndArrowhead?: import("@excalidraw/element/types").Arrowhead | null | undefined;
+    currentItemRoundness?: import("@excalidraw/element/types").StrokeRoundness | undefined;
+    cursorButton?: "up" | "down" | undefined;
     scrolledOutside?: boolean | undefined;
-    name?: string | null | undefined;
-    zoom?: Readonly<{
-        value: NormalizedZoomValue;
-    }> | undefined;
     openMenu?: "canvas" | null | undefined;
     openSidebar?: {
         name: import("./types").SidebarName;
         tab?: import("./types").SidebarTabName;
     } | null | undefined;
     defaultSidebarDockedPreference?: boolean | undefined;
-    lastPointerDownWith?: any;
-    selectedElementIds?: Readonly<{
-        [id: string]: true;
-    }> | undefined;
+    lastPointerDownWith?: import("@excalidraw/element/types").PointerType | undefined;
     previousSelectedElementIds?: {
         [id: string]: true;
     } | undefined;
-    shouldCacheIgnoreZoom?: boolean | undefined;
-    zenModeEnabled?: boolean | undefined;
-    theme?: any;
-    gridSize?: number | undefined;
     gridStep?: number | undefined;
     gridModeEnabled?: boolean | undefined;
-    selectedGroupIds?: {
-        [groupId: string]: boolean;
+    stats?: {
+        open: boolean;
+        panels: number;
     } | undefined;
-    editingGroupId?: any;
-    selectedLinearElement?: any;
     objectsSnapModeEnabled?: boolean | undefined;
     lockedMultiSelections?: {
         [groupId: string]: true;
     } | undefined;
-    bindMode?: any;
 };
 export declare const cleanAppStateForExport: (appState: Partial<AppState>) => {
     viewBackgroundColor?: string | undefined;

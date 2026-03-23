@@ -12,7 +12,7 @@ export declare const elementOverlapsWithFrame: (element: ExcalidrawElement, fram
 export declare const isCursorInFrame: (cursorCoords: {
     x: number;
     y: number;
-}, frame: NonDeleted<ExcalidrawFrameLikeElement>, elementsMap: ElementsMap) => any;
+}, frame: NonDeleted<ExcalidrawFrameLikeElement>, elementsMap: ElementsMap) => boolean;
 export declare const groupsAreAtLeastIntersectingTheFrame: (elements: readonly NonDeletedExcalidrawElement[], groupIds: readonly string[], frame: ExcalidrawFrameLikeElement) => boolean;
 export declare const groupsAreCompletelyOutOfFrame: (elements: readonly NonDeletedExcalidrawElement[], groupIds: readonly string[], frame: ExcalidrawFrameLikeElement) => boolean;
 /**
@@ -62,7 +62,7 @@ selectedElements?: readonly ExcalidrawElement[]) => ExcalidrawElement[];
  * depending on the appState, return target frame, which is the frame the given element
  * is going to be added to or remove from
  */
-export declare const getTargetFrame: (element: ExcalidrawElement, elementsMap: ElementsMap, appState: StaticCanvasAppState) => any;
+export declare const getTargetFrame: (element: ExcalidrawElement, elementsMap: ElementsMap, appState: StaticCanvasAppState) => ExcalidrawFrameLikeElement | null;
 export declare const isElementInFrame: (element: ExcalidrawElement, allElementsMap: ElementsMap, appState: StaticCanvasAppState, opts?: {
     targetFrame?: ExcalidrawFrameLikeElement;
     checkedGroups?: Map<string, boolean>;
@@ -70,5 +70,5 @@ export declare const isElementInFrame: (element: ExcalidrawElement, allElementsM
 export declare const shouldApplyFrameClip: (element: ExcalidrawElement, frame: ExcalidrawFrameLikeElement, appState: StaticCanvasAppState, elementsMap: ElementsMap, checkedGroups?: Map<string, boolean>) => boolean;
 export declare const getDefaultFrameName: (element: ExcalidrawFrameLikeElement) => "Frame" | "AI Frame";
 export declare const getFrameLikeTitle: (element: ExcalidrawFrameLikeElement) => string;
-export declare const getElementsOverlappingFrame: (elements: readonly ExcalidrawElement[], frame: ExcalidrawFrameLikeElement) => any;
+export declare const getElementsOverlappingFrame: (elements: readonly ExcalidrawElement[], frame: ExcalidrawFrameLikeElement) => NonDeletedExcalidrawElement[];
 export declare const frameAndChildrenSelectedTogether: (selectedElements: readonly ExcalidrawElement[]) => boolean;

@@ -1,5 +1,6 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
 import type { Scene } from "@excalidraw/element";
+import type { RenderableElementsMap } from "./types";
 import type { AppState } from "../types";
 export declare class Renderer {
     private scene;
@@ -20,7 +21,7 @@ export declare class Renderer {
         newElementId: ExcalidrawElement["id"] | undefined;
         sceneNonce: ReturnType<InstanceType<typeof Scene>["getSceneNonce"]>;
     }) => {
-        elementsMap: any;
+        elementsMap: RenderableElementsMap;
         visibleElements: readonly NonDeletedExcalidrawElement[];
     }) & {
         clear: () => void;

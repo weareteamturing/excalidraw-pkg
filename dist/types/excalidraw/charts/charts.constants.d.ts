@@ -28,7 +28,7 @@ export declare const RADAR_LEGEND_ITEM_GAP: number;
 export declare const RADAR_LEGEND_TEXT_GAP = 12;
 export declare const commonProps: {
     readonly fillStyle: "hachure";
-    readonly fontFamily: FontFamilyValues;
+    readonly fontFamily: number;
     readonly fontSize: 20;
     readonly opacity: 100;
     readonly roughness: 1;

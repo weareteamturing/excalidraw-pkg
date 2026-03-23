@@ -1,4 +1,3 @@
-import { newElementWith } from "@excalidraw/element";
 export declare let copiedStyles: string;
 export declare const actionCopyStyles: {
     name: "copyStyles";
@@ -7,7 +6,7 @@ export declare const actionCopyStyles: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, formData: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, formData: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             toast: {
                 message: string;
@@ -21,22 +20,22 @@ export declare const actionCopyStyles: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: newElementWith;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: newElementWith<newElementWith> | null;
-            resizingElement: newElementWith | null;
-            multiElement: newElementWith<newElementWith> | null;
-            selectionElement: newElementWith | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: newElementWith<newElementWith> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: newElementWith<newElementWith>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: newElementWith<newElementWith> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -44,8 +43,8 @@ export declare const actionCopyStyles: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: newElementWith<newElementWith>[] | null;
-            editingTextElement: newElementWith | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -63,18 +62,18 @@ export declare const actionCopyStyles: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: newElementWith["fillStyle"];
+            currentItemFillStyle: import("@excalidraw/element/types").ExcalidrawElement["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: newElementWith["strokeStyle"];
+            currentItemStrokeStyle: import("@excalidraw/element/types").ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: newElementWith;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: newElementWith;
-            currentItemStartArrowhead: newElementWith | null;
-            currentItemEndArrowhead: newElementWith | null;
-            currentHoveredFontFamily: newElementWith | null;
-            currentItemRoundness: newElementWith;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -102,14 +101,14 @@ export declare const actionCopyStyles: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: newElementWith["id"];
+                sourceElementId: import("@excalidraw/element/types").ExcalidrawElement["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: newElementWith;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -122,7 +121,7 @@ export declare const actionCopyStyles: {
             selectedElementsAreBeingDragged: boolean;
             shouldCacheIgnoreZoom: boolean;
             zenModeEnabled: boolean;
-            theme: newElementWith;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -130,7 +129,7 @@ export declare const actionCopyStyles: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: newElementWith | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -142,7 +141,7 @@ export declare const actionCopyStyles: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: newElementWith | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -152,22 +151,22 @@ export declare const actionCopyStyles: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: newElementWith["id"] | null;
+            croppingElementId: import("@excalidraw/element/types").ExcalidrawElement["id"] | null;
             searchMatches: Readonly<{
-                focusedId: newElementWith["id"] | null;
+                focusedId: import("@excalidraw/element/types").ExcalidrawElement["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: newElementWith;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "EVENTUALLY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionPasteStyles: {
     name: "pasteStyles";
@@ -176,11 +175,14 @@ export declare const actionPasteStyles: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, formData: unknown, app: import("../types").AppClassProperties) => {
-        elements: readonly OrderedExcalidrawElement[];
-        captureUpdate: any;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, formData: unknown, app: import("../types").AppClassProperties) => {
+        elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[];
+        captureUpdate: "EVENTUALLY";
+    } | {
+        elements: import("@excalidraw/element/types").OrderedExcalidrawElement[];
+        captureUpdate: "IMMEDIATELY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };

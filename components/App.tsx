@@ -2321,7 +2321,7 @@ class App extends React.Component<AppProps, AppState> {
     return this.scene.getElementsMapIncludingDeleted();
   };
 
-  public getSceneElements = () => {
+  public getSceneElements = (): readonly NonDeletedExcalidrawElement[] => {
     return this.scene.getNonDeletedElements();
   };
 

@@ -1,4 +1,3 @@
-import { CaptureUpdateAction } from "@excalidraw/element";
 export declare const actionToggleMidpointSnapping: {
     name: "midpointSnapping";
     label: string;
@@ -7,7 +6,7 @@ export declare const actionToggleMidpointSnapping: {
         category: "canvas";
         predicate: (appState: Readonly<import("../types").AppState>) => boolean;
     };
-    perform(elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>): {
+    perform(elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>): {
         appState: {
             isMidpointSnappingEnabled: boolean;
             contextMenu: {
@@ -19,21 +18,21 @@ export declare const actionToggleMidpointSnapping: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: CaptureUpdateAction;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: CaptureUpdateAction<CaptureUpdateAction> | null;
-            resizingElement: CaptureUpdateAction | null;
-            multiElement: CaptureUpdateAction<CaptureUpdateAction> | null;
-            selectionElement: CaptureUpdateAction | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
-            startBoundElement: CaptureUpdateAction<CaptureUpdateAction> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: CaptureUpdateAction<CaptureUpdateAction>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: CaptureUpdateAction<CaptureUpdateAction> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -41,8 +40,8 @@ export declare const actionToggleMidpointSnapping: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: CaptureUpdateAction<CaptureUpdateAction>[] | null;
-            editingTextElement: CaptureUpdateAction | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -60,18 +59,18 @@ export declare const actionToggleMidpointSnapping: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: CaptureUpdateAction["fillStyle"];
+            currentItemFillStyle: import("@excalidraw/element/types").ExcalidrawElement["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: CaptureUpdateAction["strokeStyle"];
+            currentItemStrokeStyle: import("@excalidraw/element/types").ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: CaptureUpdateAction;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: CaptureUpdateAction;
-            currentItemStartArrowhead: CaptureUpdateAction | null;
-            currentItemEndArrowhead: CaptureUpdateAction | null;
-            currentHoveredFontFamily: CaptureUpdateAction | null;
-            currentItemRoundness: CaptureUpdateAction;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -99,14 +98,14 @@ export declare const actionToggleMidpointSnapping: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: CaptureUpdateAction["id"];
+                sourceElementId: import("@excalidraw/element/types").ExcalidrawElement["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: CaptureUpdateAction;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -124,7 +123,7 @@ export declare const actionToggleMidpointSnapping: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: CaptureUpdateAction;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -132,7 +131,7 @@ export declare const actionToggleMidpointSnapping: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: CaptureUpdateAction | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -144,7 +143,7 @@ export declare const actionToggleMidpointSnapping: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: CaptureUpdateAction | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -154,18 +153,18 @@ export declare const actionToggleMidpointSnapping: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: CaptureUpdateAction["id"] | null;
+            croppingElementId: import("@excalidraw/element/types").ExcalidrawElement["id"] | null;
             searchMatches: Readonly<{
-                focusedId: CaptureUpdateAction["id"] | null;
+                focusedId: import("@excalidraw/element/types").ExcalidrawElement["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: CaptureUpdateAction;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "NEVER";
     };
     checked: (appState: Readonly<import("../types").AppState>) => boolean;
 } & {

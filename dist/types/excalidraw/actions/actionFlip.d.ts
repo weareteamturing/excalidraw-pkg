@@ -1,3 +1,4 @@
+import type { ExcalidrawElement } from "@excalidraw/element/types";
 import type { AppClassProperties, AppState } from "../types";
 export declare const actionFlipHorizontal: {
     name: "flipHorizontal";
@@ -6,14 +7,14 @@ export declare const actionFlipHorizontal: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
-        elements: any;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
+        elements: ExcalidrawElement[];
         appState: Readonly<AppState>;
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionFlipVertical: {
     name: "flipVertical";
@@ -22,12 +23,12 @@ export declare const actionFlipVertical: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
-        elements: any;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
+        elements: ExcalidrawElement[];
         appState: Readonly<AppState>;
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };

@@ -1,4 +1,3 @@
-import { getNonDeletedElements } from "@excalidraw/element";
 import { type SceneBounds } from "@excalidraw/element";
 import type { ExcalidrawElement } from "@excalidraw/element/types";
 import type { AppState, Offsets } from "../types";
@@ -13,11 +12,11 @@ export declare const actionClearCanvas: {
         category: "canvas";
     };
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, props: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
-        elements: any[];
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+        elements: import("@excalidraw/element/types").OrderedExcalidrawElement[];
         appState: {
             files: {};
-            theme: Theme;
+            theme: import("@excalidraw/element/types").Theme;
             penMode: boolean;
             penDetected: boolean;
             exportBackground: boolean;
@@ -34,76 +33,18 @@ export declare const actionClearCanvas: {
                 locked: boolean;
                 fromSelection: boolean;
             } & import("../types").ActiveTool;
-            contextMenu: {
-                items: import("../components/ContextMenu").ContextMenuItems;
-                top: number;
-                left: number;
-            } | null;
-            exportWithDarkMode: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
-            cursorButton: "up" | "down";
-            scrollX: number;
-            scrollY: number;
-            showWelcomeScreen: boolean;
-            isLoading: boolean;
-            errorMessage: React.ReactNode;
-            activeEmbeddable: {
-                element: getNonDeletedElements;
-                state: "hover" | "active";
-            } | null;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
-            isBindingEnabled: boolean;
-            bindingPreference: "enabled" | "disabled";
-            isMidpointSnappingEnabled: boolean;
-            suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
-                midPoint?: import("@excalidraw/math").GlobalPoint;
-            } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            viewBackgroundColor: string;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
                 outline: boolean;
                 clip: boolean;
             };
-            editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
-            preferredSelectionTool: {
-                type: "selection" | "lasso";
-                initialized: boolean;
-            };
-            exportScale: number;
-            currentItemStrokeColor: string;
-            currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawElement["fillStyle"];
-            currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
-            currentItemRoughness: number;
-            currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
-            currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
-            currentItemArrowType: "sharp" | "round" | "elbow";
-            viewBackgroundColor: string;
-            scrolledOutside: boolean;
             name: string | null;
-            isResizing: boolean;
-            isRotating: boolean;
             zoom: import("../types").Zoom;
-            openMenu: "canvas" | null;
-            openPopup: "canvasBackground" | "elementBackground" | "elementStroke" | "fontFamily" | "compactTextProperties" | "compactStrokeStyles" | "compactOtherProperties" | "compactArrowProperties" | null;
-            openSidebar: {
-                name: import("../types").SidebarName;
-                tab?: import("../types").SidebarTabName;
-            } | null;
+            scrollX: number;
+            scrollY: number;
+            viewModeEnabled: boolean;
             openDialog: null | {
                 name: "imageExport" | "help" | "jsonExport";
             } | {
@@ -121,42 +62,34 @@ export declare const actionClearCanvas: {
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
-            defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
-            hoveredElementIds: Readonly<{
-                [id: string]: true;
-            }>;
-            previousSelectedElementIds: {
-                [id: string]: true;
-            };
-            selectedElementsAreBeingDragged: boolean;
-            shouldCacheIgnoreZoom: boolean;
-            toast: {
-                message: string;
-                closable?: boolean;
-                duration?: number;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
+            activeEmbeddable: {
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
+                state: "hover" | "active";
             } | null;
-            zenModeEnabled: boolean;
-            viewModeEnabled: boolean;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getNonDeletedElements | null;
-            fileHandle: import("browser-fs-access").FileSystemHandle | null;
-            collaborators: Map<import("../types").SocketId, import("../types").Collaborator>;
-            showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
-            snapLines: readonly import("../snapping").SnapLine[];
-            originSnapOffset: {
-                x: number;
-                y: number;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            isBindingEnabled: boolean;
+            isMidpointSnappingEnabled: boolean;
+            suggestedBinding: {
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
+                midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            objectsSnapModeEnabled: boolean;
-            userToFollow: import("../types").UserToFollow | null;
-            followedBy: Set<import("../types").SocketId>;
+            isRotating: boolean;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            collaborators: Map<import("../types").SocketId, import("../types").Collaborator>;
+            snapLines: readonly import("../snapping").SnapLine[];
+            zenModeEnabled: boolean;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isCropping: boolean;
             croppingElementId: ExcalidrawElement["id"] | null;
             searchMatches: Readonly<{
@@ -164,12 +97,78 @@ export declare const actionClearCanvas: {
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
+            hoveredElementIds: Readonly<{
+                [id: string]: true;
+            }>;
+            shouldCacheIgnoreZoom: boolean;
+            exportScale: number;
+            currentItemArrowType: "sharp" | "round" | "elbow";
+            bindMode: import("@excalidraw/element/types").BindMode;
+            contextMenu: {
+                items: import("../components/ContextMenu").ContextMenuItems;
+                top: number;
+                left: number;
+            } | null;
+            showWelcomeScreen: boolean;
+            isLoading: boolean;
+            errorMessage: React.ReactNode;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            bindingPreference: "enabled" | "disabled";
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
+            editingFrame: string | null;
+            preferredSelectionTool: {
+                type: "selection" | "lasso";
+                initialized: boolean;
+            };
+            exportWithDarkMode: boolean;
+            currentItemStrokeColor: string;
+            currentItemBackgroundColor: string;
+            currentItemFillStyle: ExcalidrawElement["fillStyle"];
+            currentItemStrokeWidth: number;
+            currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
+            currentItemRoughness: number;
+            currentItemOpacity: number;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
+            currentItemFontSize: number;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
+            cursorButton: "up" | "down";
+            scrolledOutside: boolean;
+            isResizing: boolean;
+            openMenu: "canvas" | null;
+            openPopup: "canvasBackground" | "elementBackground" | "elementStroke" | "fontFamily" | "compactTextProperties" | "compactStrokeStyles" | "compactOtherProperties" | "compactArrowProperties" | null;
+            openSidebar: {
+                name: import("../types").SidebarName;
+                tab?: import("../types").SidebarTabName;
+            } | null;
+            defaultSidebarDockedPreference: boolean;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
+            previousSelectedElementIds: {
+                [id: string]: true;
+            };
+            selectedElementsAreBeingDragged: boolean;
+            toast: {
+                message: string;
+                closable?: boolean;
+                duration?: number;
+            } | null;
+            fileHandle: import("browser-fs-access").FileSystemHandle | null;
+            showHyperlinkPopup: false | "info" | "editor";
+            originSnapOffset: {
+                x: number;
+                y: number;
+            } | null;
+            objectsSnapModeEnabled: boolean;
+            userToFollow: import("../types").UserToFollow | null;
+            followedBy: Set<import("../types").SocketId>;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
         };
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
 } & {
     keyTest?: undefined;
@@ -182,7 +181,7 @@ export declare const actionZoomIn: {
     trackEvent: {
         category: "canvas";
     };
-    perform: (_elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (_elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             userToFollow: null;
             scrollX: number;
@@ -199,22 +198,22 @@ export declare const actionZoomIn: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getNonDeletedElements;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -222,8 +221,8 @@ export declare const actionZoomIn: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -246,13 +245,13 @@ export declare const actionZoomIn: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             cursorButton: "up" | "down";
@@ -284,7 +283,7 @@ export declare const actionZoomIn: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -302,7 +301,7 @@ export declare const actionZoomIn: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -310,7 +309,7 @@ export declare const actionZoomIn: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -322,7 +321,7 @@ export declare const actionZoomIn: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -340,14 +339,14 @@ export declare const actionZoomIn: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "EVENTUALLY";
     };
     PanelComponent: ({ updateData, appState }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionZoomOut: {
     name: "zoomOut";
@@ -357,7 +356,7 @@ export declare const actionZoomOut: {
     trackEvent: {
         category: "canvas";
     };
-    perform: (_elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (_elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             userToFollow: null;
             scrollX: number;
@@ -374,22 +373,22 @@ export declare const actionZoomOut: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getNonDeletedElements;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -397,8 +396,8 @@ export declare const actionZoomOut: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -421,13 +420,13 @@ export declare const actionZoomOut: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             cursorButton: "up" | "down";
@@ -459,7 +458,7 @@ export declare const actionZoomOut: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -477,7 +476,7 @@ export declare const actionZoomOut: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -485,7 +484,7 @@ export declare const actionZoomOut: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -497,7 +496,7 @@ export declare const actionZoomOut: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -515,14 +514,14 @@ export declare const actionZoomOut: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "EVENTUALLY";
     };
     PanelComponent: ({ updateData, appState }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionResetZoom: {
     name: "resetZoom";
@@ -532,7 +531,7 @@ export declare const actionResetZoom: {
     trackEvent: {
         category: "canvas";
     };
-    perform: (_elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (_elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             userToFollow: null;
             scrollX: number;
@@ -549,22 +548,22 @@ export declare const actionResetZoom: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getNonDeletedElements;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -572,8 +571,8 @@ export declare const actionResetZoom: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -596,13 +595,13 @@ export declare const actionResetZoom: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             cursorButton: "up" | "down";
@@ -634,7 +633,7 @@ export declare const actionResetZoom: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -652,7 +651,7 @@ export declare const actionResetZoom: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -660,7 +659,7 @@ export declare const actionResetZoom: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -672,7 +671,7 @@ export declare const actionResetZoom: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -690,14 +689,14 @@ export declare const actionResetZoom: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "EVENTUALLY";
     };
     PanelComponent: ({ updateData, appState }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToViewport, viewportZoomFactor, minZoom, maxZoom, }: {
     bounds: SceneBounds;
@@ -725,22 +724,22 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
         isLoading: boolean;
         errorMessage: React.ReactNode;
         activeEmbeddable: {
-            element: getNonDeletedElements;
+            element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
             state: "hover" | "active";
         } | null;
-        newElement: getNonDeletedElements<getNonDeletedElements> | null;
-        resizingElement: getNonDeletedElements | null;
-        multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-        selectionElement: getNonDeletedElements | null;
+        newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+        resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+        multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+        selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
         isBindingEnabled: boolean;
         bindingPreference: "enabled" | "disabled";
         isMidpointSnappingEnabled: boolean;
-        startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+        startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
         suggestedBinding: {
-            element: getNonDeletedElements<getNonDeletedElements>;
+            element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
             midPoint?: import("@excalidraw/math").GlobalPoint;
         } | null;
-        frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+        frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
         frameRendering: {
             enabled: boolean;
             name: boolean;
@@ -748,8 +747,8 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
             clip: boolean;
         };
         editingFrame: string | null;
-        elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-        editingTextElement: getNonDeletedElements | null;
+        elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+        editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
         activeTool: {
             lastActiveTool: import("../types").ActiveTool | null;
             locked: boolean;
@@ -772,13 +771,13 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
         currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
         currentItemRoughness: number;
         currentItemOpacity: number;
-        currentItemFontFamily: getNonDeletedElements;
+        currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
         currentItemFontSize: number;
-        currentItemTextAlign: getNonDeletedElements;
-        currentItemStartArrowhead: getNonDeletedElements | null;
-        currentItemEndArrowhead: getNonDeletedElements | null;
-        currentHoveredFontFamily: getNonDeletedElements | null;
-        currentItemRoundness: getNonDeletedElements;
+        currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+        currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+        currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+        currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+        currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
         currentItemArrowType: "sharp" | "round" | "elbow";
         viewBackgroundColor: string;
         cursorButton: "up" | "down";
@@ -810,7 +809,7 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
             rawText: string;
         };
         defaultSidebarDockedPreference: boolean;
-        lastPointerDownWith: getNonDeletedElements;
+        lastPointerDownWith: import("@excalidraw/element/types").PointerType;
         selectedElementIds: Readonly<{
             [id: string]: true;
         }>;
@@ -828,7 +827,7 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
             duration?: number;
         } | null;
         zenModeEnabled: boolean;
-        theme: getNonDeletedElements;
+        theme: import("@excalidraw/element/types").Theme;
         gridSize: number;
         gridStep: number;
         gridModeEnabled: boolean;
@@ -836,7 +835,7 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
         selectedGroupIds: {
             [groupId: string]: boolean;
         };
-        editingGroupId: getNonDeletedElements | null;
+        editingGroupId: import("@excalidraw/element/types").GroupId | null;
         width: number;
         height: number;
         offsetTop: number;
@@ -848,7 +847,7 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
             panels: number;
         };
         showHyperlinkPopup: false | "info" | "editor";
-        selectedLinearElement: getNonDeletedElements | null;
+        selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
         snapLines: readonly import("../snapping").SnapLine[];
         originSnapOffset: {
             x: number;
@@ -867,9 +866,9 @@ export declare const zoomToFitBounds: ({ bounds, appState, canvasOffsets, fitToV
         lockedMultiSelections: {
             [groupId: string]: true;
         };
-        bindMode: getNonDeletedElements;
+        bindMode: import("@excalidraw/element/types").BindMode;
     };
-    captureUpdate: any;
+    captureUpdate: "EVENTUALLY";
 };
 export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitToViewport, viewportZoomFactor, minZoom, maxZoom, }: {
     canvasOffsets?: Offsets;
@@ -897,22 +896,22 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
         isLoading: boolean;
         errorMessage: React.ReactNode;
         activeEmbeddable: {
-            element: getNonDeletedElements;
+            element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
             state: "hover" | "active";
         } | null;
-        newElement: getNonDeletedElements<getNonDeletedElements> | null;
-        resizingElement: getNonDeletedElements | null;
-        multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-        selectionElement: getNonDeletedElements | null;
+        newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+        resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+        multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+        selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
         isBindingEnabled: boolean;
         bindingPreference: "enabled" | "disabled";
         isMidpointSnappingEnabled: boolean;
-        startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+        startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
         suggestedBinding: {
-            element: getNonDeletedElements<getNonDeletedElements>;
+            element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
             midPoint?: import("@excalidraw/math").GlobalPoint;
         } | null;
-        frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+        frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
         frameRendering: {
             enabled: boolean;
             name: boolean;
@@ -920,8 +919,8 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
             clip: boolean;
         };
         editingFrame: string | null;
-        elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-        editingTextElement: getNonDeletedElements | null;
+        elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+        editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
         activeTool: {
             lastActiveTool: import("../types").ActiveTool | null;
             locked: boolean;
@@ -944,13 +943,13 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
         currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
         currentItemRoughness: number;
         currentItemOpacity: number;
-        currentItemFontFamily: getNonDeletedElements;
+        currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
         currentItemFontSize: number;
-        currentItemTextAlign: getNonDeletedElements;
-        currentItemStartArrowhead: getNonDeletedElements | null;
-        currentItemEndArrowhead: getNonDeletedElements | null;
-        currentHoveredFontFamily: getNonDeletedElements | null;
-        currentItemRoundness: getNonDeletedElements;
+        currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+        currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+        currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+        currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+        currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
         currentItemArrowType: "sharp" | "round" | "elbow";
         viewBackgroundColor: string;
         cursorButton: "up" | "down";
@@ -982,7 +981,7 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
             rawText: string;
         };
         defaultSidebarDockedPreference: boolean;
-        lastPointerDownWith: getNonDeletedElements;
+        lastPointerDownWith: import("@excalidraw/element/types").PointerType;
         selectedElementIds: Readonly<{
             [id: string]: true;
         }>;
@@ -1000,7 +999,7 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
             duration?: number;
         } | null;
         zenModeEnabled: boolean;
-        theme: getNonDeletedElements;
+        theme: import("@excalidraw/element/types").Theme;
         gridSize: number;
         gridStep: number;
         gridModeEnabled: boolean;
@@ -1008,7 +1007,7 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
         selectedGroupIds: {
             [groupId: string]: boolean;
         };
-        editingGroupId: getNonDeletedElements | null;
+        editingGroupId: import("@excalidraw/element/types").GroupId | null;
         width: number;
         height: number;
         offsetTop: number;
@@ -1020,7 +1019,7 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
             panels: number;
         };
         showHyperlinkPopup: false | "info" | "editor";
-        selectedLinearElement: getNonDeletedElements | null;
+        selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
         snapLines: readonly import("../snapping").SnapLine[];
         originSnapOffset: {
             x: number;
@@ -1039,9 +1038,9 @@ export declare const zoomToFit: ({ canvasOffsets, targetElements, appState, fitT
         lockedMultiSelections: {
             [groupId: string]: true;
         };
-        bindMode: getNonDeletedElements;
+        bindMode: import("@excalidraw/element/types").BindMode;
     };
-    captureUpdate: any;
+    captureUpdate: "EVENTUALLY";
 };
 export declare const actionZoomToFitSelectionInViewport: {
     name: "zoomToFitSelectionInViewport";
@@ -1050,7 +1049,7 @@ export declare const actionZoomToFitSelectionInViewport: {
     trackEvent: {
         category: "canvas";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             scrollX: number;
             scrollY: number;
@@ -1066,22 +1065,22 @@ export declare const actionZoomToFitSelectionInViewport: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getNonDeletedElements;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -1089,8 +1088,8 @@ export declare const actionZoomToFitSelectionInViewport: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -1113,13 +1112,13 @@ export declare const actionZoomToFitSelectionInViewport: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             cursorButton: "up" | "down";
@@ -1151,7 +1150,7 @@ export declare const actionZoomToFitSelectionInViewport: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -1169,7 +1168,7 @@ export declare const actionZoomToFitSelectionInViewport: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -1177,7 +1176,7 @@ export declare const actionZoomToFitSelectionInViewport: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -1189,7 +1188,7 @@ export declare const actionZoomToFitSelectionInViewport: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -1208,13 +1207,13 @@ export declare const actionZoomToFitSelectionInViewport: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "EVENTUALLY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionZoomToFitSelection: {
     name: "zoomToFitSelection";
@@ -1223,7 +1222,7 @@ export declare const actionZoomToFitSelection: {
     trackEvent: {
         category: "canvas";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             scrollX: number;
             scrollY: number;
@@ -1239,22 +1238,22 @@ export declare const actionZoomToFitSelection: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getNonDeletedElements;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -1262,8 +1261,8 @@ export declare const actionZoomToFitSelection: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -1286,13 +1285,13 @@ export declare const actionZoomToFitSelection: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             cursorButton: "up" | "down";
@@ -1324,7 +1323,7 @@ export declare const actionZoomToFitSelection: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -1342,7 +1341,7 @@ export declare const actionZoomToFitSelection: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -1350,7 +1349,7 @@ export declare const actionZoomToFitSelection: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -1362,7 +1361,7 @@ export declare const actionZoomToFitSelection: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -1381,13 +1380,13 @@ export declare const actionZoomToFitSelection: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "EVENTUALLY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionZoomToFit: {
     name: "zoomToFit";
@@ -1397,7 +1396,7 @@ export declare const actionZoomToFit: {
     trackEvent: {
         category: "canvas";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             scrollX: number;
             scrollY: number;
@@ -1413,22 +1412,22 @@ export declare const actionZoomToFit: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getNonDeletedElements;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -1436,8 +1435,8 @@ export declare const actionZoomToFit: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -1460,13 +1459,13 @@ export declare const actionZoomToFit: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             cursorButton: "up" | "down";
@@ -1498,7 +1497,7 @@ export declare const actionZoomToFit: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -1516,7 +1515,7 @@ export declare const actionZoomToFit: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -1524,7 +1523,7 @@ export declare const actionZoomToFit: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -1536,7 +1535,7 @@ export declare const actionZoomToFit: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -1555,15 +1554,15 @@ export declare const actionZoomToFit: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "EVENTUALLY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
-export declare const actionToggleTheme: import("./types").Action<Theme> & {
+export declare const actionToggleTheme: import("./types").Action<import("@excalidraw/element/types").Theme> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };
 export declare const actionToggleEraserTool: {
@@ -1572,7 +1571,7 @@ export declare const actionToggleEraserTool: {
     trackEvent: {
         category: "toolbar";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             selectedElementIds: {};
             selectedGroupIds: {};
@@ -1590,19 +1589,19 @@ export declare const actionToggleEraserTool: {
             showWelcomeScreen: boolean;
             isLoading: boolean;
             errorMessage: React.ReactNode;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -1610,8 +1609,8 @@ export declare const actionToggleEraserTool: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             preferredSelectionTool: {
                 type: "selection" | "lasso";
                 initialized: boolean;
@@ -1629,13 +1628,13 @@ export declare const actionToggleEraserTool: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -1670,7 +1669,7 @@ export declare const actionToggleEraserTool: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -1685,12 +1684,12 @@ export declare const actionToggleEraserTool: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
             viewModeEnabled: boolean;
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -1702,7 +1701,7 @@ export declare const actionToggleEraserTool: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -1721,13 +1720,13 @@ export declare const actionToggleEraserTool: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionToggleLassoTool: {
     name: "toggleLassoTool";
@@ -1737,7 +1736,7 @@ export declare const actionToggleLassoTool: {
         category: "toolbar";
     };
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, props: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             selectedElementIds: {};
             selectedGroupIds: {};
@@ -1755,19 +1754,19 @@ export declare const actionToggleLassoTool: {
             showWelcomeScreen: boolean;
             isLoading: boolean;
             errorMessage: React.ReactNode;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -1775,8 +1774,8 @@ export declare const actionToggleLassoTool: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             preferredSelectionTool: {
                 type: "selection" | "lasso";
                 initialized: boolean;
@@ -1794,13 +1793,13 @@ export declare const actionToggleLassoTool: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -1835,7 +1834,7 @@ export declare const actionToggleLassoTool: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -1850,12 +1849,12 @@ export declare const actionToggleLassoTool: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
             viewModeEnabled: boolean;
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -1867,7 +1866,7 @@ export declare const actionToggleLassoTool: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -1886,9 +1885,9 @@ export declare const actionToggleLassoTool: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "NEVER";
     };
 } & {
     keyTest?: undefined;
@@ -1901,7 +1900,7 @@ export declare const actionToggleHandTool: {
     };
     icon: import("react/jsx-runtime").JSX.Element;
     viewMode: false;
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
             selectedElementIds: {};
             selectedGroupIds: {};
@@ -1919,19 +1918,19 @@ export declare const actionToggleHandTool: {
             showWelcomeScreen: boolean;
             isLoading: boolean;
             errorMessage: React.ReactNode;
-            newElement: getNonDeletedElements<getNonDeletedElements> | null;
-            resizingElement: getNonDeletedElements | null;
-            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
-            selectionElement: getNonDeletedElements | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getNonDeletedElements<getNonDeletedElements>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -1939,8 +1938,8 @@ export declare const actionToggleHandTool: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getNonDeletedElements<ExcalidrawElement>[] | null;
-            editingTextElement: getNonDeletedElements | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             preferredSelectionTool: {
                 type: "selection" | "lasso";
                 initialized: boolean;
@@ -1958,13 +1957,13 @@ export declare const actionToggleHandTool: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getNonDeletedElements;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getNonDeletedElements;
-            currentItemStartArrowhead: getNonDeletedElements | null;
-            currentItemEndArrowhead: getNonDeletedElements | null;
-            currentHoveredFontFamily: getNonDeletedElements | null;
-            currentItemRoundness: getNonDeletedElements;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -1999,7 +1998,7 @@ export declare const actionToggleHandTool: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getNonDeletedElements;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -2014,12 +2013,12 @@ export declare const actionToggleHandTool: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getNonDeletedElements;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
             viewModeEnabled: boolean;
-            editingGroupId: getNonDeletedElements | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -2031,7 +2030,7 @@ export declare const actionToggleHandTool: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getNonDeletedElements | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -2050,11 +2049,11 @@ export declare const actionToggleHandTool: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getNonDeletedElements;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };

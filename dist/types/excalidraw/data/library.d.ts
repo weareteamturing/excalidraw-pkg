@@ -1,3 +1,4 @@
+import type { ExcalidrawElement } from "@excalidraw/element/types";
 import type { MaybePromise } from "@excalidraw/common/utility-types";
 import type App from "../components/App";
 import type { LibraryItems, ExcalidrawImperativeAPI, LibraryItemsSource, LibraryItems_anyVersion } from "../types";
@@ -102,7 +103,7 @@ export declare const parseLibraryTokensFromUrl: () => {
     libraryUrl: string;
     idToken: string | null;
 } | null;
-export declare const getLibraryItemsHash: (items: LibraryItems) => any;
+export declare const getLibraryItemsHash: (items: LibraryItems) => number;
 export declare const useHandleLibrary: (opts: {
     excalidrawAPI: ExcalidrawImperativeAPI | null;
     /**
