@@ -369,6 +369,8 @@ const _renderStaticScene = ({
 
         context.restore();
 
+        renderConfig.elementPostRender?.(element, context, appState);
+
         if (!isExporting) {
           renderLinkIcon(element, context, appState, elementsMap);
         }
@@ -476,6 +478,8 @@ const _renderStaticScene = ({
       console.error(error);
     }
   });
+
+  renderConfig.postRender?.(context, appState);
 };
 
 /** throttled to animation framerate */
