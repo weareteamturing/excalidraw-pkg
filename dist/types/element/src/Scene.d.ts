@@ -22,9 +22,9 @@ export declare class Scene {
      */
     private sceneNonce;
     getSceneNonce(): number | undefined;
-    getNonDeletedElementsMap(): NonDeletedSceneElementsMap;
+    getNonDeletedElementsMap(): any;
     getElementsIncludingDeleted(): readonly OrderedExcalidrawElement[];
-    getElementsMapIncludingDeleted(): SceneElementsMap;
+    getElementsMapIncludingDeleted(): any;
     getNonDeletedElements(): readonly Ordered<NonDeletedExcalidrawElement>[];
     getFramesIncludingDeleted(): readonly ExcalidrawFrameLikeElement[];
     constructor(elements?: ElementsMapOrArray | null, options?: {

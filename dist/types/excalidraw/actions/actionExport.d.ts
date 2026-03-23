@@ -1,17 +1,18 @@
+import { getNonDeletedElements } from "@excalidraw/element";
 import type { Theme } from "@excalidraw/element/types";
 import "../components/ToolIcon.scss";
 import type { AppState } from "../types";
 export declare const actionChangeProjectName: import("./types").Action<string | null> & {
-    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly Theme[], app: import("../types").AppClassProperties) => boolean) | undefined;
+    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly getNonDeletedElements[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };
 export declare const actionChangeExportScale: import("./types").Action<number> & {
-    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly Theme[], app: import("../types").AppClassProperties) => boolean) | undefined;
+    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly getNonDeletedElements[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };
 export declare const actionChangeExportBackground: import("./types").Action<boolean> & {
-    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly Theme[], app: import("../types").AppClassProperties) => boolean) | undefined;
+    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly getNonDeletedElements[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };
 export declare const actionChangeExportEmbedScene: import("./types").Action<boolean> & {
-    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly Theme[], app: import("../types").AppClassProperties) => boolean) | undefined;
+    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly getNonDeletedElements[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };
 export declare const actionSaveToActiveFile: {
     name: "saveToActiveFile";
@@ -22,7 +23,7 @@ export declare const actionSaveToActiveFile: {
     };
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, props: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: import("../types").AppClassProperties) => Promise<{
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         appState: {
             fileHandle: import("browser-fs-access").FileSystemHandle | null;
             toast: {
@@ -37,22 +38,22 @@ export declare const actionSaveToActiveFile: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: Theme;
+                element: getNonDeletedElements;
                 state: "hover" | "active";
             } | null;
-            newElement: Theme<Theme> | null;
-            resizingElement: Theme | null;
-            multiElement: Theme<Theme> | null;
-            selectionElement: Theme | null;
+            newElement: getNonDeletedElements<getNonDeletedElements> | null;
+            resizingElement: getNonDeletedElements | null;
+            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
+            selectionElement: getNonDeletedElements | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: Theme<Theme> | null;
+            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
             suggestedBinding: {
-                element: Theme<Theme>;
+                element: getNonDeletedElements<getNonDeletedElements>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: Theme<Theme> | null;
+            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -60,8 +61,8 @@ export declare const actionSaveToActiveFile: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: Theme<Theme>[] | null;
-            editingTextElement: Theme | null;
+            elementsToHighlight: getNonDeletedElements<getNonDeletedElements>[] | null;
+            editingTextElement: getNonDeletedElements | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -79,18 +80,18 @@ export declare const actionSaveToActiveFile: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: Theme["fillStyle"];
+            currentItemFillStyle: getNonDeletedElements["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: Theme["strokeStyle"];
+            currentItemStrokeStyle: getNonDeletedElements["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: Theme;
+            currentItemFontFamily: getNonDeletedElements;
             currentItemFontSize: number;
-            currentItemTextAlign: Theme;
-            currentItemStartArrowhead: Theme | null;
-            currentItemEndArrowhead: Theme | null;
-            currentHoveredFontFamily: Theme | null;
-            currentItemRoundness: Theme;
+            currentItemTextAlign: getNonDeletedElements;
+            currentItemStartArrowhead: getNonDeletedElements | null;
+            currentItemEndArrowhead: getNonDeletedElements | null;
+            currentHoveredFontFamily: getNonDeletedElements | null;
+            currentItemRoundness: getNonDeletedElements;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -118,14 +119,14 @@ export declare const actionSaveToActiveFile: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: Theme["id"];
+                sourceElementId: getNonDeletedElements["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: Theme;
+            lastPointerDownWith: getNonDeletedElements;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -146,7 +147,7 @@ export declare const actionSaveToActiveFile: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: Theme | null;
+            editingGroupId: getNonDeletedElements | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -157,7 +158,7 @@ export declare const actionSaveToActiveFile: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: getNonDeletedElements | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -167,19 +168,19 @@ export declare const actionSaveToActiveFile: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: Theme["id"] | null;
+            croppingElementId: getNonDeletedElements["id"] | null;
             searchMatches: Readonly<{
-                focusedId: Theme["id"] | null;
+                focusedId: getNonDeletedElements["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: Theme;
+            bindMode: getNonDeletedElements;
         };
     } | {
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         appState?: undefined;
     }>;
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
@@ -195,7 +196,7 @@ export declare const actionSaveFileToDisk: {
         category: "export";
     };
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: import("../types").AppClassProperties) => Promise<{
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         appState: {
             openDialog: null;
             fileHandle: import("browser-fs-access").FileSystemHandle | null;
@@ -211,22 +212,22 @@ export declare const actionSaveFileToDisk: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: Theme;
+                element: getNonDeletedElements;
                 state: "hover" | "active";
             } | null;
-            newElement: Theme<Theme> | null;
-            resizingElement: Theme | null;
-            multiElement: Theme<Theme> | null;
-            selectionElement: Theme | null;
+            newElement: getNonDeletedElements<getNonDeletedElements> | null;
+            resizingElement: getNonDeletedElements | null;
+            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
+            selectionElement: getNonDeletedElements | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: Theme<Theme> | null;
+            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
             suggestedBinding: {
-                element: Theme<Theme>;
+                element: getNonDeletedElements<getNonDeletedElements>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: Theme<Theme> | null;
+            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -234,8 +235,8 @@ export declare const actionSaveFileToDisk: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: Theme<Theme>[] | null;
-            editingTextElement: Theme | null;
+            elementsToHighlight: getNonDeletedElements<getNonDeletedElements>[] | null;
+            editingTextElement: getNonDeletedElements | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -253,18 +254,18 @@ export declare const actionSaveFileToDisk: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: Theme["fillStyle"];
+            currentItemFillStyle: getNonDeletedElements["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: Theme["strokeStyle"];
+            currentItemStrokeStyle: getNonDeletedElements["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: Theme;
+            currentItemFontFamily: getNonDeletedElements;
             currentItemFontSize: number;
-            currentItemTextAlign: Theme;
-            currentItemStartArrowhead: Theme | null;
-            currentItemEndArrowhead: Theme | null;
-            currentHoveredFontFamily: Theme | null;
-            currentItemRoundness: Theme;
+            currentItemTextAlign: getNonDeletedElements;
+            currentItemStartArrowhead: getNonDeletedElements | null;
+            currentItemEndArrowhead: getNonDeletedElements | null;
+            currentHoveredFontFamily: getNonDeletedElements | null;
+            currentItemRoundness: getNonDeletedElements;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -282,7 +283,7 @@ export declare const actionSaveFileToDisk: {
                 tab?: import("../types").SidebarTabName;
             } | null;
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: Theme;
+            lastPointerDownWith: getNonDeletedElements;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -303,7 +304,7 @@ export declare const actionSaveFileToDisk: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: Theme | null;
+            editingGroupId: getNonDeletedElements | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -314,7 +315,7 @@ export declare const actionSaveFileToDisk: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: getNonDeletedElements | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -324,19 +325,19 @@ export declare const actionSaveFileToDisk: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: Theme["id"] | null;
+            croppingElementId: getNonDeletedElements["id"] | null;
             searchMatches: Readonly<{
-                focusedId: Theme["id"] | null;
+                focusedId: getNonDeletedElements["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: Theme;
+            bindMode: getNonDeletedElements;
         };
     } | {
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         appState?: undefined;
     }>;
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
@@ -352,39 +353,41 @@ export declare const actionLoadScene: {
     };
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, props: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => Promise<false | {
-        elements: ExcalidrawElement[];
+        elements: CombineBrandsIfNeeded<T, OrderedExcalidrawElement>;
         appState: {
-            zoom: import("../types").Zoom;
-            name: string | null;
-            theme: Theme;
-            isLoading: boolean;
-            startBoundElement: Theme<Theme> | null;
-            cursorButton: "up" | "down";
-            scrollX: number;
-            scrollY: number;
             contextMenu: {
                 items: import("../components/ContextMenu").ContextMenuItems;
                 top: number;
                 left: number;
             } | null;
+            stats: {
+                open: boolean;
+                panels: number;
+            };
+            exportWithDarkMode: boolean;
+            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
+            cursorButton: "up" | "down";
+            scrollX: number;
+            scrollY: number;
             showWelcomeScreen: boolean;
+            isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: Theme;
+                element: getNonDeletedElements;
                 state: "hover" | "active";
             } | null;
-            newElement: Theme<Theme> | null;
-            resizingElement: Theme | null;
-            multiElement: Theme<Theme> | null;
-            selectionElement: Theme | null;
+            newElement: getNonDeletedElements<getNonDeletedElements> | null;
+            resizingElement: getNonDeletedElements | null;
+            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
+            selectionElement: getNonDeletedElements | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
             suggestedBinding: {
-                element: Theme<Theme>;
+                element: getNonDeletedElements<getNonDeletedElements>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: Theme<Theme> | null;
+            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -392,8 +395,8 @@ export declare const actionLoadScene: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: Theme<Theme>[] | null;
-            editingTextElement: Theme | null;
+            elementsToHighlight: getNonDeletedElements<getNonDeletedElements>[] | null;
+            editingTextElement: getNonDeletedElements | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -407,27 +410,28 @@ export declare const actionLoadScene: {
             penDetected: boolean;
             exportBackground: boolean;
             exportEmbedScene: boolean;
-            exportWithDarkMode: boolean;
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: Theme["fillStyle"];
+            currentItemFillStyle: getNonDeletedElements["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: Theme["strokeStyle"];
+            currentItemStrokeStyle: getNonDeletedElements["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: Theme;
+            currentItemFontFamily: getNonDeletedElements;
             currentItemFontSize: number;
-            currentItemTextAlign: Theme;
-            currentItemStartArrowhead: Theme | null;
-            currentItemEndArrowhead: Theme | null;
-            currentHoveredFontFamily: Theme | null;
-            currentItemRoundness: Theme;
+            currentItemTextAlign: getNonDeletedElements;
+            currentItemStartArrowhead: getNonDeletedElements | null;
+            currentItemEndArrowhead: getNonDeletedElements | null;
+            currentHoveredFontFamily: getNonDeletedElements | null;
+            currentItemRoundness: getNonDeletedElements;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrolledOutside: boolean;
+            name: string | null;
             isResizing: boolean;
             isRotating: boolean;
+            zoom: import("../types").Zoom;
             openMenu: "canvas" | null;
             openPopup: "canvasBackground" | "elementBackground" | "elementStroke" | "fontFamily" | "compactTextProperties" | "compactStrokeStyles" | "compactOtherProperties" | "compactArrowProperties" | null;
             openSidebar: {
@@ -445,14 +449,14 @@ export declare const actionLoadScene: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: Theme["id"];
+                sourceElementId: getNonDeletedElements["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: Theme;
+            lastPointerDownWith: getNonDeletedElements;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -470,6 +474,7 @@ export declare const actionLoadScene: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
+            theme: Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -477,15 +482,11 @@ export declare const actionLoadScene: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: Theme | null;
+            editingGroupId: getNonDeletedElements | null;
             fileHandle: import("browser-fs-access").FileSystemHandle | null;
             collaborators: Map<import("../types").SocketId, import("../types").Collaborator>;
-            stats: {
-                open: boolean;
-                panels: number;
-            };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: getNonDeletedElements | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -495,19 +496,19 @@ export declare const actionLoadScene: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: Theme["id"] | null;
+            croppingElementId: getNonDeletedElements["id"] | null;
             searchMatches: Readonly<{
-                focusedId: Theme["id"] | null;
+                focusedId: getNonDeletedElements["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: Theme;
+            bindMode: getNonDeletedElements;
         };
         files: import("../types").BinaryFiles;
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     } | {
         elements: readonly OrderedExcalidrawElement[];
         appState: {
@@ -520,22 +521,22 @@ export declare const actionLoadScene: {
             showWelcomeScreen: boolean;
             isLoading: boolean;
             activeEmbeddable: {
-                element: Theme;
+                element: getNonDeletedElements;
                 state: "hover" | "active";
             } | null;
-            newElement: Theme<Theme> | null;
-            resizingElement: Theme | null;
-            multiElement: Theme<Theme> | null;
-            selectionElement: Theme | null;
+            newElement: getNonDeletedElements<getNonDeletedElements> | null;
+            resizingElement: getNonDeletedElements | null;
+            multiElement: getNonDeletedElements<getNonDeletedElements> | null;
+            selectionElement: getNonDeletedElements | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: Theme<Theme> | null;
+            startBoundElement: getNonDeletedElements<getNonDeletedElements> | null;
             suggestedBinding: {
-                element: Theme<Theme>;
+                element: getNonDeletedElements<getNonDeletedElements>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: Theme<Theme> | null;
+            frameToHighlight: getNonDeletedElements<getNonDeletedElements> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -543,8 +544,8 @@ export declare const actionLoadScene: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: Theme<Theme>[] | null;
-            editingTextElement: Theme | null;
+            elementsToHighlight: getNonDeletedElements<getNonDeletedElements>[] | null;
+            editingTextElement: getNonDeletedElements | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -562,18 +563,18 @@ export declare const actionLoadScene: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: Theme["fillStyle"];
+            currentItemFillStyle: getNonDeletedElements["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: Theme["strokeStyle"];
+            currentItemStrokeStyle: getNonDeletedElements["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: Theme;
+            currentItemFontFamily: getNonDeletedElements;
             currentItemFontSize: number;
-            currentItemTextAlign: Theme;
-            currentItemStartArrowhead: Theme | null;
-            currentItemEndArrowhead: Theme | null;
-            currentHoveredFontFamily: Theme | null;
-            currentItemRoundness: Theme;
+            currentItemTextAlign: getNonDeletedElements;
+            currentItemStartArrowhead: getNonDeletedElements | null;
+            currentItemEndArrowhead: getNonDeletedElements | null;
+            currentHoveredFontFamily: getNonDeletedElements | null;
+            currentItemRoundness: getNonDeletedElements;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -601,14 +602,14 @@ export declare const actionLoadScene: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: Theme["id"];
+                sourceElementId: getNonDeletedElements["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: Theme;
+            lastPointerDownWith: getNonDeletedElements;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -634,7 +635,7 @@ export declare const actionLoadScene: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: Theme | null;
+            editingGroupId: getNonDeletedElements | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -646,7 +647,7 @@ export declare const actionLoadScene: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: getNonDeletedElements | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -656,24 +657,24 @@ export declare const actionLoadScene: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: Theme["id"] | null;
+            croppingElementId: getNonDeletedElements["id"] | null;
             searchMatches: Readonly<{
-                focusedId: Theme["id"] | null;
+                focusedId: getNonDeletedElements["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: Theme;
+            bindMode: getNonDeletedElements;
         };
         files: import("../types").BinaryFiles;
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
     }>;
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
 } & {
     keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
 };
 export declare const actionExportWithDarkMode: import("./types").Action<boolean> & {
-    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly Theme[], app: import("../types").AppClassProperties) => boolean) | undefined;
+    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly getNonDeletedElements[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };

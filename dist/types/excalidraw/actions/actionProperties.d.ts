@@ -1,3 +1,4 @@
+import { FONT_SIZES } from "@excalidraw/common";
 import { LinearElementEditor } from "@excalidraw/element";
 import type { Arrowhead, ExcalidrawBindableElement, ExcalidrawElement, ExcalidrawLinearElement, FontFamilyValues, TextAlign } from "@excalidraw/element/types";
 import type { AppClassProperties, AppState, Primitive } from "../types";
@@ -45,22 +46,22 @@ export declare const actionDecreaseFontSize: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: Arrowhead;
+                element: FONT_SIZES;
                 state: "hover" | "active";
             } | null;
-            newElement: Arrowhead<Arrowhead> | null;
-            resizingElement: Arrowhead | null;
-            multiElement: Arrowhead<ExcalidrawLinearElement> | null;
-            selectionElement: Arrowhead | null;
+            newElement: FONT_SIZES<FONT_SIZES> | null;
+            resizingElement: FONT_SIZES | null;
+            multiElement: FONT_SIZES<ExcalidrawLinearElement> | null;
+            selectionElement: FONT_SIZES | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: Arrowhead<ExcalidrawBindableElement> | null;
+            startBoundElement: FONT_SIZES<ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: Arrowhead<ExcalidrawBindableElement>;
+                element: FONT_SIZES<ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: Arrowhead<Arrowhead> | null;
+            frameToHighlight: FONT_SIZES<FONT_SIZES> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -68,8 +69,8 @@ export declare const actionDecreaseFontSize: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: Arrowhead<ExcalidrawElement>[] | null;
-            editingTextElement: Arrowhead | null;
+            elementsToHighlight: FONT_SIZES<ExcalidrawElement>[] | null;
+            editingTextElement: FONT_SIZES | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -97,7 +98,7 @@ export declare const actionDecreaseFontSize: {
             currentItemStartArrowhead: Arrowhead | null;
             currentItemEndArrowhead: Arrowhead | null;
             currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: Arrowhead;
+            currentItemRoundness: FONT_SIZES;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -132,7 +133,7 @@ export declare const actionDecreaseFontSize: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: Arrowhead;
+            lastPointerDownWith: FONT_SIZES;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -150,7 +151,7 @@ export declare const actionDecreaseFontSize: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: Arrowhead;
+            theme: FONT_SIZES;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -158,7 +159,7 @@ export declare const actionDecreaseFontSize: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: Arrowhead | null;
+            editingGroupId: FONT_SIZES | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -189,9 +190,9 @@ export declare const actionDecreaseFontSize: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: Arrowhead;
+            bindMode: FONT_SIZES;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
 } & {
@@ -215,22 +216,22 @@ export declare const actionIncreaseFontSize: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: Arrowhead;
+                element: FONT_SIZES;
                 state: "hover" | "active";
             } | null;
-            newElement: Arrowhead<Arrowhead> | null;
-            resizingElement: Arrowhead | null;
-            multiElement: Arrowhead<ExcalidrawLinearElement> | null;
-            selectionElement: Arrowhead | null;
+            newElement: FONT_SIZES<FONT_SIZES> | null;
+            resizingElement: FONT_SIZES | null;
+            multiElement: FONT_SIZES<ExcalidrawLinearElement> | null;
+            selectionElement: FONT_SIZES | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: Arrowhead<ExcalidrawBindableElement> | null;
+            startBoundElement: FONT_SIZES<ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: Arrowhead<ExcalidrawBindableElement>;
+                element: FONT_SIZES<ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: Arrowhead<Arrowhead> | null;
+            frameToHighlight: FONT_SIZES<FONT_SIZES> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -238,8 +239,8 @@ export declare const actionIncreaseFontSize: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: Arrowhead<ExcalidrawElement>[] | null;
-            editingTextElement: Arrowhead | null;
+            elementsToHighlight: FONT_SIZES<ExcalidrawElement>[] | null;
+            editingTextElement: FONT_SIZES | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -267,7 +268,7 @@ export declare const actionIncreaseFontSize: {
             currentItemStartArrowhead: Arrowhead | null;
             currentItemEndArrowhead: Arrowhead | null;
             currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: Arrowhead;
+            currentItemRoundness: FONT_SIZES;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -302,7 +303,7 @@ export declare const actionIncreaseFontSize: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: Arrowhead;
+            lastPointerDownWith: FONT_SIZES;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -320,7 +321,7 @@ export declare const actionIncreaseFontSize: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: Arrowhead;
+            theme: FONT_SIZES;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -328,7 +329,7 @@ export declare const actionIncreaseFontSize: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: Arrowhead | null;
+            editingGroupId: FONT_SIZES | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -359,9 +360,9 @@ export declare const actionIncreaseFontSize: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: Arrowhead;
+            bindMode: FONT_SIZES;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
 } & {
@@ -379,7 +380,7 @@ export declare const actionChangeTextAlign: import("./types").Action<TextAlign> 
 export declare const actionChangeVerticalAlign: import("./types").Action<VerticalAlign> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: AppClassProperties) => boolean) | undefined;
 };
-export declare const actionChangeRoundness: import("./types").Action<"round" | "sharp"> & {
+export declare const actionChangeRoundness: import("./types").Action<"sharp" | "round"> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: AppClassProperties) => boolean) | undefined;
 };
 export declare const actionChangeArrowhead: import("./types").Action<{
@@ -397,6 +398,6 @@ export declare const actionChangeArrowProperties: {
 } & {
     keyTest?: undefined;
 };
-export declare const actionChangeArrowType: import("./types").Action<"round" | "sharp" | "elbow"> & {
+export declare const actionChangeArrowType: import("./types").Action<"sharp" | "round" | "elbow"> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: AppClassProperties) => boolean) | undefined;
 };

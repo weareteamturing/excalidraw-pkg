@@ -43,13 +43,13 @@ export declare const getBoundsFromPoints: (points: ExcalidrawFreeDrawElement["po
 export declare const getArrowheadSize: (arrowhead: Arrowhead) => number;
 /** @returns number in degrees */
 export declare const getArrowheadAngle: (arrowhead: Arrowhead) => Degrees;
-export declare const getArrowheadPoints: (element: ExcalidrawLinearElement, shape: Drawable[], position: "start" | "end", arrowhead: Arrowhead) => number[] | null;
+export declare const getArrowheadPoints: (element: ExcalidrawLinearElement, shape: Drawable[], position: "start" | "end", arrowhead: Arrowhead) => any[] | null;
 export declare const getElementBounds: (element: ExcalidrawElement, elementsMap: ElementsMap, nonRotated?: boolean) => Bounds;
 export declare const getCommonBounds: (elements: ElementsMapOrArray, elementsMap?: ElementsMap) => Bounds;
 export declare const getDraggedElementsBounds: (elements: ExcalidrawElement[], dragOffset: {
     x: number;
     y: number;
-}) => number[];
+}) => any[];
 export declare const getResizedElementAbsoluteCoords: (element: ExcalidrawElement, nextWidth: number, nextHeight: number, normalizePoints: boolean) => Bounds;
 export declare const getElementPointsCoords: (element: ExcalidrawLinearElement, points: readonly (readonly [number, number])[]) => Bounds;
 export declare const getClosestElementBounds: (elements: readonly ExcalidrawElement[], from: {
@@ -78,4 +78,4 @@ export declare const getCenterForBounds: (bounds: Bounds) => GlobalPoint;
 export declare const aabbForElement: (element: Readonly<ExcalidrawElement>, elementsMap: ElementsMap, offset?: [number, number, number, number]) => Bounds;
 export declare const pointInsideBounds: <P extends GlobalPoint | LocalPoint>(p: P, bounds: Bounds) => boolean;
 export declare const doBoundsIntersect: (bounds1: Bounds | null, bounds2: Bounds | null) => boolean;
-export declare const elementCenterPoint: (element: ExcalidrawElement, elementsMap: ElementsMap, xOffset?: number, yOffset?: number) => GlobalPoint;
+export declare const elementCenterPoint: (element: ExcalidrawElement, elementsMap: ElementsMap, xOffset?: number, yOffset?: number) => any;

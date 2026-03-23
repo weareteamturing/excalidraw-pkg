@@ -8,22 +8,24 @@ name?: string) => Promise<{
     fileHandle: import("browser-fs-access").FileSystemHandle | null;
 }>;
 export declare const loadFromJSON: (localAppState: AppState, localElements: readonly ExcalidrawElement[] | null) => Promise<{
-    elements: ExcalidrawElement[];
+    elements: CombineBrandsIfNeeded<T, OrderedExcalidrawElement>;
     appState: {
-        zoom: import("../types").Zoom;
-        name: string | null;
-        theme: ExcalidrawElement;
-        isLoading: boolean;
-        startBoundElement: ExcalidrawElement<ExcalidrawElement> | null;
-        cursorButton: "up" | "down";
-        scrollX: number;
-        scrollY: number;
         contextMenu: {
             items: import("../components/ContextMenu").ContextMenuItems;
             top: number;
             left: number;
         } | null;
+        stats: {
+            open: boolean;
+            panels: number;
+        };
+        exportWithDarkMode: boolean;
+        startBoundElement: ExcalidrawElement<ExcalidrawElement> | null;
+        cursorButton: "up" | "down";
+        scrollX: number;
+        scrollY: number;
         showWelcomeScreen: boolean;
+        isLoading: boolean;
         errorMessage: React.ReactNode;
         activeEmbeddable: {
             element: ExcalidrawElement;
@@ -63,7 +65,6 @@ export declare const loadFromJSON: (localAppState: AppState, localElements: read
         penDetected: boolean;
         exportBackground: boolean;
         exportEmbedScene: boolean;
-        exportWithDarkMode: boolean;
         exportScale: number;
         currentItemStrokeColor: string;
         currentItemBackgroundColor: string;
@@ -82,8 +83,10 @@ export declare const loadFromJSON: (localAppState: AppState, localElements: read
         currentItemArrowType: "sharp" | "round" | "elbow";
         viewBackgroundColor: string;
         scrolledOutside: boolean;
+        name: string | null;
         isResizing: boolean;
         isRotating: boolean;
+        zoom: import("../types").Zoom;
         openMenu: "canvas" | null;
         openPopup: "canvasBackground" | "elementBackground" | "elementStroke" | "fontFamily" | "compactTextProperties" | "compactStrokeStyles" | "compactOtherProperties" | "compactArrowProperties" | null;
         openSidebar: {
@@ -126,6 +129,7 @@ export declare const loadFromJSON: (localAppState: AppState, localElements: read
             duration?: number;
         } | null;
         zenModeEnabled: boolean;
+        theme: ExcalidrawElement;
         gridSize: number;
         gridStep: number;
         gridModeEnabled: boolean;
@@ -136,12 +140,8 @@ export declare const loadFromJSON: (localAppState: AppState, localElements: read
         editingGroupId: ExcalidrawElement | null;
         fileHandle: import("browser-fs-access").FileSystemHandle | null;
         collaborators: Map<import("../types").SocketId, import("../types").Collaborator>;
-        stats: {
-            open: boolean;
-            panels: number;
-        };
         showHyperlinkPopup: false | "info" | "editor";
-        selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+        selectedLinearElement: ExcalidrawElement | null;
         snapLines: readonly import("../snapping").SnapLine[];
         originSnapOffset: {
             x: number;

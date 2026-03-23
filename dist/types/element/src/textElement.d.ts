@@ -1,4 +1,3 @@
-import { type Radians } from "@excalidraw/math";
 import type { AppState } from "@excalidraw/excalidraw/types";
 import type { ExtractSetType } from "@excalidraw/common/utility-types";
 import type { Scene } from "./Scene";
@@ -7,21 +6,21 @@ import type { ElementsMap, ExcalidrawElement, ExcalidrawElementType, ExcalidrawT
 export declare const redrawTextBoundingBox: (textElement: ExcalidrawTextElement, container: ExcalidrawElement | null, scene: Scene) => void;
 export declare const handleBindTextResize: (container: NonDeletedExcalidrawElement, scene: Scene, transformHandleType: MaybeTransformHandleType, shouldMaintainAspectRatio?: boolean) => void;
 export declare const computeBoundTextPosition: (container: ExcalidrawElement, boundTextElement: ExcalidrawTextElementWithContainer, elementsMap: ElementsMap) => {
-    x: number;
-    y: number;
+    x: any;
+    y: any;
 };
 export declare const getBoundTextElementId: (container: ExcalidrawElement | null) => string | null;
 export declare const getBoundTextElement: (element: ExcalidrawElement | null, elementsMap: ElementsMap) => ExcalidrawTextElementWithContainer | null;
 export declare const getContainerElement: (element: ExcalidrawTextElement | null, elementsMap: ElementsMap) => ExcalidrawTextContainer | null;
 export declare const getContainerCenter: (container: ExcalidrawElement, appState: AppState, elementsMap: ElementsMap) => {
-    x: number;
-    y: number;
+    x: GlobalPoint;
+    y: GlobalPoint;
 };
 export declare const getContainerCoords: (container: NonDeletedExcalidrawElement) => {
-    x: number;
-    y: number;
+    x: any;
+    y: any;
 };
-export declare const getTextElementAngle: (textElement: ExcalidrawTextElement, container: ExcalidrawTextContainer | null) => 0 | Radians;
+export declare const getTextElementAngle: (textElement: ExcalidrawTextElement, container: ExcalidrawTextContainer | null) => any;
 export declare const getBoundTextElementPosition: (container: ExcalidrawElement, boundTextElement: ExcalidrawTextElementWithContainer, elementsMap: ElementsMap) => {
     x: number;
     y: number;

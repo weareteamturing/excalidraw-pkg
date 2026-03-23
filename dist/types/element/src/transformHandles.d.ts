@@ -31,6 +31,6 @@ export declare const OMIT_SIDES_FOR_FRAME: {
 };
 export declare const canResizeFromSides: (editorInterface: EditorInterface) => boolean;
 export declare const getOmitSidesForEditorInterface: (editorInterface: EditorInterface) => {};
-export declare const getTransformHandlesFromCoords: ([x1, y1, x2, y2, cx, cy]: [number, number, number, number, number, number], angle: Radians, zoom: Zoom, pointerType: PointerType, omitSides?: { [T in TransformHandleType]?: boolean; }, margin?: number, spacing?: number) => TransformHandles;
+export declare const getTransformHandlesFromCoords: ([x1, y1, x2, y2, cx, cy]: [number, number, number, number, number, number], angle: Radians, zoom: Zoom, pointerType: PointerType, omitSides?: { [T in TransformHandleType]?: boolean; }, margin?: number, spacing?: any) => TransformHandles;
 export declare const getTransformHandles: (element: ExcalidrawElement, zoom: Zoom, elementsMap: ElementsMap, pointerType?: PointerType, omitSides?: { [T in TransformHandleType]?: boolean; }) => TransformHandles;
 export declare const hasBoundingBox: (elements: readonly NonDeletedExcalidrawElement[], appState: InteractiveCanvasAppState, editorInterface: EditorInterface) => boolean;

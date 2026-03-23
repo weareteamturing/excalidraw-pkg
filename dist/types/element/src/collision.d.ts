@@ -10,9 +10,9 @@ export type HitTestArgs = {
     frameNameBound?: FrameNameBounds | null;
     overrideShouldTestInside?: boolean;
 };
-export declare const hitElementItself: ({ point, element, threshold, elementsMap, frameNameBound, overrideShouldTestInside, }: HitTestArgs) => boolean;
-export declare const hitElementBoundingBox: (point: GlobalPoint, element: ExcalidrawElement, elementsMap: ElementsMap, tolerance?: number) => boolean;
-export declare const hitElementBoundingBoxOnly: (hitArgs: HitTestArgs, elementsMap: ElementsMap) => boolean;
+export declare const hitElementItself: ({ point, element, threshold, elementsMap, frameNameBound, overrideShouldTestInside, }: HitTestArgs) => any;
+export declare const hitElementBoundingBox: (point: GlobalPoint, element: ExcalidrawElement, elementsMap: ElementsMap, tolerance?: number) => any;
+export declare const hitElementBoundingBoxOnly: (hitArgs: HitTestArgs, elementsMap: ElementsMap) => any;
 export declare const hitElementBoundText: (point: GlobalPoint, element: ExcalidrawElement, elementsMap: ElementsMap) => boolean;
 export declare const getAllHoveredElementAtPoint: (point: Readonly<GlobalPoint>, elements: readonly Ordered<NonDeletedExcalidrawElement>[], elementsMap: NonDeletedSceneElementsMap, tolerance?: number) => NonDeleted<ExcalidrawBindableElement>[];
 export declare const getHoveredElementForBinding: (point: Readonly<GlobalPoint>, elements: readonly Ordered<NonDeletedExcalidrawElement>[], elementsMap: NonDeletedSceneElementsMap, tolerance?: number) => NonDeleted<ExcalidrawBindableElement> | null;

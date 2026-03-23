@@ -513,6 +513,12 @@ export interface ExcalidrawProps {
         element?: (defaultItems: ContextMenuItems) => ContextMenuItems;
     };
     onLassoComplete?: (path: [number, number][]) => void;
+    /** Called after all elements are drawn on the static canvas. Use for canvas-native overlays. */
+    onPostRender?: (ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
+    /** Called after each element is drawn, in rendering z-order. Use for per-element canvas overlays. */
+    onElementPostRender?: (element: NonDeletedExcalidrawElement, ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
+    /** Increment each animation frame to force a StaticCanvas re-render for animation. */
+    renderAnimationNonce?: number;
 }
 export type SceneData = {
     elements?: ImportedDataState["elements"];
@@ -677,6 +683,14 @@ export interface ExcalidrawImperativeAPI {
     getSceneElementsMapIncludingDeleted: InstanceType<typeof App>["getSceneElementsMapIncludingDeleted"];
     history: {
         clear: InstanceType<typeof App>["resetHistory"];
+        readonly isUndoStackEmpty: boolean;
+        readonly isRedoStackEmpty: boolean;
+        readonly onHistoryChangedEmitter: {
+            on: (callback: (event: {
+                isUndoStackEmpty: boolean;
+                isRedoStackEmpty: boolean;
+            }) => void) => () => void;
+        };
     };
     getSceneElements: InstanceType<typeof App>["getSceneElements"];
     getAppState: () => InstanceType<typeof App>["state"];
@@ -707,6 +721,7 @@ export interface ExcalidrawImperativeAPI {
     onUserFollow: (callback: (payload: OnUserFollowedPayload) => void) => UnsubscribeCallback;
     clearLassoTrail: InstanceType<typeof App>["clearLassoTrail"];
     actionManager: InstanceType<typeof App>["actionManager"];
+    exitTextEditing: InstanceType<typeof App>["exitTextEditing"];
 }
 export type FrameNameBounds = {
     x: number;

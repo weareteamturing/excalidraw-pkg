@@ -1,3 +1,4 @@
+import { MOBILE_ACTION_BUTTON_BG } from "@excalidraw/common";
 import type { ExcalidrawElement } from "@excalidraw/element/types";
 import type { AppClassProperties, AppState } from "../types";
 export declare const actionDeleteSelected: {
@@ -11,39 +12,7 @@ export declare const actionDeleteSelected: {
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, formData: unknown, app: AppClassProperties) => false | {
         elements: readonly OrderedExcalidrawElement[];
         appState: {
-            selectedLinearElement: {
-                selectedPointsIndices: number[];
-                elementId: import("@excalidraw/element/dist/types/element/src/types").ExcalidrawElement["id"] & {
-                    _brand: "excalidrawLinearElementId";
-                };
-                initialState: Readonly<{
-                    prevSelectedPointsIndices: readonly number[] | null;
-                    lastClickedPoint: number;
-                    origin: Readonly<import("@excalidraw/math").GlobalPoint> | null;
-                    segmentMidpoint: {
-                        value: import("@excalidraw/math").GlobalPoint | null;
-                        index: number | null;
-                        added: boolean;
-                    };
-                    arrowStartIsInside: boolean;
-                    altFocusPoint: Readonly<import("@excalidraw/math").GlobalPoint> | null;
-                }>;
-                isDragging: boolean;
-                lastUncommittedPoint: import("@excalidraw/math").LocalPoint | null;
-                lastCommittedPoint: import("@excalidraw/math").LocalPoint | null;
-                pointerOffset: Readonly<{
-                    x: number;
-                    y: number;
-                }>;
-                hoverPointIndex: number;
-                segmentMidPointHoveredCoords: import("@excalidraw/math").GlobalPoint | null;
-                hoveredFocusPointBinding: "start" | "end" | null;
-                draggedFocusPointBinding: "start" | "end" | null;
-                elbowed: boolean;
-                customLineAngle: number | null;
-                isEditing: boolean;
-                pointerDownState: never;
-            };
+            selectedLinearElement: any;
             contextMenu: {
                 items: import("../components/ContextMenu").ContextMenuItems;
                 top: number;
@@ -53,22 +22,22 @@ export declare const actionDeleteSelected: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: ExcalidrawElement;
+                element: MOBILE_ACTION_BUTTON_BG;
                 state: "hover" | "active";
             } | null;
-            newElement: ExcalidrawElement<ExcalidrawElement> | null;
-            resizingElement: ExcalidrawElement | null;
-            multiElement: ExcalidrawElement<ExcalidrawElement> | null;
-            selectionElement: ExcalidrawElement | null;
+            newElement: MOBILE_ACTION_BUTTON_BG<MOBILE_ACTION_BUTTON_BG> | null;
+            resizingElement: MOBILE_ACTION_BUTTON_BG | null;
+            multiElement: MOBILE_ACTION_BUTTON_BG<MOBILE_ACTION_BUTTON_BG> | null;
+            selectionElement: MOBILE_ACTION_BUTTON_BG | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: ExcalidrawElement<ExcalidrawElement> | null;
+            startBoundElement: MOBILE_ACTION_BUTTON_BG<MOBILE_ACTION_BUTTON_BG> | null;
             suggestedBinding: {
-                element: ExcalidrawElement<ExcalidrawElement>;
+                element: MOBILE_ACTION_BUTTON_BG<MOBILE_ACTION_BUTTON_BG>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: ExcalidrawElement<ExcalidrawElement> | null;
+            frameToHighlight: MOBILE_ACTION_BUTTON_BG<MOBILE_ACTION_BUTTON_BG> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -76,8 +45,8 @@ export declare const actionDeleteSelected: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: ExcalidrawElement<ExcalidrawElement>[] | null;
-            editingTextElement: ExcalidrawElement | null;
+            elementsToHighlight: MOBILE_ACTION_BUTTON_BG<ExcalidrawElement>[] | null;
+            editingTextElement: MOBILE_ACTION_BUTTON_BG | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -100,13 +69,13 @@ export declare const actionDeleteSelected: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: ExcalidrawElement;
+            currentItemFontFamily: MOBILE_ACTION_BUTTON_BG;
             currentItemFontSize: number;
-            currentItemTextAlign: ExcalidrawElement;
-            currentItemStartArrowhead: ExcalidrawElement | null;
-            currentItemEndArrowhead: ExcalidrawElement | null;
-            currentHoveredFontFamily: ExcalidrawElement | null;
-            currentItemRoundness: ExcalidrawElement;
+            currentItemTextAlign: MOBILE_ACTION_BUTTON_BG;
+            currentItemStartArrowhead: MOBILE_ACTION_BUTTON_BG | null;
+            currentItemEndArrowhead: MOBILE_ACTION_BUTTON_BG | null;
+            currentHoveredFontFamily: MOBILE_ACTION_BUTTON_BG | null;
+            currentItemRoundness: MOBILE_ACTION_BUTTON_BG;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -141,7 +110,7 @@ export declare const actionDeleteSelected: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: ExcalidrawElement;
+            lastPointerDownWith: MOBILE_ACTION_BUTTON_BG;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -159,7 +128,7 @@ export declare const actionDeleteSelected: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: ExcalidrawElement;
+            theme: MOBILE_ACTION_BUTTON_BG;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -167,7 +136,7 @@ export declare const actionDeleteSelected: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: ExcalidrawElement | null;
+            editingGroupId: MOBILE_ACTION_BUTTON_BG | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -197,13 +166,13 @@ export declare const actionDeleteSelected: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: ExcalidrawElement;
+            bindMode: MOBILE_ACTION_BUTTON_BG;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     } | {
         elements: any[];
         appState: any;
-        captureUpdate: "EVENTUALLY" | "IMMEDIATELY";
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[]) => boolean;
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;

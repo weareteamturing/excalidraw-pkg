@@ -102,7 +102,7 @@ export declare const parseLibraryTokensFromUrl: () => {
     libraryUrl: string;
     idToken: string | null;
 } | null;
-export declare const getLibraryItemsHash: (items: LibraryItems) => number;
+export declare const getLibraryItemsHash: (items: LibraryItems) => any;
 export declare const useHandleLibrary: (opts: {
     excalidrawAPI: ExcalidrawImperativeAPI | null;
     /**

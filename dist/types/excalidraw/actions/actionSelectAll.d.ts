@@ -8,7 +8,7 @@ export declare const actionSelectAll: {
     viewMode: false;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => false | {
         appState: any;
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
 } & {

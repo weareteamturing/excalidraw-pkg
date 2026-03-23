@@ -34,13 +34,11 @@ export declare const isFlowchartNodeElement: (element: ExcalidrawElement) => ele
 export declare const hasBoundTextElement: (element: ExcalidrawElement | null) => element is MarkNonNullable<ExcalidrawBindableElement, "boundElements">;
 export declare const isBoundToContainer: (element: ExcalidrawElement | null) => element is ExcalidrawTextElementWithContainer;
 export declare const isArrowBoundToElement: (element: ExcalidrawArrowElement) => boolean;
-export declare const isUsingAdaptiveRadius: (type: string) => type is "image" | "iframe" | "rectangle" | "embeddable";
+export declare const isUsingAdaptiveRadius: (type: string) => type is "rectangle" | "image" | "embeddable" | "iframe";
 export declare const isUsingProportionalRadius: (type: string) => type is "line" | "arrow" | "diamond";
 export declare const canApplyRoundnessTypeToElement: (roundnessType: RoundnessType, element: ExcalidrawElement) => boolean;
 export declare const getDefaultRoundnessTypeForElement: (element: ExcalidrawElement) => {
-    type: 2;
-} | {
-    type: 3;
+    type: any;
 } | null;
 export declare const getLinearElementSubType: (element: ExcalidrawLinearElement) => ExcalidrawLinearElementSubType;
 /**

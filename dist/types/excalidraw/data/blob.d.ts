@@ -19,22 +19,24 @@ localAppState: AppState | null, localElements: readonly ExcalidrawElement[] | nu
 fileHandle?: FileSystemHandle | null) => Promise<{
     type: "application/vnd.excalidraw+json";
     data: {
-        elements: ExcalidrawElement[];
+        elements: CombineBrandsIfNeeded<T, OrderedExcalidrawElement>;
         appState: {
-            zoom: import("../types").Zoom;
-            name: string | null;
-            theme: ValueOf;
-            isLoading: boolean;
-            startBoundElement: ValueOf<ValueOf> | null;
-            cursorButton: "up" | "down";
-            scrollX: number;
-            scrollY: number;
             contextMenu: {
                 items: import("../components/ContextMenu").ContextMenuItems;
                 top: number;
                 left: number;
             } | null;
+            stats: {
+                open: boolean;
+                panels: number;
+            };
+            exportWithDarkMode: boolean;
+            startBoundElement: ValueOf<ValueOf> | null;
+            cursorButton: "up" | "down";
+            scrollX: number;
+            scrollY: number;
             showWelcomeScreen: boolean;
+            isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
                 element: ValueOf;
@@ -74,7 +76,6 @@ fileHandle?: FileSystemHandle | null) => Promise<{
             penDetected: boolean;
             exportBackground: boolean;
             exportEmbedScene: boolean;
-            exportWithDarkMode: boolean;
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
@@ -93,8 +94,10 @@ fileHandle?: FileSystemHandle | null) => Promise<{
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrolledOutside: boolean;
+            name: string | null;
             isResizing: boolean;
             isRotating: boolean;
+            zoom: import("../types").Zoom;
             openMenu: "canvas" | null;
             openPopup: "canvasBackground" | "elementBackground" | "elementStroke" | "fontFamily" | "compactTextProperties" | "compactStrokeStyles" | "compactOtherProperties" | "compactArrowProperties" | null;
             openSidebar: {
@@ -137,6 +140,7 @@ fileHandle?: FileSystemHandle | null) => Promise<{
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
+            theme: ValueOf;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -147,12 +151,8 @@ fileHandle?: FileSystemHandle | null) => Promise<{
             editingGroupId: ValueOf | null;
             fileHandle: FileSystemHandle | null;
             collaborators: Map<import("../types").SocketId, import("../types").Collaborator>;
-            stats: {
-                open: boolean;
-                panels: number;
-            };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: ValueOf | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -184,22 +184,24 @@ export declare const loadFromBlob: (blob: Blob,
 localAppState: AppState | null, localElements: readonly ExcalidrawElement[] | null, 
 /** FileSystemHandle. Defaults to `blob.handle` if defined, otherwise null. */
 fileHandle?: FileSystemHandle | null) => Promise<{
-    elements: ExcalidrawElement[];
+    elements: CombineBrandsIfNeeded<T, OrderedExcalidrawElement>;
     appState: {
-        zoom: import("../types").Zoom;
-        name: string | null;
-        theme: ValueOf;
-        isLoading: boolean;
-        startBoundElement: ValueOf<ValueOf> | null;
-        cursorButton: "up" | "down";
-        scrollX: number;
-        scrollY: number;
         contextMenu: {
             items: import("../components/ContextMenu").ContextMenuItems;
             top: number;
             left: number;
         } | null;
+        stats: {
+            open: boolean;
+            panels: number;
+        };
+        exportWithDarkMode: boolean;
+        startBoundElement: ValueOf<ValueOf> | null;
+        cursorButton: "up" | "down";
+        scrollX: number;
+        scrollY: number;
         showWelcomeScreen: boolean;
+        isLoading: boolean;
         errorMessage: React.ReactNode;
         activeEmbeddable: {
             element: ValueOf;
@@ -239,7 +241,6 @@ fileHandle?: FileSystemHandle | null) => Promise<{
         penDetected: boolean;
         exportBackground: boolean;
         exportEmbedScene: boolean;
-        exportWithDarkMode: boolean;
         exportScale: number;
         currentItemStrokeColor: string;
         currentItemBackgroundColor: string;
@@ -258,8 +259,10 @@ fileHandle?: FileSystemHandle | null) => Promise<{
         currentItemArrowType: "sharp" | "round" | "elbow";
         viewBackgroundColor: string;
         scrolledOutside: boolean;
+        name: string | null;
         isResizing: boolean;
         isRotating: boolean;
+        zoom: import("../types").Zoom;
         openMenu: "canvas" | null;
         openPopup: "canvasBackground" | "elementBackground" | "elementStroke" | "fontFamily" | "compactTextProperties" | "compactStrokeStyles" | "compactOtherProperties" | "compactArrowProperties" | null;
         openSidebar: {
@@ -302,6 +305,7 @@ fileHandle?: FileSystemHandle | null) => Promise<{
             duration?: number;
         } | null;
         zenModeEnabled: boolean;
+        theme: ValueOf;
         gridSize: number;
         gridStep: number;
         gridModeEnabled: boolean;
@@ -312,12 +316,8 @@ fileHandle?: FileSystemHandle | null) => Promise<{
         editingGroupId: ValueOf | null;
         fileHandle: FileSystemHandle | null;
         collaborators: Map<import("../types").SocketId, import("../types").Collaborator>;
-        stats: {
-            open: boolean;
-            panels: number;
-        };
         showHyperlinkPopup: false | "info" | "editor";
-        selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+        selectedLinearElement: ValueOf | null;
         snapLines: readonly import("../snapping").SnapLine[];
         originSnapOffset: {
             x: number;

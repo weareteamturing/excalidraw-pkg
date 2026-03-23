@@ -66,7 +66,7 @@ export declare class LinearElementEditor {
         hitElement: NonDeleted<ExcalidrawElement> | null;
         linearElementEditor: LinearElementEditor | null;
     };
-    static arePointsEqual<Point extends LocalPoint | GlobalPoint>(point1: Point | null, point2: Point | null): boolean;
+    static arePointsEqual<Point extends LocalPoint | GlobalPoint>(point1: Point | null, point2: Point | null): any;
     static handlePointerMoveInEditMode(event: React.PointerEvent<HTMLCanvasElement>, scenePointerX: number, scenePointerY: number, app: AppClassProperties): LinearElementEditor | null;
     /** scene coords */
     static getPointGlobalCoordinates(element: NonDeleted<ExcalidrawLinearElement>, p: LocalPoint, elementsMap: ElementsMap): GlobalPoint;

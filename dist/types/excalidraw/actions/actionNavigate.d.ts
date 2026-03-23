@@ -1,3 +1,4 @@
+import { CaptureUpdateAction } from "@excalidraw/element";
 export declare const actionGoToCollaborator: import("./types").Action<Readonly<{
     pointer?: import("../types").CollaboratorPointer;
     button?: "up" | "down";
@@ -16,5 +17,5 @@ export declare const actionGoToCollaborator: import("./types").Action<Readonly<{
     isSpeaking?: boolean;
     isMuted?: boolean;
 }>> & {
-    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: import("../types").AppState, elements: readonly ExcalidrawElement[], app: import("../types").AppClassProperties) => boolean) | undefined;
+    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: import("../types").AppState, elements: readonly CaptureUpdateAction[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };

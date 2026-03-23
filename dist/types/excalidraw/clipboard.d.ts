@@ -38,7 +38,6 @@ clipboardEvent?: ClipboardEvent | null) => Promise<void>;
 export declare const readSystemClipboard: () => Promise<{
     "text/plain"?: string | File | undefined;
     "image/svg+xml"?: string | File | undefined;
-    "text/html"?: string | File | undefined;
     "image/png"?: string | File | undefined;
     "image/jpeg"?: string | File | undefined;
     "image/gif"?: string | File | undefined;
@@ -47,6 +46,7 @@ export declare const readSystemClipboard: () => Promise<{
     "image/x-icon"?: string | File | undefined;
     "image/avif"?: string | File | undefined;
     "image/jfif"?: string | File | undefined;
+    "text/html"?: string | File | undefined;
 }>;
 type AllowedParsedDataTransferItem = {
     type: ValueOf<typeof IMAGE_MIME_TYPES>;

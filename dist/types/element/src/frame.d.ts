@@ -12,7 +12,7 @@ export declare const elementOverlapsWithFrame: (element: ExcalidrawElement, fram
 export declare const isCursorInFrame: (cursorCoords: {
     x: number;
     y: number;
-}, frame: NonDeleted<ExcalidrawFrameLikeElement>, elementsMap: ElementsMap) => boolean;
+}, frame: NonDeleted<ExcalidrawFrameLikeElement>, elementsMap: ElementsMap) => any;
 export declare const groupsAreAtLeastIntersectingTheFrame: (elements: readonly NonDeletedExcalidrawElement[], groupIds: readonly string[], frame: ExcalidrawFrameLikeElement) => boolean;
 export declare const groupsAreCompletelyOutOfFrame: (elements: readonly NonDeletedExcalidrawElement[], groupIds: readonly string[], frame: ExcalidrawFrameLikeElement) => boolean;
 /**
@@ -70,5 +70,5 @@ export declare const isElementInFrame: (element: ExcalidrawElement, allElementsM
 export declare const shouldApplyFrameClip: (element: ExcalidrawElement, frame: ExcalidrawFrameLikeElement, appState: StaticCanvasAppState, elementsMap: ElementsMap, checkedGroups?: Map<string, boolean>) => boolean;
 export declare const getDefaultFrameName: (element: ExcalidrawFrameLikeElement) => "Frame" | "AI Frame";
 export declare const getFrameLikeTitle: (element: ExcalidrawFrameLikeElement) => string;
-export declare const getElementsOverlappingFrame: (elements: readonly ExcalidrawElement[], frame: ExcalidrawFrameLikeElement) => NonDeletedExcalidrawElement[];
+export declare const getElementsOverlappingFrame: (elements: readonly ExcalidrawElement[], frame: ExcalidrawFrameLikeElement) => any;
 export declare const frameAndChildrenSelectedTogether: (selectedElements: readonly ExcalidrawElement[]) => boolean;

@@ -16,6 +16,13 @@ export type StaticCanvasRenderConfig = {
     elementsPendingErasure: ElementsPendingErasure;
     pendingFlowchartNodes: PendingExcalidrawElements | null;
     theme: AppState["theme"];
+    /** Called after all elements are drawn on the static canvas context */
+    postRender?: (ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
+    /** Called after each element is drawn, in rendering z-order.
+     *  Use for per-element canvas overlays (e.g., loading shimmer). */
+    elementPostRender?: (element: NonDeletedExcalidrawElement, ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
+    /** Increment to force a static canvas re-render without scene changes (e.g. for animations) */
+    animationNonce?: number;
 };
 export type SVGRenderConfig = {
     offsetX: number;

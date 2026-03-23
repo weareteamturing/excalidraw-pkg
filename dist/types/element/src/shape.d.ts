@@ -29,7 +29,7 @@ export declare class ShapeCache {
 export declare const generateRoughOptions: (element: ExcalidrawElement, continuousPath?: boolean, isDarkMode?: boolean) => Options;
 export declare const generateLinearCollisionShape: (element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement) => {
     op: string;
-    data: number[];
+    data: any;
 }[];
 /**
  * get the pure geometric shape of an excalidraw elementw
