@@ -7,9 +7,9 @@ export declare const actionFlipHorizontal: {
         category: "element";
     };
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
-        elements: any[];
+        elements: any;
         appState: Readonly<AppState>;
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
 } & {
@@ -23,9 +23,9 @@ export declare const actionFlipVertical: {
         category: "element";
     };
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
-        elements: any[];
+        elements: any;
         appState: Readonly<AppState>;
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
 } & {

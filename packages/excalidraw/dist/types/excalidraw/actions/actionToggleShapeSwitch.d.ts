@@ -9,7 +9,7 @@ export declare const actionToggleShapeSwitch: {
     };
     keywords: string[];
     perform(elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, _: unknown, app: import("../types").AppClassProperties): {
-        captureUpdate: "NEVER";
+        captureUpdate: any;
     };
     checked: (appState: Readonly<import("../types").AppState>) => boolean;
     predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, props: import("../types").ExcalidrawProps) => boolean;

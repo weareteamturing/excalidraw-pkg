@@ -1,3 +1,4 @@
+import { isElbowArrow } from "@excalidraw/element";
 import type { ExcalidrawLinearElement } from "@excalidraw/element/types";
 export declare const actionToggleLinearEditor: {
     name: "toggleLinearEditor";
@@ -10,39 +11,7 @@ export declare const actionToggleLinearEditor: {
     predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
     perform(elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, _: unknown, app: import("../types").AppClassProperties): {
         appState: {
-            selectedLinearElement: {
-                isEditing: boolean;
-                elementId: import("@excalidraw/element/dist/types/element/src/types").ExcalidrawElement["id"] & {
-                    _brand: "excalidrawLinearElementId";
-                };
-                selectedPointsIndices: readonly number[] | null;
-                initialState: Readonly<{
-                    prevSelectedPointsIndices: readonly number[] | null;
-                    lastClickedPoint: number;
-                    origin: Readonly<import("@excalidraw/math").GlobalPoint> | null;
-                    segmentMidpoint: {
-                        value: import("@excalidraw/math").GlobalPoint | null;
-                        index: number | null;
-                        added: boolean;
-                    };
-                    arrowStartIsInside: boolean;
-                    altFocusPoint: Readonly<import("@excalidraw/math").GlobalPoint> | null;
-                }>;
-                isDragging: boolean;
-                lastUncommittedPoint: import("@excalidraw/math").LocalPoint | null;
-                lastCommittedPoint: import("@excalidraw/math").LocalPoint | null;
-                pointerOffset: Readonly<{
-                    x: number;
-                    y: number;
-                }>;
-                hoverPointIndex: number;
-                segmentMidPointHoveredCoords: import("@excalidraw/math").GlobalPoint | null;
-                hoveredFocusPointBinding: "start" | "end" | null;
-                draggedFocusPointBinding: "start" | "end" | null;
-                elbowed: boolean;
-                customLineAngle: number | null;
-                pointerDownState: never;
-            };
+            selectedLinearElement: any;
             contextMenu: {
                 items: import("../components/ContextMenu").ContextMenuItems;
                 top: number;
@@ -52,22 +21,22 @@ export declare const actionToggleLinearEditor: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: ExcalidrawLinearElement;
+                element: isElbowArrow;
                 state: "hover" | "active";
             } | null;
-            newElement: ExcalidrawLinearElement<ExcalidrawLinearElement> | null;
-            resizingElement: ExcalidrawLinearElement | null;
-            multiElement: ExcalidrawLinearElement<ExcalidrawLinearElement> | null;
-            selectionElement: ExcalidrawLinearElement | null;
+            newElement: isElbowArrow<isElbowArrow> | null;
+            resizingElement: isElbowArrow | null;
+            multiElement: isElbowArrow<ExcalidrawLinearElement> | null;
+            selectionElement: isElbowArrow | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: ExcalidrawLinearElement<ExcalidrawLinearElement> | null;
+            startBoundElement: isElbowArrow<isElbowArrow> | null;
             suggestedBinding: {
-                element: ExcalidrawLinearElement<ExcalidrawLinearElement>;
+                element: isElbowArrow<isElbowArrow>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: ExcalidrawLinearElement<ExcalidrawLinearElement> | null;
+            frameToHighlight: isElbowArrow<isElbowArrow> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -75,8 +44,8 @@ export declare const actionToggleLinearEditor: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: ExcalidrawLinearElement<ExcalidrawLinearElement>[] | null;
-            editingTextElement: ExcalidrawLinearElement | null;
+            elementsToHighlight: isElbowArrow<isElbowArrow>[] | null;
+            editingTextElement: isElbowArrow | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -94,18 +63,18 @@ export declare const actionToggleLinearEditor: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawLinearElement["fillStyle"];
+            currentItemFillStyle: isElbowArrow["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawLinearElement["strokeStyle"];
+            currentItemStrokeStyle: isElbowArrow["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: ExcalidrawLinearElement;
+            currentItemFontFamily: isElbowArrow;
             currentItemFontSize: number;
-            currentItemTextAlign: ExcalidrawLinearElement;
-            currentItemStartArrowhead: ExcalidrawLinearElement | null;
-            currentItemEndArrowhead: ExcalidrawLinearElement | null;
-            currentHoveredFontFamily: ExcalidrawLinearElement | null;
-            currentItemRoundness: ExcalidrawLinearElement;
+            currentItemTextAlign: isElbowArrow;
+            currentItemStartArrowhead: isElbowArrow | null;
+            currentItemEndArrowhead: isElbowArrow | null;
+            currentHoveredFontFamily: isElbowArrow | null;
+            currentItemRoundness: isElbowArrow;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -133,14 +102,14 @@ export declare const actionToggleLinearEditor: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: ExcalidrawLinearElement["id"];
+                sourceElementId: isElbowArrow["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: ExcalidrawLinearElement;
+            lastPointerDownWith: isElbowArrow;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -158,7 +127,7 @@ export declare const actionToggleLinearEditor: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: ExcalidrawLinearElement;
+            theme: isElbowArrow;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -166,7 +135,7 @@ export declare const actionToggleLinearEditor: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: ExcalidrawLinearElement | null;
+            editingGroupId: isElbowArrow | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -187,18 +156,18 @@ export declare const actionToggleLinearEditor: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: ExcalidrawLinearElement["id"] | null;
+            croppingElementId: isElbowArrow["id"] | null;
             searchMatches: Readonly<{
-                focusedId: ExcalidrawLinearElement["id"] | null;
+                focusedId: isElbowArrow["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: ExcalidrawLinearElement;
+            bindMode: isElbowArrow;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     PanelComponent: ({ appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element | null;
 } & {
@@ -213,11 +182,11 @@ export declare const actionTogglePolygon: {
     trackEvent: {
         category: "element";
     };
-    predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
+    predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => any;
     perform(elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, _: unknown, app: import("../types").AppClassProperties): false | {
-        elements: any[];
+        elements: OrderedExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     PanelComponent: ({ appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element | null;
 } & {

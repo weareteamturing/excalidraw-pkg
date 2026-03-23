@@ -1,5 +1,5 @@
 import React from "react";
-import { type EXPORT_IMAGE_TYPES, Emitter, type EditorInterface, type StylesPanelMode } from "@excalidraw/common";
+import { applyDarkModeFilter, type EXPORT_IMAGE_TYPES, Emitter, type EditorInterface } from "@excalidraw/common";
 import { LinearElementEditor, FlowChartCreator, Scene, Store, type ElementUpdate, StoreDelta, type ApplyToOptions } from "@excalidraw/element";
 import type { ExcalidrawElement, NonDeleted, NonDeletedExcalidrawElement, ExcalidrawFrameLikeElement, SceneElementsMap } from "@excalidraw/element/types";
 import type { Mutable } from "@excalidraw/common/utility-types";
@@ -24,7 +24,7 @@ export declare const ExcalidrawContainerContext: React.Context<{
 }>;
 export declare const useApp: () => AppClassProperties;
 export declare const useAppProps: () => Merge<import("../types").ExcalidrawProps, {
-    UIOptions: ExcalidrawElement<import("../types").UIOptions, {
+    UIOptions: applyDarkModeFilter<import("../types").UIOptions, {
         canvasActions: Required<import("../types").CanvasActions> & {
             export: import("../types").ExportOpts;
         };
@@ -35,18 +35,8 @@ export declare const useAppProps: () => Merge<import("../types").ExcalidrawProps
     children?: React.ReactNode;
     aiEnabled: boolean;
 }>;
-export declare const useEditorInterface: () => Readonly<{
-    formFactor: "phone" | "tablet" | "desktop";
-    desktopUIMode: "compact" | "full";
-    userAgent: Readonly<{
-        isMobileDevice: boolean;
-        platform: "ios" | "android" | "other" | "unknown";
-    }>;
-    isTouchScreen: boolean;
-    canFitSidebar: boolean;
-    isLandscape: boolean;
-}>;
-export declare const useStylesPanelMode: () => StylesPanelMode;
+export declare const useEditorInterface: () => EditorInterface;
+export declare const useStylesPanelMode: () => any;
 export declare const useExcalidrawContainer: () => {
     container: HTMLDivElement | null;
     id: string | null;
@@ -139,7 +129,7 @@ declare class App extends React.Component<AppProps, AppState> {
         };
         originalElements: Map<string, NonDeleted<ExcalidrawElement>>;
         resize: {
-            handleType: import("@excalidraw/element").MaybeTransformHandleType;
+            handleType: applyDarkModeFilter;
             isResizing: boolean;
             offset: {
                 x: number;
@@ -201,7 +191,7 @@ declare class App extends React.Component<AppProps, AppState> {
         };
         originalElements: Map<string, NonDeleted<ExcalidrawElement>>;
         resize: {
-            handleType: import("@excalidraw/element").MaybeTransformHandleType;
+            handleType: applyDarkModeFilter;
             isResizing: boolean;
             offset: {
                 x: number;
@@ -277,9 +267,9 @@ declare class App extends React.Component<AppProps, AppState> {
     private toggleOverscrollBehavior;
     render(): import("react/jsx-runtime").JSX.Element;
     focusContainer: AppClassProperties["focusContainer"];
-    getSceneElementsIncludingDeleted: () => readonly OrderedExcalidrawElement[];
-    getSceneElementsMapIncludingDeleted: () => SceneElementsMap;
-    getSceneElements: () => readonly Ordered<NonDeletedExcalidrawElement>[];
+    getSceneElementsIncludingDeleted: () => any;
+    getSceneElementsMapIncludingDeleted: () => any;
+    getSceneElements: () => any;
     onInsertElements: (elements: readonly ExcalidrawElement[]) => void;
     onExportImage: (type: keyof typeof EXPORT_IMAGE_TYPES, elements: ExportedElements, opts: {
         exportingFrame: ExcalidrawFrameLikeElement | null;
@@ -421,7 +411,7 @@ declare class App extends React.Component<AppProps, AppState> {
         captureUpdate?: SceneData["captureUpdate"];
     }) => void;
     applyDeltas: (deltas: StoreDelta[], options?: ApplyToOptions) => [SceneElementsMap, AppState, boolean];
-    mutateElement: <TElement extends Mutable<ExcalidrawElement>>(element: TElement, updates: ElementUpdate<TElement>, informMutation?: boolean) => TElement;
+    mutateElement: <TElement extends Mutable<ExcalidrawElement>>(element: TElement, updates: ElementUpdate<TElement>, informMutation?: boolean) => any;
     private triggerRender;
     /**
      * @returns whether the menu was toggled on or off
@@ -449,6 +439,7 @@ declare class App extends React.Component<AppProps, AppState> {
     private setCursor;
     private resetCursor;
     clearLassoTrail: () => void;
+    exitTextEditing: () => void;
     /**
      * returns whether user is making a gesture with >= 2 fingers (points)
      * on o touch screen (not on a trackpad). Currently only relates to Darwin
@@ -507,12 +498,12 @@ declare class App extends React.Component<AppProps, AppState> {
         sceneY: number;
         width: number;
         height: number;
-    }) => import("@excalidraw/element/dist/types/element/src/types").NonDeleted<import("@excalidraw/element/dist/types/element/src/types").ExcalidrawIframeElement>;
+    }) => any;
     insertEmbeddableElement: ({ sceneX, sceneY, link, }: {
         sceneX: number;
         sceneY: number;
         link: string;
-    }) => import("@excalidraw/element/dist/types/element/src/types").NonDeleted<import("@excalidraw/element/dist/types/element/src/types").ExcalidrawEmbeddableElement> | undefined;
+    }) => any;
     private newImagePlaceholder;
     private handleLinearElementOnPointerDown;
     private getCurrentItemRoundness;

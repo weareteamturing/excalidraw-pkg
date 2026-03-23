@@ -124,7 +124,7 @@ export declare class BindableElement {
 }
 export declare const getGlobalFixedPointForBindableElement: (fixedPointRatio: FixedPoint, element: ExcalidrawBindableElement, elementsMap: ElementsMap) => GlobalPoint;
 export declare const getGlobalFixedPoints: (arrow: ExcalidrawArrowElement, elementsMap: ElementsMap) => [GlobalPoint, GlobalPoint];
-export declare const getArrowLocalFixedPoints: (arrow: ExcalidrawElbowArrowElement, elementsMap: ElementsMap) => LocalPoint[];
+export declare const getArrowLocalFixedPoints: (arrow: ExcalidrawElbowArrowElement, elementsMap: ElementsMap) => any[];
 export declare const isFixedPoint: (fixedPoint: any) => fixedPoint is FixedPointBinding["fixedPoint"];
 export declare const normalizeFixedPoint: <T extends FixedPoint>(fixedPoint: T) => FixedPoint;
-export declare const getBindingSideMidPoint: (binding: FixedPointBinding, elementsMap: ElementsMap) => GlobalPoint | LocalPoint | null;
+export declare const getBindingSideMidPoint: (binding: FixedPointBinding, elementsMap: ElementsMap) => any;

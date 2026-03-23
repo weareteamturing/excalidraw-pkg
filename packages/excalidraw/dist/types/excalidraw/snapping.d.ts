@@ -78,7 +78,7 @@ export declare const getVisibleGaps: (elements: readonly NonDeletedExcalidrawEle
     horizontalGaps: Gap[];
     verticalGaps: Gap[];
 };
-export declare const getReferenceSnapPoints: (elements: readonly NonDeletedExcalidrawElement[], selectedElements: ExcalidrawElement[], appState: AppState, elementsMap: ElementsMap) => GlobalPoint[];
+export declare const getReferenceSnapPoints: (elements: readonly NonDeletedExcalidrawElement[], selectedElements: ExcalidrawElement[], appState: AppState, elementsMap: ElementsMap) => any;
 export declare const snapDraggedElements: (elements: ExcalidrawElement[], dragOffset: Vector2D, app: AppClassProperties, event: KeyboardModifiersObject, elementsMap: ElementsMap) => {
     snapOffset: {
         x: number;
@@ -107,5 +107,5 @@ export declare const getSnapLinesAtPointer: (elements: readonly ExcalidrawElemen
     };
     snapLines: PointerSnapLine[];
 };
-export declare const isActiveToolNonLinearSnappable: (activeToolType: AppState["activeTool"]["type"]) => activeToolType is "text" | "image" | "ellipse" | "frame" | "rectangle" | "diamond" | "magicframe";
+export declare const isActiveToolNonLinearSnappable: (activeToolType: AppState["activeTool"]["type"]) => activeToolType is "rectangle" | "text" | "ellipse" | "diamond" | "image" | "frame" | "magicframe";
 export {};

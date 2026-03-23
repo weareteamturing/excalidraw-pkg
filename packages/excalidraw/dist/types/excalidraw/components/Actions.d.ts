@@ -2,8 +2,8 @@ import type { ExcalidrawElement, NonDeletedElementsMap, NonDeletedSceneElementsM
 import "./Actions.scss";
 import type { AppClassProperties, AppProps, UIAppState, Zoom, AppState } from "../types";
 import type { ActionManager } from "../actions/manager";
-export declare const canChangeStrokeColor: (appState: UIAppState, targetElements: ExcalidrawElement[]) => boolean;
-export declare const canChangeBackgroundColor: (appState: UIAppState, targetElements: ExcalidrawElement[]) => boolean;
+export declare const canChangeStrokeColor: (appState: UIAppState, targetElements: ExcalidrawElement[]) => any;
+export declare const canChangeBackgroundColor: (appState: UIAppState, targetElements: ExcalidrawElement[]) => any;
 export declare const SelectedShapeActions: ({ appState, elementsMap, renderAction, app, }: {
     appState: UIAppState;
     elementsMap: NonDeletedElementsMap | NonDeletedSceneElementsMap;

@@ -10,8 +10,8 @@ export declare const actionAlignTop: {
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, appProps: import("../types").ExcalidrawProps, app: AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
@@ -28,8 +28,8 @@ export declare const actionAlignBottom: {
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, appProps: import("../types").ExcalidrawProps, app: AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
@@ -46,8 +46,8 @@ export declare const actionAlignLeft: {
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, appProps: import("../types").ExcalidrawProps, app: AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
@@ -64,8 +64,8 @@ export declare const actionAlignRight: {
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, appProps: import("../types").ExcalidrawProps, app: AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
@@ -82,8 +82,8 @@ export declare const actionAlignVerticallyCentered: {
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, appProps: import("../types").ExcalidrawProps, app: AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
 } & {
@@ -99,8 +99,8 @@ export declare const actionAlignHorizontallyCentered: {
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, appProps: import("../types").ExcalidrawProps, app: AppClassProperties) => boolean;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
 } & {

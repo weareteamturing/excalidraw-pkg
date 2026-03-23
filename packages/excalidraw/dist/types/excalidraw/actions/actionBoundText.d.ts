@@ -1,3 +1,4 @@
+import { getOriginalContainerHeightFromCache } from "@excalidraw/element";
 import type { ExcalidrawElement, ExcalidrawLinearElement } from "@excalidraw/element/types";
 import type { AppState } from "../types";
 export declare const actionUnbindText: {
@@ -6,11 +7,11 @@ export declare const actionUnbindText: {
     trackEvent: {
         category: "element";
     };
-    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
+    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => any;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         elements: readonly OrderedExcalidrawElement[];
         appState: Readonly<AppState>;
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
 } & {
     keyTest?: undefined;
@@ -37,22 +38,22 @@ export declare const actionBindText: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: ExcalidrawElement;
+                element: getOriginalContainerHeightFromCache;
                 state: "hover" | "active";
             } | null;
-            newElement: ExcalidrawElement<ExcalidrawElement> | null;
-            resizingElement: ExcalidrawElement | null;
-            multiElement: ExcalidrawElement<ExcalidrawLinearElement> | null;
-            selectionElement: ExcalidrawElement | null;
+            newElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
+            resizingElement: getOriginalContainerHeightFromCache | null;
+            multiElement: getOriginalContainerHeightFromCache<ExcalidrawLinearElement> | null;
+            selectionElement: getOriginalContainerHeightFromCache | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: ExcalidrawElement<ExcalidrawElement> | null;
+            startBoundElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
             suggestedBinding: {
-                element: ExcalidrawElement<ExcalidrawElement>;
+                element: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: ExcalidrawElement<ExcalidrawElement> | null;
+            frameToHighlight: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -60,8 +61,8 @@ export declare const actionBindText: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: ExcalidrawElement<ExcalidrawElement>[] | null;
-            editingTextElement: ExcalidrawElement | null;
+            elementsToHighlight: getOriginalContainerHeightFromCache<ExcalidrawElement>[] | null;
+            editingTextElement: getOriginalContainerHeightFromCache | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -84,13 +85,13 @@ export declare const actionBindText: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: ExcalidrawElement;
+            currentItemFontFamily: getOriginalContainerHeightFromCache;
             currentItemFontSize: number;
-            currentItemTextAlign: ExcalidrawElement;
-            currentItemStartArrowhead: ExcalidrawElement | null;
-            currentItemEndArrowhead: ExcalidrawElement | null;
-            currentHoveredFontFamily: ExcalidrawElement | null;
-            currentItemRoundness: ExcalidrawElement;
+            currentItemTextAlign: getOriginalContainerHeightFromCache;
+            currentItemStartArrowhead: getOriginalContainerHeightFromCache | null;
+            currentItemEndArrowhead: getOriginalContainerHeightFromCache | null;
+            currentHoveredFontFamily: getOriginalContainerHeightFromCache | null;
+            currentItemRoundness: getOriginalContainerHeightFromCache;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -125,7 +126,7 @@ export declare const actionBindText: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: ExcalidrawElement;
+            lastPointerDownWith: getOriginalContainerHeightFromCache;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -140,7 +141,7 @@ export declare const actionBindText: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: ExcalidrawElement;
+            theme: getOriginalContainerHeightFromCache;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -148,7 +149,7 @@ export declare const actionBindText: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: ExcalidrawElement | null;
+            editingGroupId: getOriginalContainerHeightFromCache | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -160,7 +161,7 @@ export declare const actionBindText: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: getOriginalContainerHeightFromCache | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -179,9 +180,9 @@ export declare const actionBindText: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: ExcalidrawElement;
+            bindMode: getOriginalContainerHeightFromCache;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
 } & {
     keyTest?: undefined;
@@ -192,7 +193,7 @@ export declare const actionWrapTextInContainer: {
     trackEvent: {
         category: "element";
     };
-    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
+    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => any;
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         elements: readonly ExcalidrawElement[];
         appState: {
@@ -208,22 +209,22 @@ export declare const actionWrapTextInContainer: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: ExcalidrawElement;
+                element: getOriginalContainerHeightFromCache;
                 state: "hover" | "active";
             } | null;
-            newElement: ExcalidrawElement<ExcalidrawElement> | null;
-            resizingElement: ExcalidrawElement | null;
-            multiElement: ExcalidrawElement<ExcalidrawLinearElement> | null;
-            selectionElement: ExcalidrawElement | null;
+            newElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
+            resizingElement: getOriginalContainerHeightFromCache | null;
+            multiElement: getOriginalContainerHeightFromCache<ExcalidrawLinearElement> | null;
+            selectionElement: getOriginalContainerHeightFromCache | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: ExcalidrawElement<ExcalidrawElement> | null;
+            startBoundElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
             suggestedBinding: {
-                element: ExcalidrawElement<ExcalidrawElement>;
+                element: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: ExcalidrawElement<ExcalidrawElement> | null;
+            frameToHighlight: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -231,8 +232,8 @@ export declare const actionWrapTextInContainer: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: ExcalidrawElement<ExcalidrawElement>[] | null;
-            editingTextElement: ExcalidrawElement | null;
+            elementsToHighlight: getOriginalContainerHeightFromCache<ExcalidrawElement>[] | null;
+            editingTextElement: getOriginalContainerHeightFromCache | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -255,13 +256,13 @@ export declare const actionWrapTextInContainer: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: ExcalidrawElement;
+            currentItemFontFamily: getOriginalContainerHeightFromCache;
             currentItemFontSize: number;
-            currentItemTextAlign: ExcalidrawElement;
-            currentItemStartArrowhead: ExcalidrawElement | null;
-            currentItemEndArrowhead: ExcalidrawElement | null;
-            currentHoveredFontFamily: ExcalidrawElement | null;
-            currentItemRoundness: ExcalidrawElement;
+            currentItemTextAlign: getOriginalContainerHeightFromCache;
+            currentItemStartArrowhead: getOriginalContainerHeightFromCache | null;
+            currentItemEndArrowhead: getOriginalContainerHeightFromCache | null;
+            currentHoveredFontFamily: getOriginalContainerHeightFromCache | null;
+            currentItemRoundness: getOriginalContainerHeightFromCache;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -296,7 +297,7 @@ export declare const actionWrapTextInContainer: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: ExcalidrawElement;
+            lastPointerDownWith: getOriginalContainerHeightFromCache;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -311,7 +312,7 @@ export declare const actionWrapTextInContainer: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: ExcalidrawElement;
+            theme: getOriginalContainerHeightFromCache;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -319,7 +320,7 @@ export declare const actionWrapTextInContainer: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: ExcalidrawElement | null;
+            editingGroupId: getOriginalContainerHeightFromCache | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -331,7 +332,7 @@ export declare const actionWrapTextInContainer: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: getOriginalContainerHeightFromCache | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -350,9 +351,9 @@ export declare const actionWrapTextInContainer: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: ExcalidrawElement;
+            bindMode: getOriginalContainerHeightFromCache;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
 } & {
     keyTest?: undefined;

@@ -1,17 +1,17 @@
 import type { AppState, NormalizedZoomValue } from "./types";
 export declare const getDefaultAppState: () => Omit<AppState, "offsetTop" | "offsetLeft" | "width" | "height">;
 export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>) => {
-    zoom?: Readonly<{
-        value: NormalizedZoomValue;
-    }> | undefined;
-    name?: string | null | undefined;
-    theme?: any;
+    stats?: {
+        open: boolean;
+        panels: number;
+    } | undefined;
+    exportWithDarkMode?: boolean | undefined;
     cursorButton?: "up" | "down" | undefined;
     scrollX?: number | undefined;
     scrollY?: number | undefined;
     showWelcomeScreen?: boolean | undefined;
     isBindingEnabled?: boolean | undefined;
-    bindingPreference?: "disabled" | "enabled" | undefined;
+    bindingPreference?: "enabled" | "disabled" | undefined;
     isMidpointSnappingEnabled?: boolean | undefined;
     activeTool?: ({
         lastActiveTool: import("./types").ActiveTool | null;
@@ -26,7 +26,6 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
     penDetected?: boolean | undefined;
     exportBackground?: boolean | undefined;
     exportEmbedScene?: boolean | undefined;
-    exportWithDarkMode?: boolean | undefined;
     exportScale?: number | undefined;
     currentItemStrokeColor?: string | undefined;
     currentItemBackgroundColor?: string | undefined;
@@ -41,9 +40,13 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
     currentItemStartArrowhead?: any;
     currentItemEndArrowhead?: any;
     currentItemRoundness?: any;
-    currentItemArrowType?: "round" | "sharp" | "elbow" | undefined;
+    currentItemArrowType?: "sharp" | "round" | "elbow" | undefined;
     viewBackgroundColor?: string | undefined;
     scrolledOutside?: boolean | undefined;
+    name?: string | null | undefined;
+    zoom?: Readonly<{
+        value: NormalizedZoomValue;
+    }> | undefined;
     openMenu?: "canvas" | null | undefined;
     openSidebar?: {
         name: import("./types").SidebarName;
@@ -59,6 +62,7 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
     } | undefined;
     shouldCacheIgnoreZoom?: boolean | undefined;
     zenModeEnabled?: boolean | undefined;
+    theme?: any;
     gridSize?: number | undefined;
     gridStep?: number | undefined;
     gridModeEnabled?: boolean | undefined;
@@ -66,11 +70,7 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
         [groupId: string]: boolean;
     } | undefined;
     editingGroupId?: any;
-    stats?: {
-        open: boolean;
-        panels: number;
-    } | undefined;
-    selectedLinearElement?: import("@excalidraw/element").LinearElementEditor | null | undefined;
+    selectedLinearElement?: any;
     objectsSnapModeEnabled?: boolean | undefined;
     lockedMultiSelections?: {
         [groupId: string]: true;

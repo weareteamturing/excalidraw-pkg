@@ -1,4 +1,4 @@
-import type { ExcalidrawImageElement } from "@excalidraw/element/types";
+import { isImageElement } from "@excalidraw/element";
 export declare const actionToggleCropEditor: {
     name: "cropEditor";
     label: string;
@@ -21,22 +21,22 @@ export declare const actionToggleCropEditor: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: ExcalidrawImageElement;
+                element: isImageElement;
                 state: "hover" | "active";
             } | null;
-            newElement: ExcalidrawImageElement<ExcalidrawImageElement> | null;
-            resizingElement: ExcalidrawImageElement | null;
-            multiElement: ExcalidrawImageElement<ExcalidrawImageElement> | null;
-            selectionElement: ExcalidrawImageElement | null;
+            newElement: isImageElement<isImageElement> | null;
+            resizingElement: isImageElement | null;
+            multiElement: isImageElement<isImageElement> | null;
+            selectionElement: isImageElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: ExcalidrawImageElement<ExcalidrawImageElement> | null;
+            startBoundElement: isImageElement<isImageElement> | null;
             suggestedBinding: {
-                element: ExcalidrawImageElement<ExcalidrawImageElement>;
+                element: isImageElement<isImageElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: ExcalidrawImageElement<ExcalidrawImageElement> | null;
+            frameToHighlight: isImageElement<isImageElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -44,8 +44,8 @@ export declare const actionToggleCropEditor: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: ExcalidrawImageElement<ExcalidrawImageElement>[] | null;
-            editingTextElement: ExcalidrawImageElement | null;
+            elementsToHighlight: isImageElement<isImageElement>[] | null;
+            editingTextElement: isImageElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -63,18 +63,18 @@ export declare const actionToggleCropEditor: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawImageElement["fillStyle"];
+            currentItemFillStyle: isImageElement["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawImageElement["strokeStyle"];
+            currentItemStrokeStyle: isImageElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: ExcalidrawImageElement;
+            currentItemFontFamily: isImageElement;
             currentItemFontSize: number;
-            currentItemTextAlign: ExcalidrawImageElement;
-            currentItemStartArrowhead: ExcalidrawImageElement | null;
-            currentItemEndArrowhead: ExcalidrawImageElement | null;
-            currentHoveredFontFamily: ExcalidrawImageElement | null;
-            currentItemRoundness: ExcalidrawImageElement;
+            currentItemTextAlign: isImageElement;
+            currentItemStartArrowhead: isImageElement | null;
+            currentItemEndArrowhead: isImageElement | null;
+            currentHoveredFontFamily: isImageElement | null;
+            currentItemRoundness: isImageElement;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -102,14 +102,14 @@ export declare const actionToggleCropEditor: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: ExcalidrawImageElement["id"];
+                sourceElementId: isImageElement["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: ExcalidrawImageElement;
+            lastPointerDownWith: isImageElement;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -127,7 +127,7 @@ export declare const actionToggleCropEditor: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: ExcalidrawImageElement;
+            theme: isImageElement;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -135,7 +135,7 @@ export declare const actionToggleCropEditor: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: ExcalidrawImageElement | null;
+            editingGroupId: isImageElement | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -147,7 +147,7 @@ export declare const actionToggleCropEditor: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: isImageElement | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -157,16 +157,16 @@ export declare const actionToggleCropEditor: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             searchMatches: Readonly<{
-                focusedId: ExcalidrawImageElement["id"] | null;
+                focusedId: isImageElement["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: ExcalidrawImageElement;
+            bindMode: isImageElement;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
     };
     predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
     PanelComponent: ({ appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;

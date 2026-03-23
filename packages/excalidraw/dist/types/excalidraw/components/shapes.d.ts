@@ -260,4 +260,4 @@ export declare const getToolbarTools: (app: AppClassProperties) => readonly [{
     readonly fillable: false;
     readonly toolbar: false;
 })[]];
-export declare const findShapeByKey: (key: string, app: AppClassProperties) => "selection" | "text" | "line" | "arrow" | "image" | "ellipse" | "lasso" | "rectangle" | "diamond" | "freedraw" | "eraser" | "hand" | "laser" | null;
+export declare const findShapeByKey: (key: string, app: AppClassProperties) => "line" | "rectangle" | "text" | "ellipse" | "arrow" | "selection" | "lasso" | "diamond" | "freedraw" | "image" | "eraser" | "hand" | "laser" | null;

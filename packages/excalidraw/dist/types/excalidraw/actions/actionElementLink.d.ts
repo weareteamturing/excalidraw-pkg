@@ -1,3 +1,4 @@
+import { canCreateLinkFromElements } from "@excalidraw/element";
 export declare const actionCopyElementLink: {
     name: "copyElementLink";
     label: string;
@@ -12,16 +13,16 @@ export declare const actionCopyElementLink: {
                 closable: true;
             };
         };
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         elements?: undefined;
         app?: undefined;
     } | {
         appState: Readonly<import("../types").AppState>;
         elements: readonly OrderedExcalidrawElement[];
         app: import("../types").AppClassProperties;
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
     }>;
-    predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState) => boolean;
+    predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState) => any;
 } & {
     keyTest?: undefined;
 };
@@ -33,12 +34,12 @@ export declare const actionLinkToElement: {
         elements: readonly OrderedExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
         app: import("../types").AppClassProperties;
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
     } | {
         appState: {
             openDialog: {
                 name: "elementLinkSelector";
-                sourceElementId: string;
+                sourceElementId: any;
             };
             contextMenu: {
                 items: import("../components/ContextMenu").ContextMenuItems;
@@ -49,22 +50,22 @@ export declare const actionLinkToElement: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: NonDeletedExcalidrawElement;
+                element: canCreateLinkFromElements;
                 state: "hover" | "active";
             } | null;
-            newElement: NonDeleted<ExcalidrawNonSelectionElement> | null;
-            resizingElement: NonDeletedExcalidrawElement | null;
-            multiElement: NonDeleted<ExcalidrawLinearElement> | null;
-            selectionElement: NonDeletedExcalidrawElement | null;
+            newElement: canCreateLinkFromElements<canCreateLinkFromElements> | null;
+            resizingElement: canCreateLinkFromElements | null;
+            multiElement: canCreateLinkFromElements<canCreateLinkFromElements> | null;
+            selectionElement: canCreateLinkFromElements | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: NonDeleted<ExcalidrawBindableElement> | null;
+            startBoundElement: canCreateLinkFromElements<canCreateLinkFromElements> | null;
             suggestedBinding: {
-                element: NonDeleted<ExcalidrawBindableElement>;
+                element: canCreateLinkFromElements<canCreateLinkFromElements>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: NonDeleted<ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: canCreateLinkFromElements<canCreateLinkFromElements> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -72,8 +73,8 @@ export declare const actionLinkToElement: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: NonDeletedExcalidrawElement | null;
+            elementsToHighlight: canCreateLinkFromElements<canCreateLinkFromElements>[] | null;
+            editingTextElement: canCreateLinkFromElements | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -91,18 +92,18 @@ export declare const actionLinkToElement: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawElement;
+            currentItemFillStyle: canCreateLinkFromElements["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawElement;
+            currentItemStrokeStyle: canCreateLinkFromElements["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: FontFamilyValues;
+            currentItemFontFamily: canCreateLinkFromElements;
             currentItemFontSize: number;
-            currentItemTextAlign: TextAlign;
-            currentItemStartArrowhead: Arrowhead | null;
-            currentItemEndArrowhead: Arrowhead | null;
-            currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: StrokeRoundness;
+            currentItemTextAlign: canCreateLinkFromElements;
+            currentItemStartArrowhead: canCreateLinkFromElements | null;
+            currentItemEndArrowhead: canCreateLinkFromElements | null;
+            currentHoveredFontFamily: canCreateLinkFromElements | null;
+            currentItemRoundness: canCreateLinkFromElements;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -120,7 +121,7 @@ export declare const actionLinkToElement: {
                 tab?: import("../types").SidebarTabName;
             } | null;
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: PointerType;
+            lastPointerDownWith: canCreateLinkFromElements;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -138,7 +139,7 @@ export declare const actionLinkToElement: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: Theme;
+            theme: canCreateLinkFromElements;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -146,7 +147,7 @@ export declare const actionLinkToElement: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: GroupId | null;
+            editingGroupId: canCreateLinkFromElements | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -158,7 +159,7 @@ export declare const actionLinkToElement: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: canCreateLinkFromElements | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -168,22 +169,22 @@ export declare const actionLinkToElement: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: ExcalidrawElement | null;
+            croppingElementId: canCreateLinkFromElements["id"] | null;
             searchMatches: Readonly<{
-                focusedId: ExcalidrawElement | null;
+                focusedId: canCreateLinkFromElements["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: BindMode;
+            bindMode: canCreateLinkFromElements;
         };
-        captureUpdate: "IMMEDIATELY";
+        captureUpdate: any;
         elements?: undefined;
         app?: undefined;
     };
-    predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, appProps: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
+    predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, appProps: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => any;
     trackEvent: false;
 } & {
     keyTest?: undefined;

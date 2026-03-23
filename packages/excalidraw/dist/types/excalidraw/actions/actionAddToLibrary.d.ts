@@ -1,10 +1,11 @@
+import { deepCopyElement } from "@excalidraw/element";
 export declare const actionAddToLibrary: {
     name: "addToLibrary";
     trackEvent: {
         category: "element";
     };
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, _: unknown, app: import("../types").AppClassProperties) => Promise<{
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         appState: {
             toast: {
                 message: string;
@@ -18,22 +19,22 @@ export declare const actionAddToLibrary: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: NonDeletedExcalidrawElement;
+                element: deepCopyElement;
                 state: "hover" | "active";
             } | null;
-            newElement: NonDeleted<ExcalidrawNonSelectionElement> | null;
-            resizingElement: NonDeletedExcalidrawElement | null;
-            multiElement: NonDeleted<ExcalidrawLinearElement> | null;
-            selectionElement: NonDeletedExcalidrawElement | null;
+            newElement: deepCopyElement<deepCopyElement> | null;
+            resizingElement: deepCopyElement | null;
+            multiElement: deepCopyElement<deepCopyElement> | null;
+            selectionElement: deepCopyElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: NonDeleted<ExcalidrawBindableElement> | null;
+            startBoundElement: deepCopyElement<deepCopyElement> | null;
             suggestedBinding: {
-                element: NonDeleted<ExcalidrawBindableElement>;
+                element: deepCopyElement<deepCopyElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: NonDeleted<ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: deepCopyElement<deepCopyElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -41,8 +42,8 @@ export declare const actionAddToLibrary: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: NonDeletedExcalidrawElement | null;
+            elementsToHighlight: deepCopyElement<deepCopyElement>[] | null;
+            editingTextElement: deepCopyElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -60,18 +61,18 @@ export declare const actionAddToLibrary: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawElement;
+            currentItemFillStyle: deepCopyElement["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawElement;
+            currentItemStrokeStyle: deepCopyElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: FontFamilyValues;
+            currentItemFontFamily: deepCopyElement;
             currentItemFontSize: number;
-            currentItemTextAlign: TextAlign;
-            currentItemStartArrowhead: Arrowhead | null;
-            currentItemEndArrowhead: Arrowhead | null;
-            currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: StrokeRoundness;
+            currentItemTextAlign: deepCopyElement;
+            currentItemStartArrowhead: deepCopyElement | null;
+            currentItemEndArrowhead: deepCopyElement | null;
+            currentHoveredFontFamily: deepCopyElement | null;
+            currentItemRoundness: deepCopyElement;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -99,14 +100,14 @@ export declare const actionAddToLibrary: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: ExcalidrawElement;
+                sourceElementId: deepCopyElement["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: PointerType;
+            lastPointerDownWith: deepCopyElement;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -119,7 +120,7 @@ export declare const actionAddToLibrary: {
             selectedElementsAreBeingDragged: boolean;
             shouldCacheIgnoreZoom: boolean;
             zenModeEnabled: boolean;
-            theme: Theme;
+            theme: deepCopyElement;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -127,7 +128,7 @@ export declare const actionAddToLibrary: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: GroupId | null;
+            editingGroupId: deepCopyElement | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -139,7 +140,7 @@ export declare const actionAddToLibrary: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: deepCopyElement | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -149,19 +150,19 @@ export declare const actionAddToLibrary: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: ExcalidrawElement | null;
+            croppingElementId: deepCopyElement["id"] | null;
             searchMatches: Readonly<{
-                focusedId: ExcalidrawElement | null;
+                focusedId: deepCopyElement["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: BindMode;
+            bindMode: deepCopyElement;
         };
     } | {
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         appState: {
             errorMessage: any;
             contextMenu: {
@@ -172,22 +173,22 @@ export declare const actionAddToLibrary: {
             showWelcomeScreen: boolean;
             isLoading: boolean;
             activeEmbeddable: {
-                element: NonDeletedExcalidrawElement;
+                element: deepCopyElement;
                 state: "hover" | "active";
             } | null;
-            newElement: NonDeleted<ExcalidrawNonSelectionElement> | null;
-            resizingElement: NonDeletedExcalidrawElement | null;
-            multiElement: NonDeleted<ExcalidrawLinearElement> | null;
-            selectionElement: NonDeletedExcalidrawElement | null;
+            newElement: deepCopyElement<deepCopyElement> | null;
+            resizingElement: deepCopyElement | null;
+            multiElement: deepCopyElement<deepCopyElement> | null;
+            selectionElement: deepCopyElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: NonDeleted<ExcalidrawBindableElement> | null;
+            startBoundElement: deepCopyElement<deepCopyElement> | null;
             suggestedBinding: {
-                element: NonDeleted<ExcalidrawBindableElement>;
+                element: deepCopyElement<deepCopyElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: NonDeleted<ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: deepCopyElement<deepCopyElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -195,8 +196,8 @@ export declare const actionAddToLibrary: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: NonDeletedExcalidrawElement | null;
+            elementsToHighlight: deepCopyElement<deepCopyElement>[] | null;
+            editingTextElement: deepCopyElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -214,18 +215,18 @@ export declare const actionAddToLibrary: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawElement;
+            currentItemFillStyle: deepCopyElement["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawElement;
+            currentItemStrokeStyle: deepCopyElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: FontFamilyValues;
+            currentItemFontFamily: deepCopyElement;
             currentItemFontSize: number;
-            currentItemTextAlign: TextAlign;
-            currentItemStartArrowhead: Arrowhead | null;
-            currentItemEndArrowhead: Arrowhead | null;
-            currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: StrokeRoundness;
+            currentItemTextAlign: deepCopyElement;
+            currentItemStartArrowhead: deepCopyElement | null;
+            currentItemEndArrowhead: deepCopyElement | null;
+            currentHoveredFontFamily: deepCopyElement | null;
+            currentItemRoundness: deepCopyElement;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -253,14 +254,14 @@ export declare const actionAddToLibrary: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: ExcalidrawElement;
+                sourceElementId: deepCopyElement["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: PointerType;
+            lastPointerDownWith: deepCopyElement;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -278,7 +279,7 @@ export declare const actionAddToLibrary: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: Theme;
+            theme: deepCopyElement;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -286,7 +287,7 @@ export declare const actionAddToLibrary: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: GroupId | null;
+            editingGroupId: deepCopyElement | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -298,7 +299,7 @@ export declare const actionAddToLibrary: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: deepCopyElement | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -308,19 +309,19 @@ export declare const actionAddToLibrary: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: ExcalidrawElement | null;
+            croppingElementId: deepCopyElement["id"] | null;
             searchMatches: Readonly<{
-                focusedId: ExcalidrawElement | null;
+                focusedId: deepCopyElement["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: BindMode;
+            bindMode: deepCopyElement;
         };
     }> | {
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
         appState: {
             errorMessage: string;
             contextMenu: {
@@ -331,22 +332,22 @@ export declare const actionAddToLibrary: {
             showWelcomeScreen: boolean;
             isLoading: boolean;
             activeEmbeddable: {
-                element: NonDeletedExcalidrawElement;
+                element: deepCopyElement;
                 state: "hover" | "active";
             } | null;
-            newElement: NonDeleted<ExcalidrawNonSelectionElement> | null;
-            resizingElement: NonDeletedExcalidrawElement | null;
-            multiElement: NonDeleted<ExcalidrawLinearElement> | null;
-            selectionElement: NonDeletedExcalidrawElement | null;
+            newElement: deepCopyElement<deepCopyElement> | null;
+            resizingElement: deepCopyElement | null;
+            multiElement: deepCopyElement<deepCopyElement> | null;
+            selectionElement: deepCopyElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: NonDeleted<ExcalidrawBindableElement> | null;
+            startBoundElement: deepCopyElement<deepCopyElement> | null;
             suggestedBinding: {
-                element: NonDeleted<ExcalidrawBindableElement>;
+                element: deepCopyElement<deepCopyElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: NonDeleted<ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: deepCopyElement<deepCopyElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -354,8 +355,8 @@ export declare const actionAddToLibrary: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: NonDeletedExcalidrawElement | null;
+            elementsToHighlight: deepCopyElement<deepCopyElement>[] | null;
+            editingTextElement: deepCopyElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -373,18 +374,18 @@ export declare const actionAddToLibrary: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawElement;
+            currentItemFillStyle: deepCopyElement["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawElement;
+            currentItemStrokeStyle: deepCopyElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: FontFamilyValues;
+            currentItemFontFamily: deepCopyElement;
             currentItemFontSize: number;
-            currentItemTextAlign: TextAlign;
-            currentItemStartArrowhead: Arrowhead | null;
-            currentItemEndArrowhead: Arrowhead | null;
-            currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: StrokeRoundness;
+            currentItemTextAlign: deepCopyElement;
+            currentItemStartArrowhead: deepCopyElement | null;
+            currentItemEndArrowhead: deepCopyElement | null;
+            currentHoveredFontFamily: deepCopyElement | null;
+            currentItemRoundness: deepCopyElement;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -412,14 +413,14 @@ export declare const actionAddToLibrary: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: ExcalidrawElement;
+                sourceElementId: deepCopyElement["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: PointerType;
+            lastPointerDownWith: deepCopyElement;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -437,7 +438,7 @@ export declare const actionAddToLibrary: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: Theme;
+            theme: deepCopyElement;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -445,7 +446,7 @@ export declare const actionAddToLibrary: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: GroupId | null;
+            editingGroupId: deepCopyElement | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -457,7 +458,7 @@ export declare const actionAddToLibrary: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: deepCopyElement | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -467,16 +468,16 @@ export declare const actionAddToLibrary: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: ExcalidrawElement | null;
+            croppingElementId: deepCopyElement["id"] | null;
             searchMatches: Readonly<{
-                focusedId: ExcalidrawElement | null;
+                focusedId: deepCopyElement["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: BindMode;
+            bindMode: deepCopyElement;
         };
     };
     label: string;

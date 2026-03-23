@@ -190,8 +190,6 @@ export type ExcalidrawTextElement = _ExcalidrawElementBase & Readonly<{
     lineHeight: number & {
         _brand: "unitlessLineHeight";
     };
-    bold?: boolean;
-    italic?: boolean;
 }>;
 export type ExcalidrawBindableElement = ExcalidrawRectangleElement | ExcalidrawDiamondElement | ExcalidrawEllipseElement | ExcalidrawTextElement | ExcalidrawImageElement | ExcalidrawIframeElement | ExcalidrawEmbeddableElement | ExcalidrawFrameElement | ExcalidrawMagicFrameElement;
 export type ExcalidrawTextContainer = ExcalidrawRectangleElement | ExcalidrawDiamondElement | ExcalidrawEllipseElement | ExcalidrawArrowElement;

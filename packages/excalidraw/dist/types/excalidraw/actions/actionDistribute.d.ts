@@ -7,8 +7,8 @@ export declare const distributeHorizontally: {
     };
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
@@ -23,8 +23,8 @@ export declare const distributeVertically: {
     };
     perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
-        elements: any[];
-        captureUpdate: "IMMEDIATELY";
+        elements: any;
+        captureUpdate: any;
     };
     keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
     PanelComponent: ({ elements, appState, updateData, app }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;

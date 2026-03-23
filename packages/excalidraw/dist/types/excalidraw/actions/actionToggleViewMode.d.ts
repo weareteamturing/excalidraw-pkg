@@ -1,3 +1,4 @@
+import { CaptureUpdateAction } from "@excalidraw/element";
 export declare const actionToggleViewMode: {
     name: "viewMode";
     label: string;
@@ -19,22 +20,22 @@ export declare const actionToggleViewMode: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: NonDeletedExcalidrawElement;
+                element: CaptureUpdateAction;
                 state: "hover" | "active";
             } | null;
-            newElement: NonDeleted<ExcalidrawNonSelectionElement> | null;
-            resizingElement: NonDeletedExcalidrawElement | null;
-            multiElement: NonDeleted<ExcalidrawLinearElement> | null;
-            selectionElement: NonDeletedExcalidrawElement | null;
+            newElement: CaptureUpdateAction<CaptureUpdateAction> | null;
+            resizingElement: CaptureUpdateAction | null;
+            multiElement: CaptureUpdateAction<CaptureUpdateAction> | null;
+            selectionElement: CaptureUpdateAction | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: NonDeleted<ExcalidrawBindableElement> | null;
+            startBoundElement: CaptureUpdateAction<CaptureUpdateAction> | null;
             suggestedBinding: {
-                element: NonDeleted<ExcalidrawBindableElement>;
+                element: CaptureUpdateAction<CaptureUpdateAction>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: NonDeleted<ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: CaptureUpdateAction<CaptureUpdateAction> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -42,8 +43,8 @@ export declare const actionToggleViewMode: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: NonDeletedExcalidrawElement | null;
+            elementsToHighlight: CaptureUpdateAction<CaptureUpdateAction>[] | null;
+            editingTextElement: CaptureUpdateAction | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -61,18 +62,18 @@ export declare const actionToggleViewMode: {
             exportScale: number;
             currentItemStrokeColor: string;
             currentItemBackgroundColor: string;
-            currentItemFillStyle: ExcalidrawElement;
+            currentItemFillStyle: CaptureUpdateAction["fillStyle"];
             currentItemStrokeWidth: number;
-            currentItemStrokeStyle: ExcalidrawElement;
+            currentItemStrokeStyle: CaptureUpdateAction["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: FontFamilyValues;
+            currentItemFontFamily: CaptureUpdateAction;
             currentItemFontSize: number;
-            currentItemTextAlign: TextAlign;
-            currentItemStartArrowhead: Arrowhead | null;
-            currentItemEndArrowhead: Arrowhead | null;
-            currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: StrokeRoundness;
+            currentItemTextAlign: CaptureUpdateAction;
+            currentItemStartArrowhead: CaptureUpdateAction | null;
+            currentItemEndArrowhead: CaptureUpdateAction | null;
+            currentHoveredFontFamily: CaptureUpdateAction | null;
+            currentItemRoundness: CaptureUpdateAction;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -100,14 +101,14 @@ export declare const actionToggleViewMode: {
                 name: "settings";
             } | {
                 name: "elementLinkSelector";
-                sourceElementId: ExcalidrawElement;
+                sourceElementId: CaptureUpdateAction["id"];
             } | {
                 name: "charts";
                 data: import("../charts").Spreadsheet;
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: PointerType;
+            lastPointerDownWith: CaptureUpdateAction;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -125,14 +126,14 @@ export declare const actionToggleViewMode: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: Theme;
+            theme: CaptureUpdateAction;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: GroupId | null;
+            editingGroupId: CaptureUpdateAction | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -144,7 +145,7 @@ export declare const actionToggleViewMode: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: CaptureUpdateAction | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -154,18 +155,18 @@ export declare const actionToggleViewMode: {
             userToFollow: import("../types").UserToFollow | null;
             followedBy: Set<import("../types").SocketId>;
             isCropping: boolean;
-            croppingElementId: ExcalidrawElement | null;
+            croppingElementId: CaptureUpdateAction["id"] | null;
             searchMatches: Readonly<{
-                focusedId: ExcalidrawElement | null;
+                focusedId: CaptureUpdateAction["id"] | null;
                 matches: readonly import("../types").SearchMatch[];
             }> | null;
             activeLockedId: string | null;
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: BindMode;
+            bindMode: CaptureUpdateAction;
         };
-        captureUpdate: "EVENTUALLY";
+        captureUpdate: any;
     };
     checked: (appState: Readonly<import("../types").AppState>) => boolean;
     predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, appProps: import("../types").ExcalidrawProps) => boolean;
