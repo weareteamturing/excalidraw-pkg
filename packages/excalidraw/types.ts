@@ -875,6 +875,16 @@ export interface ExcalidrawImperativeAPI {
   >["getSceneElementsMapIncludingDeleted"];
   history: {
     clear: InstanceType<typeof App>["resetHistory"];
+    readonly isUndoStackEmpty: boolean;
+    readonly isRedoStackEmpty: boolean;
+    readonly onHistoryChangedEmitter: {
+      on: (
+        callback: (event: {
+          isUndoStackEmpty: boolean;
+          isRedoStackEmpty: boolean;
+        }) => void,
+      ) => () => void;
+    };
   };
   getSceneElements: InstanceType<typeof App>["getSceneElements"];
   getAppState: () => InstanceType<typeof App>["state"];
@@ -928,6 +938,8 @@ export interface ExcalidrawImperativeAPI {
     callback: (payload: OnUserFollowedPayload) => void,
   ) => UnsubscribeCallback;
   clearLassoTrail: InstanceType<typeof App>["clearLassoTrail"];
+  actionManager: InstanceType<typeof App>["actionManager"];
+  exitTextEditing: InstanceType<typeof App>["exitTextEditing"];
 }
 
 export type FrameNameBounds = {
