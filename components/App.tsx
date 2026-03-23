@@ -753,9 +753,21 @@ class App extends React.Component<AppProps, AppState> {
         getSceneElementsIncludingDeleted: this.getSceneElementsIncludingDeleted,
         getSceneElementsMapIncludingDeleted:
           this.getSceneElementsMapIncludingDeleted,
-        history: {
-          clear: this.resetHistory,
-        },
+        history: (() => {
+          const app = this;
+          return {
+            clear: this.resetHistory,
+            get isUndoStackEmpty() {
+              return app.history.isUndoStackEmpty;
+            },
+            get isRedoStackEmpty() {
+              return app.history.isRedoStackEmpty;
+            },
+            get onHistoryChangedEmitter() {
+              return app.history.onHistoryChangedEmitter;
+            },
+          };
+        })(),
         scrollToContent: this.scrollToContent,
         getSceneElements: this.getSceneElements,
         getAppState: () => this.state,
@@ -780,6 +792,8 @@ class App extends React.Component<AppProps, AppState> {
         onScrollChange: (cb) => this.onScrollChangeEmitter.on(cb),
         onUserFollow: (cb) => this.onUserFollowEmitter.on(cb),
         clearLassoTrail: this.clearLassoTrail,
+        actionManager: this.actionManager,
+        exitTextEditing: this.exitTextEditing,
       } as const;
       if (typeof excalidrawAPI === "function") {
         excalidrawAPI(api);
@@ -5442,6 +5456,21 @@ class App extends React.Component<AppProps, AppState> {
   clearLassoTrail = () => {
     this.lassoTrail.endPath();
   };
+
+  exitTextEditing = () => {
+    if (!this.state.editingTextElement) {
+      return;
+    }
+    const wysiwyg = this.excalidrawContainerRef.current?.querySelector(
+      ".excalidraw-wysiwyg",
+    ) as HTMLTextAreaElement | null;
+    if (wysiwyg) {
+      wysiwyg.blur();
+    } else {
+      this.setState({ editingTextElement: null });
+    }
+  };
+
   /**
    * returns whether user is making a gesture with >= 2 fingers (points)
    * on o touch screen (not on a trackpad). Currently only relates to Darwin
