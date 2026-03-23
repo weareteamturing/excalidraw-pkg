@@ -62,6 +62,9 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     keepLassoTrailOnComplete,
     contextMenuConfig,
     onLassoComplete,
+    onPostRender,
+    onElementPostRender,
+    renderAnimationNonce,
   } = props;
 
   const canvasActions = props.UIOptions?.canvasActions;
@@ -161,6 +164,9 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           keepLassoTrailOnComplete={keepLassoTrailOnComplete}
           contextMenuConfig={contextMenuConfig}
           onLassoComplete={onLassoComplete}
+          onPostRender={onPostRender}
+          onElementPostRender={onElementPostRender}
+          renderAnimationNonce={renderAnimationNonce}
         >
           {children}
         </App>
