@@ -112,6 +112,7 @@ import {
   arrayToList,
   arrayToMap,
   assertNever,
+  bezierEquation,
   bindBindingElement,
   bindOrUnbindBindingElement,
   bindOrUnbindBindingElements,
@@ -128,6 +129,7 @@ import {
   capitalizeString,
   centerScrollOn,
   chunk,
+  clamp,
   cloneJSON,
   composeEventHandlers,
   computeBoundTextPosition,
@@ -143,6 +145,7 @@ import {
   deconstructRectanguloidElement,
   deepCopyElement,
   defaultGetElementLinkFromSelection,
+  degreesToRadians,
   deriveStylesPanelMode,
   distance,
   distributeElements,
@@ -305,6 +308,7 @@ import {
   isEmbeddableElement,
   isEraserActive,
   isExcalidrawElement,
+  isFiniteNumber,
   isFirefox,
   isFlowchartNodeElement,
   isFocusPointVisible,
@@ -353,6 +357,8 @@ import {
   isValidTextContainer,
   isWindows,
   isWritableElement,
+  lineSegment,
+  lineSegmentsDistance,
   loadDesktopUIModePreference,
   loadFromBlob,
   loadFromJSON,
@@ -396,12 +402,23 @@ import {
   originalContainerCache,
   parseElementLinkFromURL,
   parseLibraryJSON,
+  pointDistance,
+  pointFrom,
+  pointRotateRads,
+  pointsEqual,
+  polygon,
+  polygonFromPoints,
+  polygonIncludesPointNonZero,
   positionElementsOnGrid,
   preventUnload,
   promiseTry,
   queryFocusableElements,
+  radiansToDegrees,
   randomId,
   randomInteger,
+  rangeInclusive,
+  rangeIntersection,
+  rangesOverlap,
   redrawTextBoundingBox,
   reduceToCommonValue,
   refreshTextDimensions,
@@ -423,6 +440,8 @@ import {
   restoreElement,
   restoreElements,
   restoreLibraryItems,
+  round,
+  roundToStep,
   saveAsJSON,
   saveLibraryAsJSON,
   sceneCoordsToViewportCoords,
@@ -460,10 +479,15 @@ import {
   updateOriginalContainerCache,
   updateStable,
   validateFractionalIndices,
+  vector,
+  vectorDot,
+  vectorFromPoint,
+  vectorNormalize,
+  vectorSubtract,
   viewportCoordsToSceneCoords,
   wrapEvent,
   wrapText
-} from "./chunk-KMWHXRKO.js";
+} from "./chunk-P7I2FJC5.js";
 import {
   define_import_meta_env_default
 } from "./chunk-MNNOHETD.js";
@@ -489,17 +513,6 @@ import React35, { useContext as useContext3 } from "react";
 import { flushSync as flushSync3 } from "react-dom";
 import rough from "roughjs/bin/rough";
 import { nanoid } from "nanoid";
-import {
-  clamp as clamp3,
-  pointFrom as pointFrom13,
-  pointDistance as pointDistance2,
-  vector,
-  pointRotateRads as pointRotateRads4,
-  vectorFromPoint,
-  vectorSubtract,
-  vectorDot,
-  vectorNormalize
-} from "@excalidraw/math";
 
 // editor-jotai.ts
 import {
@@ -3693,7 +3706,6 @@ var actionDuplicateSelection = register({
 });
 
 // actions/actionProperties.tsx
-import { pointFrom } from "@excalidraw/math";
 import { useEffect as useEffect13, useMemo as useMemo3, useRef as useRef10, useState as useState7 } from "react";
 
 // analytics.ts
@@ -7520,9 +7532,6 @@ var actionChangeArrowType = register({
   }
 });
 
-// actions/actionCanvas.tsx
-import { clamp, roundToStep } from "@excalidraw/math";
-
 // components/Tooltip.tsx
 import { useEffect as useEffect14 } from "react";
 import { jsx as jsx35 } from "react/jsx-runtime";
@@ -8186,7 +8195,6 @@ var actionSetEmbeddableAsActiveTool = register({
 });
 
 // actions/actionFinalize.tsx
-import { pointFrom as pointFrom2 } from "@excalidraw/math";
 import { jsx as jsx37 } from "react/jsx-runtime";
 var actionFinalize = register({
   name: "finalize",
@@ -8223,7 +8231,7 @@ var actionFinalize = register({
           map.set(index, {
             point: LinearElementEditor.pointFromAbsoluteCoords(
               element2,
-              pointFrom2(
+              pointFrom(
                 sceneCoords.x - linearElementEditor.pointerOffset.x,
                 sceneCoords.y - linearElementEditor.pointerOffset.y
               ),
@@ -8333,7 +8341,7 @@ var actionFinalize = register({
           const linePoints = element.points;
           const firstPoint = linePoints[0];
           const points = linePoints.map(
-            (p, index) => index === linePoints.length - 1 ? pointFrom2(firstPoint[0], firstPoint[1]) : p
+            (p, index) => index === linePoints.length - 1 ? pointFrom(firstPoint[0], firstPoint[1]) : p
           );
           if (isLineElement(element)) {
             scene.mutateElement(element, {
@@ -9021,7 +9029,7 @@ var exportCanvas = async (type, elements, appState, files, {
     let blob = canvasToBlob(tempCanvas);
     if (appState.exportEmbedScene) {
       blob = blob.then(
-        (blob2) => import("./image-XNPNN2K6.js").then(
+        (blob2) => import("./image-TXF46BVZ.js").then(
           ({ encodePngMetadata: encodePngMetadata2 }) => encodePngMetadata2({
             blob: blob2,
             metadata: serializeAsJSON(elements, appState, files, "local")
@@ -11157,7 +11165,6 @@ var actionWrapTextInContainer = register({
 });
 
 // components/hyperlink/Hyperlink.tsx
-import { pointFrom as pointFrom3 } from "@excalidraw/math";
 import clsx20 from "clsx";
 import {
   useCallback as useCallback5,
@@ -11276,7 +11283,7 @@ var Hyperlink = ({
         element,
         elementsMap,
         appState,
-        pointFrom3(event.clientX, event.clientY)
+        pointFrom(event.clientX, event.clientY)
       );
       if (shouldHide) {
         timeoutId = window.setTimeout(() => {
@@ -11483,7 +11490,7 @@ var shouldHideLinkPopup = (element, elementsMap, appState, [clientX, clientY]) =
     appState
   );
   const threshold = 15 / appState.zoom.value;
-  if (hitElementBoundingBox(pointFrom3(sceneX, sceneY), element, elementsMap)) {
+  if (hitElementBoundingBox(pointFrom(sceneX, sceneY), element, elementsMap)) {
     return false;
   }
   const [x1, y1, x2] = getElementAbsoluteCoords(element, elementsMap);
@@ -17085,13 +17092,6 @@ var getDistance = ([a, b]) => Math.hypot(a.x - b.x, a.y - b.y);
 var sum = (array, mapper) => array.reduce((acc, item) => acc + mapper(item), 0);
 
 // snapping.ts
-import {
-  pointFrom as pointFrom4,
-  pointRotateRads,
-  rangeInclusive,
-  rangeIntersection,
-  rangesOverlap
-} from "@excalidraw/math";
 var SNAP_DISTANCE = 8;
 var VISIBLE_GAPS_LIMIT_PER_AXIS = 99999;
 var getSnapDistance = (zoomValue) => {
@@ -17163,49 +17163,49 @@ var getElementsCorners = (elements, elementsMap, {
     const halfHeight = (y2 - y1) / 2;
     if ((element.type === "diamond" || element.type === "ellipse") && !boundingBoxCorners) {
       const leftMid = pointRotateRads(
-        pointFrom4(x1, y1 + halfHeight),
-        pointFrom4(cx, cy),
+        pointFrom(x1, y1 + halfHeight),
+        pointFrom(cx, cy),
         element.angle
       );
       const topMid = pointRotateRads(
-        pointFrom4(x1 + halfWidth, y1),
-        pointFrom4(cx, cy),
+        pointFrom(x1 + halfWidth, y1),
+        pointFrom(cx, cy),
         element.angle
       );
       const rightMid = pointRotateRads(
-        pointFrom4(x2, y1 + halfHeight),
-        pointFrom4(cx, cy),
+        pointFrom(x2, y1 + halfHeight),
+        pointFrom(cx, cy),
         element.angle
       );
       const bottomMid = pointRotateRads(
-        pointFrom4(x1 + halfWidth, y2),
-        pointFrom4(cx, cy),
+        pointFrom(x1 + halfWidth, y2),
+        pointFrom(cx, cy),
         element.angle
       );
-      const center = pointFrom4(cx, cy);
+      const center = pointFrom(cx, cy);
       result = omitCenter ? [leftMid, topMid, rightMid, bottomMid] : [leftMid, topMid, rightMid, bottomMid, center];
     } else {
       const topLeft = pointRotateRads(
-        pointFrom4(x1, y1),
-        pointFrom4(cx, cy),
+        pointFrom(x1, y1),
+        pointFrom(cx, cy),
         element.angle
       );
       const topRight = pointRotateRads(
-        pointFrom4(x2, y1),
-        pointFrom4(cx, cy),
+        pointFrom(x2, y1),
+        pointFrom(cx, cy),
         element.angle
       );
       const bottomLeft = pointRotateRads(
-        pointFrom4(x1, y2),
-        pointFrom4(cx, cy),
+        pointFrom(x1, y2),
+        pointFrom(cx, cy),
         element.angle
       );
       const bottomRight = pointRotateRads(
-        pointFrom4(x2, y2),
-        pointFrom4(cx, cy),
+        pointFrom(x2, y2),
+        pointFrom(cx, cy),
         element.angle
       );
-      const center = pointFrom4(cx, cy);
+      const center = pointFrom(cx, cy);
       result = omitCenter ? [topLeft, topRight, bottomLeft, bottomRight] : [topLeft, topRight, bottomLeft, bottomRight, center];
     }
   } else if (elements.length > 1) {
@@ -17215,14 +17215,14 @@ var getElementsCorners = (elements, elementsMap, {
     );
     const width = maxX - minX;
     const height = maxY - minY;
-    const topLeft = pointFrom4(minX, minY);
-    const topRight = pointFrom4(maxX, minY);
-    const bottomLeft = pointFrom4(minX, maxY);
-    const bottomRight = pointFrom4(maxX, maxY);
-    const center = pointFrom4(minX + width / 2, minY + height / 2);
+    const topLeft = pointFrom(minX, minY);
+    const topRight = pointFrom(maxX, minY);
+    const bottomLeft = pointFrom(minX, maxY);
+    const bottomRight = pointFrom(maxX, maxY);
+    const center = pointFrom(minX + width / 2, minY + height / 2);
     result = omitCenter ? [topLeft, topRight, bottomLeft, bottomRight] : [topLeft, topRight, bottomLeft, bottomRight, center];
   }
-  return result.map((p) => pointFrom4(round(p[0]), round(p[1])));
+  return result.map((p) => pointFrom(round2(p[0]), round2(p[1])));
 };
 var getReferenceElements = (elements, selectedElements, appState, elementsMap) => getVisibleAndNonSelectedElements(
   elements,
@@ -17241,7 +17241,7 @@ var getVisibleGaps = (elements, selectedElements, appState, elementsMap) => {
     (elementsGroup) => !(elementsGroup.length === 1 && isBoundToContainer(elementsGroup[0]))
   ).map(
     (group) => getCommonBounds(group).map(
-      (bound) => round(bound)
+      (bound) => round2(bound)
     )
   );
   const horizontallySorted = referenceBounds.sort((a, b) => a[0] - b[0]);
@@ -17265,10 +17265,10 @@ var getVisibleGaps = (elements, selectedElements, appState, elementsMap) => {
             startBounds,
             endBounds,
             startSide: [
-              pointFrom4(startMaxX, startMinY),
-              pointFrom4(startMaxX, startMaxY)
+              pointFrom(startMaxX, startMinY),
+              pointFrom(startMaxX, startMaxY)
             ],
-            endSide: [pointFrom4(endMinX, endMinY), pointFrom4(endMinX, endMaxY)],
+            endSide: [pointFrom(endMinX, endMinY), pointFrom(endMinX, endMaxY)],
             length: endMinX - startMaxX,
             overlap: rangeIntersection(
               rangeInclusive(startMinY, startMaxY),
@@ -17299,10 +17299,10 @@ var getVisibleGaps = (elements, selectedElements, appState, elementsMap) => {
             startBounds,
             endBounds,
             startSide: [
-              pointFrom4(startMinX, startMaxY),
-              pointFrom4(startMaxX, startMaxY)
+              pointFrom(startMinX, startMaxY),
+              pointFrom(startMaxX, startMaxY)
             ],
-            endSide: [pointFrom4(endMinX, endMinY), pointFrom4(endMaxX, endMinY)],
+            endSide: [pointFrom(endMinX, endMinY), pointFrom(endMaxX, endMinY)],
             length: endMinY - startMaxY,
             overlap: rangeIntersection(
               rangeInclusive(startMinX, startMaxX),
@@ -17330,7 +17330,7 @@ var getGapSnaps = (selectedElements, dragOffset, app, event, nearestSnapsX, near
     const [minX, minY, maxX, maxY] = getDraggedElementsBounds(
       selectedElements,
       dragOffset
-    ).map((bound) => round(bound));
+    ).map((bound) => round2(bound));
     const centerX = (minX + maxX) / 2;
     const centerY = (minY + maxY) / 2;
     for (const gap of horizontalGaps) {
@@ -17338,7 +17338,7 @@ var getGapSnaps = (selectedElements, dragOffset, app, event, nearestSnapsX, near
         continue;
       }
       const gapMidX = gap.startSide[0][0] + gap.length / 2;
-      const centerOffset = round(gapMidX - centerX);
+      const centerOffset = round2(gapMidX - centerX);
       const gapIsLargerThanSelection = gap.length > maxX - minX;
       if (gapIsLargerThanSelection && Math.abs(centerOffset) <= minOffset.x) {
         if (Math.abs(centerOffset) < minOffset.x) {
@@ -17356,7 +17356,7 @@ var getGapSnaps = (selectedElements, dragOffset, app, event, nearestSnapsX, near
       }
       const [, , endMaxX] = gap.endBounds;
       const distanceToEndElementX = minX - endMaxX;
-      const sideOffsetRight = round(gap.length - distanceToEndElementX);
+      const sideOffsetRight = round2(gap.length - distanceToEndElementX);
       if (Math.abs(sideOffsetRight) <= minOffset.x) {
         if (Math.abs(sideOffsetRight) < minOffset.x) {
           nearestSnapsX.length = 0;
@@ -17373,7 +17373,7 @@ var getGapSnaps = (selectedElements, dragOffset, app, event, nearestSnapsX, near
       }
       const [startMinX, , ,] = gap.startBounds;
       const distanceToStartElementX = startMinX - maxX;
-      const sideOffsetLeft = round(distanceToStartElementX - gap.length);
+      const sideOffsetLeft = round2(distanceToStartElementX - gap.length);
       if (Math.abs(sideOffsetLeft) <= minOffset.x) {
         if (Math.abs(sideOffsetLeft) < minOffset.x) {
           nearestSnapsX.length = 0;
@@ -17394,7 +17394,7 @@ var getGapSnaps = (selectedElements, dragOffset, app, event, nearestSnapsX, near
         continue;
       }
       const gapMidY = gap.startSide[0][1] + gap.length / 2;
-      const centerOffset = round(gapMidY - centerY);
+      const centerOffset = round2(gapMidY - centerY);
       const gapIsLargerThanSelection = gap.length > maxY - minY;
       if (gapIsLargerThanSelection && Math.abs(centerOffset) <= minOffset.y) {
         if (Math.abs(centerOffset) < minOffset.y) {
@@ -17412,7 +17412,7 @@ var getGapSnaps = (selectedElements, dragOffset, app, event, nearestSnapsX, near
       }
       const [, startMinY, ,] = gap.startBounds;
       const distanceToStartElementY = startMinY - maxY;
-      const sideOffsetTop = round(distanceToStartElementY - gap.length);
+      const sideOffsetTop = round2(distanceToStartElementY - gap.length);
       if (Math.abs(sideOffsetTop) <= minOffset.y) {
         if (Math.abs(sideOffsetTop) < minOffset.y) {
           nearestSnapsY.length = 0;
@@ -17428,7 +17428,7 @@ var getGapSnaps = (selectedElements, dragOffset, app, event, nearestSnapsX, near
         continue;
       }
       const [, , , endMaxY] = gap.endBounds;
-      const distanceToEndElementY = round(minY - endMaxY);
+      const distanceToEndElementY = round2(minY - endMaxY);
       const sideOffsetBottom = gap.length - distanceToEndElementY;
       if (Math.abs(sideOffsetBottom) <= minOffset.y) {
         if (Math.abs(sideOffsetBottom) < minOffset.y) {
@@ -17506,8 +17506,8 @@ var snapDraggedElements = (elements, dragOffset, app, event, elementsMap) => {
       snapLines: []
     };
   }
-  dragOffset.x = round(dragOffset.x);
-  dragOffset.y = round(dragOffset.y);
+  dragOffset.x = round2(dragOffset.x);
+  dragOffset.y = round2(dragOffset.y);
   const nearestSnapsX = [];
   const nearestSnapsY = [];
   const snapDistance = getSnapDistance(appState.zoom.value);
@@ -17545,8 +17545,8 @@ var snapDraggedElements = (elements, dragOffset, app, event, elementsMap) => {
   nearestSnapsX.length = 0;
   nearestSnapsY.length = 0;
   const newDragOffset = {
-    x: round(dragOffset.x + snapOffset.x),
-    y: round(dragOffset.y + snapOffset.y)
+    x: round2(dragOffset.x + snapOffset.x),
+    y: round2(dragOffset.y + snapOffset.y)
   };
   getPointSnaps(
     selectedElements,
@@ -17581,7 +17581,7 @@ var snapDraggedElements = (elements, dragOffset, app, event, elementsMap) => {
     snapLines: [...pointSnapLines, ...gapSnapLines]
   };
 };
-var round = (x) => {
+var round2 = (x) => {
   const decimalPlaces = 6;
   return Math.round(x * 10 ** decimalPlaces) / 10 ** decimalPlaces;
 };
@@ -17601,13 +17601,13 @@ var createPointSnapLines = (nearestSnapsX, nearestSnapsY) => {
   if (nearestSnapsX.length > 0) {
     for (const snap of nearestSnapsX) {
       if (snap.type === "point") {
-        const key = round(snap.points[0][0]);
+        const key = round2(snap.points[0][0]);
         if (!snapsX[key]) {
           snapsX[key] = [];
         }
         snapsX[key].push(
           ...snap.points.map(
-            (p) => pointFrom4(round(p[0]), round(p[1]))
+            (p) => pointFrom(round2(p[0]), round2(p[1]))
           )
         );
       }
@@ -17616,13 +17616,13 @@ var createPointSnapLines = (nearestSnapsX, nearestSnapsY) => {
   if (nearestSnapsY.length > 0) {
     for (const snap of nearestSnapsY) {
       if (snap.type === "point") {
-        const key = round(snap.points[0][1]);
+        const key = round2(snap.points[0][1]);
         if (!snapsY[key]) {
           snapsY[key] = [];
         }
         snapsY[key].push(
           ...snap.points.map(
-            (p) => pointFrom4(round(p[0]), round(p[1]))
+            (p) => pointFrom(round2(p[0]), round2(p[1]))
           )
         );
       }
@@ -17633,7 +17633,7 @@ var createPointSnapLines = (nearestSnapsX, nearestSnapsY) => {
       type: "points",
       points: dedupePoints(
         points.map((p) => {
-          return pointFrom4(Number(key), p[1]);
+          return pointFrom(Number(key), p[1]);
         }).sort((a, b) => a[1] - b[1])
       )
     };
@@ -17643,7 +17643,7 @@ var createPointSnapLines = (nearestSnapsX, nearestSnapsY) => {
         type: "points",
         points: dedupePoints(
           points.map((p) => {
-            return pointFrom4(p[0], Number(key));
+            return pointFrom(p[0], Number(key));
           }).sort((a, b) => a[0] - b[0])
         )
       };
@@ -17653,7 +17653,7 @@ var createPointSnapLines = (nearestSnapsX, nearestSnapsY) => {
 var dedupeGapSnapLines = (gapSnapLines) => {
   const map = /* @__PURE__ */ new Map();
   for (const gapSnapLine of gapSnapLines) {
-    const key = gapSnapLine.points.flat().map((point) => [round(point)]).join(",");
+    const key = gapSnapLine.points.flat().map((point) => [round2(point)]).join(",");
     if (!map.has(key)) {
       map.set(key, gapSnapLine);
     }
@@ -17686,16 +17686,16 @@ var createGapSnapLines = (selectedElements, dragOffset, gapSnaps) => {
               type: "gap",
               direction: "horizontal",
               points: [
-                pointFrom4(gapSnap.gap.startSide[0][0], gapLineY),
-                pointFrom4(minX, gapLineY)
+                pointFrom(gapSnap.gap.startSide[0][0], gapLineY),
+                pointFrom(minX, gapLineY)
               ]
             },
             {
               type: "gap",
               direction: "horizontal",
               points: [
-                pointFrom4(maxX, gapLineY),
-                pointFrom4(gapSnap.gap.endSide[0][0], gapLineY)
+                pointFrom(maxX, gapLineY),
+                pointFrom(gapSnap.gap.endSide[0][0], gapLineY)
               ]
             }
           );
@@ -17710,16 +17710,16 @@ var createGapSnapLines = (selectedElements, dragOffset, gapSnaps) => {
               type: "gap",
               direction: "vertical",
               points: [
-                pointFrom4(gapLineX, gapSnap.gap.startSide[0][1]),
-                pointFrom4(gapLineX, minY)
+                pointFrom(gapLineX, gapSnap.gap.startSide[0][1]),
+                pointFrom(gapLineX, minY)
               ]
             },
             {
               type: "gap",
               direction: "vertical",
               points: [
-                pointFrom4(gapLineX, maxY),
-                pointFrom4(gapLineX, gapSnap.gap.endSide[0][1])
+                pointFrom(gapLineX, maxY),
+                pointFrom(gapLineX, gapSnap.gap.endSide[0][1])
               ]
             }
           );
@@ -17734,14 +17734,14 @@ var createGapSnapLines = (selectedElements, dragOffset, gapSnaps) => {
               type: "gap",
               direction: "horizontal",
               points: [
-                pointFrom4(startMaxX, gapLineY),
-                pointFrom4(endMinX, gapLineY)
+                pointFrom(startMaxX, gapLineY),
+                pointFrom(endMinX, gapLineY)
               ]
             },
             {
               type: "gap",
               direction: "horizontal",
-              points: [pointFrom4(endMaxX, gapLineY), pointFrom4(minX, gapLineY)]
+              points: [pointFrom(endMaxX, gapLineY), pointFrom(minX, gapLineY)]
             }
           );
         }
@@ -17755,16 +17755,16 @@ var createGapSnapLines = (selectedElements, dragOffset, gapSnaps) => {
               type: "gap",
               direction: "horizontal",
               points: [
-                pointFrom4(maxX, gapLineY),
-                pointFrom4(startMinX, gapLineY)
+                pointFrom(maxX, gapLineY),
+                pointFrom(startMinX, gapLineY)
               ]
             },
             {
               type: "gap",
               direction: "horizontal",
               points: [
-                pointFrom4(startMaxX, gapLineY),
-                pointFrom4(endMinX, gapLineY)
+                pointFrom(startMaxX, gapLineY),
+                pointFrom(endMinX, gapLineY)
               ]
             }
           );
@@ -17779,16 +17779,16 @@ var createGapSnapLines = (selectedElements, dragOffset, gapSnaps) => {
               type: "gap",
               direction: "vertical",
               points: [
-                pointFrom4(gapLineX, maxY),
-                pointFrom4(gapLineX, startMinY)
+                pointFrom(gapLineX, maxY),
+                pointFrom(gapLineX, startMinY)
               ]
             },
             {
               type: "gap",
               direction: "vertical",
               points: [
-                pointFrom4(gapLineX, startMaxY),
-                pointFrom4(gapLineX, endMinY)
+                pointFrom(gapLineX, startMaxY),
+                pointFrom(gapLineX, endMinY)
               ]
             }
           );
@@ -17803,14 +17803,14 @@ var createGapSnapLines = (selectedElements, dragOffset, gapSnaps) => {
               type: "gap",
               direction: "vertical",
               points: [
-                pointFrom4(gapLineX, startMaxY),
-                pointFrom4(gapLineX, endMinY)
+                pointFrom(gapLineX, startMaxY),
+                pointFrom(gapLineX, endMinY)
               ]
             },
             {
               type: "gap",
               direction: "vertical",
-              points: [pointFrom4(gapLineX, endMaxY), pointFrom4(gapLineX, minY)]
+              points: [pointFrom(gapLineX, endMaxY), pointFrom(gapLineX, minY)]
             }
           );
         }
@@ -17823,7 +17823,7 @@ var createGapSnapLines = (selectedElements, dragOffset, gapSnaps) => {
       return {
         ...gapSnapLine,
         points: gapSnapLine.points.map(
-          (p) => pointFrom4(round(p[0]), round(p[1]))
+          (p) => pointFrom(round2(p[0]), round2(p[1]))
         )
       };
     })
@@ -17853,35 +17853,35 @@ var snapResizingElements = (selectedElements, selectedOriginalElements, app, eve
   if (transformHandle) {
     switch (transformHandle) {
       case "e": {
-        selectionSnapPoints.push(pointFrom4(maxX, minY), pointFrom4(maxX, maxY));
+        selectionSnapPoints.push(pointFrom(maxX, minY), pointFrom(maxX, maxY));
         break;
       }
       case "w": {
-        selectionSnapPoints.push(pointFrom4(minX, minY), pointFrom4(minX, maxY));
+        selectionSnapPoints.push(pointFrom(minX, minY), pointFrom(minX, maxY));
         break;
       }
       case "n": {
-        selectionSnapPoints.push(pointFrom4(minX, minY), pointFrom4(maxX, minY));
+        selectionSnapPoints.push(pointFrom(minX, minY), pointFrom(maxX, minY));
         break;
       }
       case "s": {
-        selectionSnapPoints.push(pointFrom4(minX, maxY), pointFrom4(maxX, maxY));
+        selectionSnapPoints.push(pointFrom(minX, maxY), pointFrom(maxX, maxY));
         break;
       }
       case "ne": {
-        selectionSnapPoints.push(pointFrom4(maxX, minY));
+        selectionSnapPoints.push(pointFrom(maxX, minY));
         break;
       }
       case "nw": {
-        selectionSnapPoints.push(pointFrom4(minX, minY));
+        selectionSnapPoints.push(pointFrom(minX, minY));
         break;
       }
       case "se": {
-        selectionSnapPoints.push(pointFrom4(maxX, maxY));
+        selectionSnapPoints.push(pointFrom(maxX, maxY));
         break;
       }
       case "sw": {
-        selectionSnapPoints.push(pointFrom4(minX, maxY));
+        selectionSnapPoints.push(pointFrom(minX, maxY));
         break;
       }
     }
@@ -17911,13 +17911,13 @@ var snapResizingElements = (selectedElements, selectedOriginalElements, app, eve
   nearestSnapsX.length = 0;
   nearestSnapsY.length = 0;
   const [x1, y1, x2, y2] = getCommonBounds(selectedElements).map(
-    (bound) => round(bound)
+    (bound) => round2(bound)
   );
   const corners = [
-    pointFrom4(x1, y1),
-    pointFrom4(x1, y2),
-    pointFrom4(x2, y1),
-    pointFrom4(x2, y2)
+    pointFrom(x1, y1),
+    pointFrom(x1, y2),
+    pointFrom(x2, y1),
+    pointFrom(x2, y2)
   ];
   getPointSnaps(
     selectedElements,
@@ -17942,7 +17942,7 @@ var snapNewElement = (newElement2, app, event, origin, dragOffset, elementsMap) 
     };
   }
   const selectionSnapPoints = [
-    pointFrom4(origin.x + dragOffset.x, origin.y + dragOffset.y)
+    pointFrom(origin.x + dragOffset.x, origin.y + dragOffset.y)
   ];
   const snapDistance = getSnapDistance(app.state.zoom.value);
   const minOffset = {
@@ -18017,7 +18017,7 @@ var getSnapLinesAtPointer = (elements, app, pointer, event, elementsMap) => {
         }
         verticalSnapLines.push({
           type: "pointer",
-          points: [corner, pointFrom4(corner[0], pointer.y)],
+          points: [corner, pointFrom(corner[0], pointer.y)],
           direction: "vertical"
         });
         minOffset.x = offsetX;
@@ -18029,7 +18029,7 @@ var getSnapLinesAtPointer = (elements, app, pointer, event, elementsMap) => {
         }
         horizontalSnapLines.push({
           type: "pointer",
-          points: [corner, pointFrom4(pointer.x, corner[1])],
+          points: [corner, pointFrom(pointer.x, corner[1])],
           direction: "horizontal"
         });
         minOffset.y = offsetY;
@@ -19067,18 +19067,8 @@ var isMaybeMermaidDefinition = (text) => {
   return re.test(text.trim());
 };
 
-// lasso/index.ts
-import {
-  pointFrom as pointFrom5
-} from "@excalidraw/math";
-
 // lasso/utils.ts
 import { simplify } from "points-on-curve";
-import {
-  polygonFromPoints,
-  lineSegment,
-  polygonIncludesPointNonZero
-} from "@excalidraw/math";
 var getLassoSelectedElementIds = (input) => {
   const {
     lassoPath,
@@ -19250,7 +19240,7 @@ var LassoTrail = class extends AnimatedTrail {
       this.updateSelection();
     });
     __publicField(this, "updateSelection", () => {
-      const lassoPath = super.getCurrentTrail()?.originalPoints?.map((p) => pointFrom5(p[0], p[1]));
+      const lassoPath = super.getCurrentTrail()?.originalPoints?.map((p) => pointFrom(p[0], p[1]));
       const currentCanvasTranslate = {
         scrollX: this.app.state.scrollX,
         scrollY: this.app.state.scrollY,
@@ -19310,13 +19300,6 @@ var LassoTrail = class extends AnimatedTrail {
 };
 
 // eraser/index.ts
-import {
-  lineSegment as lineSegment2,
-  lineSegmentsDistance,
-  pointFrom as pointFrom6,
-  polygon,
-  polygonIncludesPointNonZero as polygonIncludesPointNonZero2
-} from "@excalidraw/math";
 var EraserTrail = class extends AnimatedTrail {
   constructor(animationFrameHandler, app) {
     super(animationFrameHandler, app, {
@@ -19349,11 +19332,11 @@ var EraserTrail = class extends AnimatedTrail {
     return elementsToEraser;
   }
   updateElementsToBeErased(restoreToErase) {
-    const eraserPath = super.getCurrentTrail()?.originalPoints?.map((p) => pointFrom6(p[0], p[1])) || [];
+    const eraserPath = super.getCurrentTrail()?.originalPoints?.map((p) => pointFrom(p[0], p[1])) || [];
     if (eraserPath.length < 2) {
       return [];
     }
-    const pathSegment = lineSegment2(
+    const pathSegment = lineSegment(
       eraserPath[eraserPath.length - 1],
       eraserPath[eraserPath.length - 2]
     );
@@ -19470,10 +19453,10 @@ var eraserTest = (pathSegment, element, elementsMap, zoom) => {
     }
     const poly = polygon(
       ...outlinePoints.map(
-        ([x, y]) => pointFrom6(element.x + x, element.y + y)
+        ([x, y]) => pointFrom(element.x + x, element.y + y)
       )
     );
-    if (polygonIncludesPointNonZero2(pathSegment[0], poly)) {
+    if (polygonIncludesPointNonZero(pathSegment[0], poly)) {
       return true;
     }
     return false;
@@ -19547,7 +19530,6 @@ var commonProps = {
 };
 
 // charts/charts.helpers.ts
-import { pointFrom as pointFrom7 } from "@excalidraw/math";
 var bgColors = getAllColorsSpecificShade(DEFAULT_CHART_COLOR_INDEX);
 var getSpreadsheetDimensionCount = (spreadsheet) => spreadsheet.labels?.length ?? spreadsheet.series[0]?.values.length ?? 0;
 var isSpreadsheetValidForChartType = (spreadsheet, chartType) => {
@@ -20017,7 +19999,7 @@ var chartLines = (spreadsheet, x, y, backgroundColor, layout) => {
     x,
     y,
     width: chartWidth,
-    points: [pointFrom7(0, 0), pointFrom7(chartWidth, 0)]
+    points: [pointFrom(0, 0), pointFrom(chartWidth, 0)]
   });
   const yLine = newLinearElement({
     backgroundColor,
@@ -20026,7 +20008,7 @@ var chartLines = (spreadsheet, x, y, backgroundColor, layout) => {
     x,
     y,
     height: chartHeight,
-    points: [pointFrom7(0, 0), pointFrom7(0, -chartHeight)]
+    points: [pointFrom(0, 0), pointFrom(0, -chartHeight)]
   });
   const maxLine = newLinearElement({
     backgroundColor,
@@ -20037,7 +20019,7 @@ var chartLines = (spreadsheet, x, y, backgroundColor, layout) => {
     strokeStyle: "dotted",
     width: chartWidth,
     opacity: GRID_OPACITY,
-    points: [pointFrom7(0, 0), pointFrom7(chartWidth, 0)]
+    points: [pointFrom(0, 0), pointFrom(chartWidth, 0)]
   });
   return [xLine, yLine, maxLine];
 };
@@ -20140,7 +20122,6 @@ var renderBarChart = (spreadsheet, x, y, colorSeed) => {
 };
 
 // charts/charts.line.ts
-import { pointFrom as pointFrom8 } from "@excalidraw/math";
 var renderLineChart = (spreadsheet, x, y, colorSeed) => {
   const series = spreadsheet.series;
   const layout = getCartesianChartLayout("line", series.length);
@@ -20150,7 +20131,7 @@ var renderLineChart = (spreadsheet, x, y, colorSeed) => {
   const seriesColors = getSeriesColors(series.length, colorOffset);
   const lines = series.map((seriesData, seriesIndex) => {
     const points = seriesData.values.map(
-      (value, valueIndex) => pointFrom8(
+      (value, valueIndex) => pointFrom(
         valueIndex * (layout.slotWidth + layout.gap),
         -(value / max) * layout.chartHeight
       )
@@ -20208,7 +20189,7 @@ var renderLineChart = (spreadsheet, x, y, colorSeed) => {
       height: cy,
       strokeStyle: "dotted",
       opacity: GRID_OPACITY,
-      points: [pointFrom8(0, 0), pointFrom8(0, cy)]
+      points: [pointFrom(0, 0), pointFrom(0, cy)]
     });
   });
   const baseElements = chartBaseElements(
@@ -20357,7 +20338,6 @@ var tryParseSpreadsheet = (text) => {
 };
 
 // charts/charts.radar.ts
-import { pointFrom as pointFrom9 } from "@excalidraw/math";
 var renderRadarChart = (spreadsheet, x, y, colorSeed) => {
   if (!isSpreadsheetValidForChartType(spreadsheet, "radar")) {
     return null;
@@ -20412,12 +20392,12 @@ var renderRadarChart = (spreadsheet, x, y, colorSeed) => {
     const levelRatio = (levelIndex + 1) / RADAR_GRID_LEVELS;
     const levelRadius = radius * levelRatio;
     const points = angles.map(
-      (angle) => pointFrom9(
+      (angle) => pointFrom(
         Math.cos(angle) * levelRadius,
         Math.sin(angle) * levelRadius
       )
     );
-    points.push(pointFrom9(points[0][0], points[0][1]));
+    points.push(pointFrom(points[0][0], points[0][1]));
     return newLinearElement({
       backgroundColor: "transparent",
       ...commonProps,
@@ -20447,19 +20427,19 @@ var renderRadarChart = (spreadsheet, x, y, colorSeed) => {
       strokeStyle: "solid",
       roughness: ROUGHNESS.architect,
       opacity: GRID_OPACITY,
-      points: [pointFrom9(0, 0), pointFrom9(px, py)]
+      points: [pointFrom(0, 0), pointFrom(px, py)]
     });
   });
   const seriesPolygons = series.map((seriesData, index) => {
     const points = angles.map((angle, axisIndex) => {
       const value = seriesData.values[axisIndex] ?? 0;
       const pointRadius = normalize(value, axisIndex) * radius;
-      return pointFrom9(
+      return pointFrom(
         Math.cos(angle) * pointRadius,
         Math.sin(angle) * pointRadius
       );
     });
-    points.push(pointFrom9(points[0][0], points[0][1]));
+    points.push(pointFrom(points[0][0], points[0][1]));
     return newLinearElement({
       backgroundColor: "transparent",
       ...commonProps,
@@ -20505,7 +20485,6 @@ var renderSpreadsheet = (chartType, spreadsheet, x, y, colorSeed) => {
 
 // components/ConvertElementTypePopup.tsx
 import { useEffect as useEffect28, useMemo as useMemo7, useRef as useRef23, useState as useState26 } from "react";
-import { pointFrom as pointFrom10, pointRotateRads as pointRotateRads2 } from "@excalidraw/math";
 import { jsx as jsx82 } from "react/jsx-runtime";
 var GAP_HORIZONTAL = 8;
 var GAP_VERTICAL = 10;
@@ -20586,14 +20565,14 @@ var Panel = ({
         elements2[0],
         app.scene.getNonDeletedElementsMap()
       );
-      bottomLeft = pointRotateRads2(
-        pointFrom10(x1, y2),
-        pointFrom10(cx, cy),
+      bottomLeft = pointRotateRads(
+        pointFrom(x1, y2),
+        pointFrom(cx, cy),
         elements2[0].angle
       );
     } else {
       const { minX, maxY } = getCommonBoundingBox(elements2);
-      bottomLeft = pointFrom10(minX, maxY);
+      bottomLeft = pointFrom(minX, maxY);
     }
     const { x, y } = sceneCoordsToViewportCoords(
       { sceneX: bottomLeft[0], sceneY: bottomLeft[1] },
@@ -20912,7 +20891,7 @@ var convertLineToElbow = (line) => {
     if (isVert(start2, end) || isHorz(start2, end)) {
       ortho.push(end);
     } else {
-      ortho.push(pointFrom10(start2[0], end[1]));
+      ortho.push(pointFrom(start2[0], end[1]));
       ortho.push(end);
     }
   }
@@ -21400,7 +21379,6 @@ var SVGLayer = ({ trails }) => {
 };
 
 // components/SearchMenu.tsx
-import { round as round2 } from "@excalidraw/math";
 import clsx40 from "clsx";
 import debounce2 from "lodash.debounce";
 import { Fragment as Fragment11, memo as memo4, useEffect as useEffect31, useMemo as useMemo8, useRef as useRef26, useState as useState27 } from "react";
@@ -21535,7 +21513,7 @@ var SearchMenu = () => {
               zoomOptions = {
                 fitToViewport: true,
                 // calculate zoom level to make the fontSize ~equal to FONT_SIZE_THRESHOLD, rounded to nearest 10%
-                maxZoom: round2(FONT_SIZE_LEGIBILITY_THRESHOLD / fontSize, 1)
+                maxZoom: round(FONT_SIZE_LEGIBILITY_THRESHOLD / fontSize, 1)
               };
             }
           } else {
@@ -22312,18 +22290,7 @@ Sidebar.displayName = "Sidebar";
 import React33, { useEffect as useEffect33, useRef as useRef28 } from "react";
 import { AnimationController } from "@excalidraw/excalidraw/renderer/animation";
 
-// renderer/interactiveScene.ts
-import {
-  clamp as clamp2,
-  pointFrom as pointFrom12,
-  pointsEqual,
-  bezierEquation,
-  pointRotateRads as pointRotateRads3,
-  pointDistance
-} from "@excalidraw/math";
-
 // renderer/renderSnaps.ts
-import { pointFrom as pointFrom11 } from "@excalidraw/math";
 var SNAP_COLOR_LIGHT = "#ff6b6b";
 var SNAP_COLOR_DARK = "#ff0000";
 var SNAP_WIDTH = 1;
@@ -22400,25 +22367,25 @@ var drawGapLine = (from, to, direction, appState, context) => {
     const halfPoint = [(from[0] + to[0]) / 2, from[1]];
     if (!appState.zenModeEnabled) {
       drawLine(
-        pointFrom11(from[0], from[1] - FULL),
-        pointFrom11(from[0], from[1] + FULL),
+        pointFrom(from[0], from[1] - FULL),
+        pointFrom(from[0], from[1] + FULL),
         context
       );
     }
     drawLine(
-      pointFrom11(halfPoint[0] - QUARTER, halfPoint[1] - HALF),
-      pointFrom11(halfPoint[0] - QUARTER, halfPoint[1] + HALF),
+      pointFrom(halfPoint[0] - QUARTER, halfPoint[1] - HALF),
+      pointFrom(halfPoint[0] - QUARTER, halfPoint[1] + HALF),
       context
     );
     drawLine(
-      pointFrom11(halfPoint[0] + QUARTER, halfPoint[1] - HALF),
-      pointFrom11(halfPoint[0] + QUARTER, halfPoint[1] + HALF),
+      pointFrom(halfPoint[0] + QUARTER, halfPoint[1] - HALF),
+      pointFrom(halfPoint[0] + QUARTER, halfPoint[1] + HALF),
       context
     );
     if (!appState.zenModeEnabled) {
       drawLine(
-        pointFrom11(to[0], to[1] - FULL),
-        pointFrom11(to[0], to[1] + FULL),
+        pointFrom(to[0], to[1] - FULL),
+        pointFrom(to[0], to[1] + FULL),
         context
       );
       drawLine(from, to, context);
@@ -22427,25 +22394,25 @@ var drawGapLine = (from, to, direction, appState, context) => {
     const halfPoint = [from[0], (from[1] + to[1]) / 2];
     if (!appState.zenModeEnabled) {
       drawLine(
-        pointFrom11(from[0] - FULL, from[1]),
-        pointFrom11(from[0] + FULL, from[1]),
+        pointFrom(from[0] - FULL, from[1]),
+        pointFrom(from[0] + FULL, from[1]),
         context
       );
     }
     drawLine(
-      pointFrom11(halfPoint[0] - HALF, halfPoint[1] - QUARTER),
-      pointFrom11(halfPoint[0] + HALF, halfPoint[1] - QUARTER),
+      pointFrom(halfPoint[0] - HALF, halfPoint[1] - QUARTER),
+      pointFrom(halfPoint[0] + HALF, halfPoint[1] - QUARTER),
       context
     );
     drawLine(
-      pointFrom11(halfPoint[0] - HALF, halfPoint[1] + QUARTER),
-      pointFrom11(halfPoint[0] + HALF, halfPoint[1] + QUARTER),
+      pointFrom(halfPoint[0] - HALF, halfPoint[1] + QUARTER),
+      pointFrom(halfPoint[0] + HALF, halfPoint[1] + QUARTER),
       context
     );
     if (!appState.zenModeEnabled) {
       drawLine(
-        pointFrom11(to[0] - FULL, to[1]),
-        pointFrom11(to[0] + FULL, to[1]),
+        pointFrom(to[0] - FULL, to[1]),
+        pointFrom(to[0] + FULL, to[1]),
         context
       );
       drawLine(from, to, context);
@@ -22590,7 +22557,7 @@ var renderBindingHighlightForBindableElement_simple = (context, suggestedBinding
       context.rotate(suggestedBinding.element.angle);
       context.translate(-center[0], -center[1]);
       context.translate(suggestedBinding.element.x, suggestedBinding.element.y);
-      context.lineWidth = clamp2(1.75, suggestedBinding.element.strokeWidth, 4) / Math.max(0.25, appState.zoom.value);
+      context.lineWidth = clamp(1.75, suggestedBinding.element.strokeWidth, 4) / Math.max(0.25, appState.zoom.value);
       context.strokeStyle = bindingHighlightColor;
       switch (suggestedBinding.element.type) {
         case "ellipse":
@@ -22706,12 +22673,12 @@ var renderBindingHighlightForBindableElement_simple = (context, suggestedBinding
         midpoints = getDiamondBaseCorners(suggestedBinding.element).map(
           (curve) => {
             const point = bezierEquation(curve, 0.5);
-            const rotatedPoint = pointRotateRads3(
+            const rotatedPoint = pointRotateRads(
               point,
               center2,
               suggestedBinding.element.angle
             );
-            return pointFrom12(rotatedPoint[0], rotatedPoint[1]);
+            return pointFrom(rotatedPoint[0], rotatedPoint[1]);
           }
         );
       } else {
@@ -22732,16 +22699,16 @@ var renderBindingHighlightForBindableElement_simple = (context, suggestedBinding
           // TOP
         ];
         midpoints = basePoints.map((point) => {
-          const globalPoint = pointFrom12(
+          const globalPoint = pointFrom(
             point.x + suggestedBinding.element.x,
             point.y + suggestedBinding.element.y
           );
-          const rotatedPoint = pointRotateRads3(
+          const rotatedPoint = pointRotateRads(
             globalPoint,
             center,
             suggestedBinding.element.angle
           );
-          return pointFrom12(rotatedPoint[0], rotatedPoint[1]);
+          return pointFrom(rotatedPoint[0], rotatedPoint[1]);
         });
       }
       const hoveredMidpoint = pointerCoords && midpoints.reduce(
@@ -22781,7 +22748,7 @@ var renderBindingHighlightForBindableElement_simple = (context, suggestedBinding
 var renderBindingHighlightForBindableElement_complex = (app, context, element, allElementsMap, appState, deltaTime, state, bindingHighlightColor = "rgb(0,118,255)") => {
   const countdownInProgress = app.state.bindMode === "orbit" && app.bindModeHandler !== null;
   const remainingTime = BIND_MODE_TIMEOUT - (state?.runtime ?? (countdownInProgress ? 0 : BIND_MODE_TIMEOUT));
-  const opacity = clamp2(1 / BIND_MODE_TIMEOUT * remainingTime, 1e-4, 1);
+  const opacity = clamp(1 / BIND_MODE_TIMEOUT * remainingTime, 1e-4, 1);
   const offset = element.strokeWidth / 2;
   const enclosingFrame = element.frameId && allElementsMap.get(element.frameId);
   if (enclosingFrame && isFrameLikeElement(enclosingFrame)) {
@@ -22836,7 +22803,7 @@ var renderBindingHighlightForBindableElement_complex = (app, context, element, a
         element.x + appState.scrollX - offset,
         element.y + appState.scrollY - offset
       );
-      context.lineWidth = clamp2(2.5, element.strokeWidth * 1.75, 4) / Math.max(0.25, appState.zoom.value);
+      context.lineWidth = clamp(2.5, element.strokeWidth * 1.75, 4) / Math.max(0.25, appState.zoom.value);
       context.strokeStyle = colorWithAlpha(bindingHighlightColor, opacity / 2);
       switch (element.type) {
         case "ellipse":
@@ -22985,7 +22952,7 @@ var renderBindingHighlightForBindableElement_complex = (app, context, element, a
         const center = elementCenterPoint(element, allElementsMap);
         midpoints = curves.map((curve) => {
           const point = bezierEquation(curve, 0.5);
-          const rotatedPoint = pointRotateRads3(point, center, element.angle);
+          const rotatedPoint = pointRotateRads(point, center, element.angle);
           return {
             x: rotatedPoint[0] - element.x,
             y: rotatedPoint[1] - element.y
@@ -23004,11 +22971,11 @@ var renderBindingHighlightForBindableElement_complex = (app, context, element, a
           // LEFT
         ];
         midpoints = basePoints.map((point) => {
-          const globalPoint = pointFrom12(
+          const globalPoint = pointFrom(
             point.x + element.x,
             point.y + element.y
           );
-          const rotatedPoint = pointRotateRads3(
+          const rotatedPoint = pointRotateRads(
             globalPoint,
             center,
             element.angle
@@ -23058,7 +23025,7 @@ var renderBindingHighlightForBindableElement = (app, context, suggestedBinding, 
   }
   context.save();
   context.translate(appState.scrollX, appState.scrollY);
-  const pointerCoords = app.lastPointerMoveCoords ? pointFrom12(
+  const pointerCoords = app.lastPointerMoveCoords ? pointFrom(
     app.lastPointerMoveCoords.x,
     app.lastPointerMoveCoords.y
   ) : null;
@@ -23225,7 +23192,7 @@ var renderLinearPointHandles = (context, appState, element, elementsMap, selecti
         renderSingleLinearPoint(
           context,
           appState,
-          pointFrom12(
+          pointFrom(
             (p[0] + points[idx + 1][0]) / 2,
             (p[1] + points[idx + 1][1]) / 2
           ),
@@ -25210,9 +25177,9 @@ var App = class _App extends React35.Component {
       }
       if (didTapTwice && event.touches.length === 1 && firstTapPosition) {
         const touch = event.touches[0];
-        const distance2 = pointDistance2(
-          pointFrom13(touch.clientX, touch.clientY),
-          pointFrom13(firstTapPosition.x, firstTapPosition.y)
+        const distance2 = pointDistance(
+          pointFrom(touch.clientX, touch.clientY),
+          pointFrom(firstTapPosition.x, firstTapPosition.y)
         );
         if (distance2 <= DOUBLE_TAP_POSITION_THRESHOLD) {
           this.lassoTrail.endPath();
@@ -26152,7 +26119,7 @@ var App = class _App extends React35.Component {
             this.state
           );
           const hoveredElement = getHoveredElementForBinding(
-            pointFrom13(scenePointer.x, scenePointer.y),
+            pointFrom(scenePointer.x, scenePointer.y),
             this.scene.getNonDeletedElements(),
             this.scene.getNonDeletedElementsMap()
           );
@@ -26670,7 +26637,7 @@ var App = class _App extends React35.Component {
           );
           if (container) {
             if (hasBoundTextElement(container) || !isTransparent(container.backgroundColor) || hitElementItself({
-              point: pointFrom13(sceneX, sceneY),
+              point: pointFrom(sceneX, sceneY),
               element: container,
               elementsMap: this.scene.getNonDeletedElementsMap(),
               threshold: this.getElementHitThreshold(container)
@@ -26708,7 +26675,7 @@ var App = class _App extends React35.Component {
           element,
           this.scene.getNonDeletedElementsMap(),
           this.state,
-          pointFrom13(scenePointer.x, scenePointer.y),
+          pointFrom(scenePointer.x, scenePointer.y),
           this.editorInterface.formFactor === "phone"
         )) {
           return element;
@@ -26716,12 +26683,12 @@ var App = class _App extends React35.Component {
       }
     });
     __publicField(this, "handleElementLinkClick", (event) => {
-      const draggedDistance = pointDistance2(
-        pointFrom13(
+      const draggedDistance = pointDistance(
+        pointFrom(
           this.lastPointerDownEvent.clientX,
           this.lastPointerDownEvent.clientY
         ),
-        pointFrom13(
+        pointFrom(
           this.lastPointerUpEvent.clientX,
           this.lastPointerUpEvent.clientY
         )
@@ -26738,7 +26705,7 @@ var App = class _App extends React35.Component {
         this.hitLinkElement,
         elementsMap,
         this.state,
-        pointFrom13(lastPointerDownCoords.x, lastPointerDownCoords.y),
+        pointFrom(lastPointerDownCoords.x, lastPointerDownCoords.y),
         this.editorInterface.formFactor === "phone"
       );
       const lastPointerUpCoords = viewportCoordsToSceneCoords(
@@ -26749,7 +26716,7 @@ var App = class _App extends React35.Component {
         this.hitLinkElement,
         elementsMap,
         this.state,
-        pointFrom13(lastPointerUpCoords.x, lastPointerUpCoords.y),
+        pointFrom(lastPointerUpCoords.x, lastPointerUpCoords.y),
         this.editorInterface.formFactor === "phone"
       );
       if (lastPointerDownHittingLinkIcon && lastPointerUpHittingLinkIcon) {
@@ -26900,7 +26867,7 @@ var App = class _App extends React35.Component {
       if (isBindingElementType(this.state.activeTool.type)) {
         const { newElement: newElement2 } = this.state;
         if (!newElement2 && isBindingEnabled(this.state)) {
-          const globalPoint = pointFrom13(
+          const globalPoint = pointFrom(
             scenePointerX,
             scenePointerY
           );
@@ -26938,7 +26905,7 @@ var App = class _App extends React35.Component {
         setCursorForShape(this.interactiveCanvas, this.state);
         if (lastPoint === lastCommittedPoint) {
           const hoveredElement = isArrowElement(this.state.newElement) && isBindingEnabled(this.state) && getHoveredElementForBinding(
-            pointFrom13(scenePointerX, scenePointerY),
+            pointFrom(scenePointerX, scenePointerY),
             this.scene.getNonDeletedElements(),
             this.scene.getNonDeletedElementsMap(),
             maxBindingDistance_simple(this.state.zoom)
@@ -26975,8 +26942,8 @@ var App = class _App extends React35.Component {
           } else if (
             // if we haven't yet created a temp point and we're beyond commit-zone
             // threshold, add a point
-            pointDistance2(
-              pointFrom13(scenePointerX - rx, scenePointerY - ry),
+            pointDistance(
+              pointFrom(scenePointerX - rx, scenePointerY - ry),
               lastPoint
             ) >= LINE_CONFIRM_THRESHOLD
           ) {
@@ -26985,7 +26952,7 @@ var App = class _App extends React35.Component {
               {
                 points: [
                   ...points,
-                  pointFrom13(scenePointerX - rx, scenePointerY - ry)
+                  pointFrom(scenePointerX - rx, scenePointerY - ry)
                 ]
               },
               { informMutation: false, isDragging: false }
@@ -27008,8 +26975,8 @@ var App = class _App extends React35.Component {
           } else {
             setCursor(this.interactiveCanvas, CURSOR_TYPE.POINTER);
           }
-        } else if (points.length > 2 && lastCommittedPoint && pointDistance2(
-          pointFrom13(scenePointerX - rx, scenePointerY - ry),
+        } else if (points.length > 2 && lastCommittedPoint && pointDistance(
+          pointFrom(scenePointerX - rx, scenePointerY - ry),
           lastCommittedPoint
         ) < LINE_CONFIRM_THRESHOLD) {
           setCursor(this.interactiveCanvas, CURSOR_TYPE.POINTER);
@@ -27045,7 +27012,7 @@ var App = class _App extends React35.Component {
           const elementsMap = this.scene.getNonDeletedElementsMap();
           if (isSimpleArrow(multiElement)) {
             const hoveredElement = getHoveredElementForBinding(
-              pointFrom13(scenePointerX, scenePointerY),
+              pointFrom(scenePointerX, scenePointerY),
               this.scene.getNonDeletedElements(),
               elementsMap
             );
@@ -27072,12 +27039,12 @@ var App = class _App extends React35.Component {
       }
       if (this.state.activeTool.type === "arrow") {
         const hit = getHoveredElementForBinding(
-          pointFrom13(scenePointerX, scenePointerY),
+          pointFrom(scenePointerX, scenePointerY),
           this.scene.getNonDeletedElements(),
           this.scene.getNonDeletedElementsMap(),
           maxBindingDistance_simple(this.state.zoom)
         );
-        const scenePointer2 = pointFrom13(scenePointerX, scenePointerY);
+        const scenePointer2 = pointFrom(scenePointerX, scenePointerY);
         const elementsMap = this.scene.getNonDeletedElementsMap();
         if (hit && !isPointInElement(scenePointer2, hit, elementsMap)) {
           this.setState({
@@ -28060,7 +28027,7 @@ var App = class _App extends React35.Component {
         simulatePressure,
         locked: false,
         frameId: topLayerFrame ? topLayerFrame.id : null,
-        points: [pointFrom13(0, 0)],
+        points: [pointFrom(0, 0)],
         pressures: simulatePressure ? [] : [event.pressure]
       });
       this.scene.insertElement(element);
@@ -28077,7 +28044,7 @@ var App = class _App extends React35.Component {
         };
       });
       const boundElement = getHoveredElementForBinding(
-        pointFrom13(
+        pointFrom(
           pointerDownState.origin.x,
           pointerDownState.origin.y
         ),
@@ -28238,15 +28205,15 @@ var App = class _App extends React35.Component {
         const { x: rx, y: ry } = multiElement;
         const { lastCommittedPoint } = selectedLinearElement;
         const hoveredElementForBinding = isBindingEnabled(this.state) && getHoveredElementForBinding(
-          pointFrom13(
+          pointFrom(
             this.lastPointerMoveCoords?.x ?? rx + multiElement.points[multiElement.points.length - 1][0],
             this.lastPointerMoveCoords?.y ?? ry + multiElement.points[multiElement.points.length - 1][1]
           ),
           this.scene.getNonDeletedElements(),
           this.scene.getNonDeletedElementsMap()
         );
-        if (isBindingElement(multiElement) && hoveredElementForBinding || multiElement.points.length > 1 && lastCommittedPoint && pointDistance2(
-          pointFrom13(
+        if (isBindingElement(multiElement) && hoveredElementForBinding || multiElement.points.length > 1 && lastCommittedPoint && pointDistance(
+          pointFrom(
             pointerDownState.origin.x - rx,
             pointerDownState.origin.y - ry
           ),
@@ -28320,7 +28287,7 @@ var App = class _App extends React35.Component {
           locked: false,
           frameId: topLayerFrame ? topLayerFrame.id : null
         });
-        const point = pointFrom13(
+        const point = pointFrom(
           pointerDownState.origin.x,
           pointerDownState.origin.y
         );
@@ -28331,7 +28298,7 @@ var App = class _App extends React35.Component {
           elementsMap
         ) : null;
         this.scene.mutateElement(element, {
-          points: [pointFrom13(0, 0), pointFrom13(0, 0)]
+          points: [pointFrom(0, 0), pointFrom(0, 0)]
         });
         this.scene.insertElement(element);
         if (isBindingElement(element)) {
@@ -28341,7 +28308,7 @@ var App = class _App extends React35.Component {
               [
                 0,
                 {
-                  point: pointFrom13(0, 0),
+                  point: pointFrom(0, 0),
                   isDragging: false
                 }
               ]
@@ -28375,7 +28342,7 @@ var App = class _App extends React35.Component {
                   ...linearElementEditor.initialState,
                   arrowStartIsInside: event.altKey,
                   lastClickedPoint: endIdx,
-                  origin: pointFrom13(
+                  origin: pointFrom(
                     pointerDownState.origin.x,
                     pointerDownState.origin.y
                   )
@@ -29643,7 +29610,7 @@ var App = class _App extends React35.Component {
       );
       const elementsMap = this.scene.getNonDeletedElementsMap();
       const hoveredElement = getHoveredElementForBinding(
-        pointFrom13(
+        pointFrom(
           this.lastPointerMoveCoords.x,
           this.lastPointerMoveCoords.y
         ),
@@ -29738,7 +29705,7 @@ var App = class _App extends React35.Component {
       }
       const { x, y } = this.lastPointerMoveCoords;
       const hoveredElement2 = getHoveredElementForBinding(
-        pointFrom13(x, y),
+        pointFrom(x, y),
         this.scene.getNonDeletedElements(),
         this.scene.getNonDeletedElementsMap()
       );
@@ -29855,7 +29822,7 @@ var App = class _App extends React35.Component {
     !oneOf(this.state.activeTool.type, ["laser", "selection", "lasso"])) {
       return false;
     }
-    const viewportClickStart_scenePoint = pointFrom13(
+    const viewportClickStart_scenePoint = pointFrom(
       viewportCoordsToSceneCoords(
         {
           clientX: this.lastPointerDownEvent.clientX,
@@ -29864,7 +29831,7 @@ var App = class _App extends React35.Component {
         this.state
       )
     );
-    const viewportClickEnd_scenePoint = pointFrom13(
+    const viewportClickEnd_scenePoint = pointFrom(
       viewportCoordsToSceneCoords(
         {
           clientX: this.lastPointerUpEvent.clientX,
@@ -29873,7 +29840,7 @@ var App = class _App extends React35.Component {
         this.state
       )
     );
-    const draggedDistance = pointDistance2(
+    const draggedDistance = pointDistance(
       viewportClickStart_scenePoint,
       viewportClickEnd_scenePoint
     );
@@ -31281,7 +31248,7 @@ var App = class _App extends React35.Component {
       }
       const elementWithHighestZIndex = allHitElements[allHitElements.length - 1];
       return hitElementItself({
-        point: pointFrom13(x, y),
+        point: pointFrom(x, y),
         element: elementWithHighestZIndex,
         // when overlapping, we would like to be more precise
         // this also avoids the need to update past tests
@@ -31325,7 +31292,7 @@ var App = class _App extends React35.Component {
   hitElement(x, y, element, considerBoundingBox = true) {
     if (considerBoundingBox && this.state.selectedElementIds[element.id] && hasBoundingBox([element], this.state, this.editorInterface)) {
       if (hitElementBoundingBox(
-        pointFrom13(x, y),
+        pointFrom(x, y),
         element,
         this.scene.getNonDeletedElementsMap(),
         this.getElementHitThreshold(element)
@@ -31334,7 +31301,7 @@ var App = class _App extends React35.Component {
       }
     }
     const hitBoundTextOfElement = hitElementBoundText(
-      pointFrom13(x, y),
+      pointFrom(x, y),
       element,
       this.scene.getNonDeletedElementsMap()
     );
@@ -31342,7 +31309,7 @@ var App = class _App extends React35.Component {
       return true;
     }
     return hitElementItself({
-      point: pointFrom13(x, y),
+      point: pointFrom(x, y),
       element,
       threshold: this.getElementHitThreshold(element),
       elementsMap: this.scene.getNonDeletedElementsMap(),
@@ -31365,7 +31332,7 @@ var App = class _App extends React35.Component {
         this.scene.getNonDeletedElementsMap()
       );
       if (isArrowElement(elements[index]) && hitElementItself({
-        point: pointFrom13(x, y),
+        point: pointFrom(x, y),
         element: elements[index],
         elementsMap: this.scene.getNonDeletedElementsMap(),
         threshold: this.getElementHitThreshold(elements[index])
@@ -31392,7 +31359,7 @@ var App = class _App extends React35.Component {
       let hoverPointIndex = -1;
       let segmentMidPointHoveredCoords = null;
       if (hitElementItself({
-        point: pointFrom13(scenePointerX, scenePointerY),
+        point: pointFrom(scenePointerX, scenePointerY),
         element,
         elementsMap,
         threshold: this.getElementHitThreshold(element)
@@ -31811,7 +31778,7 @@ var App = class _App extends React35.Component {
           }
           if (isBindingElement(element)) {
             const hoveredElement = getHoveredElementForBinding(
-              pointFrom13(pointerCoords.x, pointerCoords.y),
+              pointFrom(pointerCoords.x, pointerCoords.y),
               this.scene.getNonDeletedElements(),
               elementsMap
             );
@@ -31911,23 +31878,23 @@ var App = class _App extends React35.Component {
                   elementsMap
                 );
                 const topLeft = vectorFromPoint(
-                  pointRotateRads4(
-                    pointFrom13(x1, y1),
-                    pointFrom13(cx, cy),
+                  pointRotateRads(
+                    pointFrom(x1, y1),
+                    pointFrom(cx, cy),
                     croppingElement.angle
                   )
                 );
                 const topRight = vectorFromPoint(
-                  pointRotateRads4(
-                    pointFrom13(x2, y1),
-                    pointFrom13(cx, cy),
+                  pointRotateRads(
+                    pointFrom(x2, y1),
+                    pointFrom(cx, cy),
                     croppingElement.angle
                   )
                 );
                 const bottomLeft = vectorFromPoint(
-                  pointRotateRads4(
-                    pointFrom13(x1, y2),
-                    pointFrom13(cx, cy),
+                  pointRotateRads(
+                    pointFrom(x1, y2),
+                    pointFrom(cx, cy),
                     croppingElement.angle
                   )
                 );
@@ -31943,12 +31910,12 @@ var App = class _App extends React35.Component {
                 );
                 const nextCrop = {
                   ...crop,
-                  x: clamp3(
+                  x: clamp(
                     crop.x - offsetVector[0] * Math.sign(croppingElement.scale[0]),
                     0,
                     image.naturalWidth - crop.width
                   ),
-                  y: clamp3(
+                  y: clamp(
                     crop.y - offsetVector[1] * Math.sign(croppingElement.scale[1]),
                     0,
                     image.naturalHeight - crop.height
@@ -32148,7 +32115,7 @@ var App = class _App extends React35.Component {
             this.scene.mutateElement(
               newElement2,
               {
-                points: [...points, pointFrom13(dx, dy)],
+                points: [...points, pointFrom(dx, dy)],
                 pressures
               },
               {
@@ -32497,7 +32464,7 @@ var App = class _App extends React35.Component {
         }
         const pressures = newElement2.simulatePressure ? [] : [...newElement2.pressures, childEvent.pressure];
         this.scene.mutateElement(newElement2, {
-          points: [...points, pointFrom13(dx, dy)],
+          points: [...points, pointFrom(dx, dy)],
           pressures
         });
         this.actionManager.executeAction(actionFinalize);
@@ -32511,9 +32478,9 @@ var App = class _App extends React35.Component {
           childEvent,
           this.state
         );
-        const dragDistance = pointDistance2(
-          pointFrom13(pointerCoords.x, pointerCoords.y),
-          pointFrom13(pointerDownState.origin.x, pointerDownState.origin.y)
+        const dragDistance = pointDistance(
+          pointFrom(pointerCoords.x, pointerCoords.y),
+          pointFrom(pointerDownState.origin.x, pointerDownState.origin.y)
         ) * this.state.zoom.value;
         if ((!pointerDownState.drag.hasOccurred || dragDistance < MINIMUM_ARROW_SIZE) && newElement2 && !multiElement) {
           if (this.editorInterface.isTouchScreen) {
@@ -32526,8 +32493,8 @@ var App = class _App extends React35.Component {
               {
                 x: newElement2.x - FIXED_DELTA_X / 2,
                 points: [
-                  pointFrom13(0, 0),
-                  pointFrom13(FIXED_DELTA_X, 0)
+                  pointFrom(0, 0),
+                  pointFrom(FIXED_DELTA_X, 0)
                 ]
               },
               { informMutation: false, isDragging: false }
@@ -32539,7 +32506,7 @@ var App = class _App extends React35.Component {
             this.scene.mutateElement(
               newElement2,
               {
-                points: [newElement2.points[0], pointFrom13(dx, dy)]
+                points: [newElement2.points[0], pointFrom(dx, dy)]
               },
               { informMutation: false, isDragging: false }
             );
@@ -32787,9 +32754,9 @@ var App = class _App extends React35.Component {
       const pointerEnd = this.lastPointerUpEvent || this.lastPointerMoveEvent;
       if (isEraserActive(this.state) && pointerStart && pointerEnd) {
         this.eraserTrail.endPath();
-        const draggedDistance = pointDistance2(
-          pointFrom13(pointerStart.clientX, pointerStart.clientY),
-          pointFrom13(pointerEnd.clientX, pointerEnd.clientY)
+        const draggedDistance = pointDistance(
+          pointFrom(pointerStart.clientX, pointerStart.clientY),
+          pointFrom(pointerEnd.clientX, pointerEnd.clientY)
         );
         if (draggedDistance === 0) {
           const scenePointer = viewportCoordsToSceneCoords(
@@ -32935,7 +32902,7 @@ var App = class _App extends React35.Component {
         !this.state.isResizing && // only hitting the bounding box of the previous hit element
         (hitElement && hitElementBoundingBoxOnly(
           {
-            point: pointFrom13(
+            point: pointFrom(
               pointerDownState.origin.x,
               pointerDownState.origin.y
             ),
@@ -34425,20 +34392,15 @@ var reconcileElements = (localElements, remoteElements, localAppState) => {
 };
 
 // components/Stats/index.tsx
-import { round as round5 } from "@excalidraw/math";
 import clsx52 from "clsx";
 import throttle4 from "lodash.throttle";
 import { useEffect as useEffect40, useMemo as useMemo11, useState as useState32, memo as memo5 } from "react";
-
-// components/Stats/Angle.tsx
-import { degreesToRadians, radiansToDegrees } from "@excalidraw/math";
 
 // components/Stats/DragInput.tsx
 import clsx51 from "clsx";
 import { useEffect as useEffect39, useRef as useRef33, useState as useState31 } from "react";
 
 // components/Stats/utils.ts
-import { pointFrom as pointFrom14, pointRotateRads as pointRotateRads5 } from "@excalidraw/math";
 var SMALLEST_DELTA = 0.01;
 var STEP_SIZE = 10;
 var isPropertyEditable = (element, property) => {
@@ -34474,16 +34436,16 @@ var moveElement = (newTopLeftX, newTopLeftY, originalElement, scene, appState, o
     originalElement.x + originalElement.width / 2,
     originalElement.y + originalElement.height / 2
   ];
-  const [topLeftX, topLeftY] = pointRotateRads5(
-    pointFrom14(originalElement.x, originalElement.y),
-    pointFrom14(cx, cy),
+  const [topLeftX, topLeftY] = pointRotateRads(
+    pointFrom(originalElement.x, originalElement.y),
+    pointFrom(cx, cy),
     originalElement.angle
   );
   const changeInX = newTopLeftX - topLeftX;
   const changeInY = newTopLeftY - topLeftY;
-  const [x, y] = pointRotateRads5(
-    pointFrom14(newTopLeftX, newTopLeftY),
-    pointFrom14(cx + changeInX, cy + changeInY),
+  const [x, y] = pointRotateRads(
+    pointFrom(newTopLeftX, newTopLeftY),
+    pointFrom(cx + changeInX, cy + changeInY),
     -originalElement.angle
   );
   scene.mutateElement(
@@ -34524,16 +34486,16 @@ var moveElement = (newTopLeftX, newTopLeftY, originalElement, scene, appState, o
         child.x + child.width / 2,
         child.y + child.height / 2
       ];
-      const [childTopLeftX, childTopLeftY] = pointRotateRads5(
-        pointFrom14(child.x, child.y),
-        pointFrom14(childCX, childCY),
+      const [childTopLeftX, childTopLeftY] = pointRotateRads(
+        pointFrom(child.x, child.y),
+        pointFrom(childCX, childCY),
         child.angle
       );
       const childNewTopLeftX = Math.round(childTopLeftX + changeInX);
       const childNewTopLeftY = Math.round(childTopLeftY + changeInY);
-      const [childX, childY] = pointRotateRads5(
-        pointFrom14(childNewTopLeftX, childNewTopLeftY),
-        pointFrom14(childCX + changeInX, childCY + changeInY),
+      const [childX, childY] = pointRotateRads(
+        pointFrom(childNewTopLeftX, childNewTopLeftY),
+        pointFrom(childCX + changeInX, childCY + changeInY),
         -child.angle
       );
       scene.mutateElement(
@@ -34933,7 +34895,6 @@ var CanvasGrid = ({
 var CanvasGrid_default = CanvasGrid;
 
 // components/Stats/Dimension.tsx
-import { clamp as clamp4, round as round3 } from "@excalidraw/math";
 import { jsx as jsx120 } from "react/jsx-runtime";
 var STEP_SIZE4 = 10;
 var _shouldKeepAspectRatio = (element) => {
@@ -34978,7 +34939,7 @@ var handleDimensionChange = ({
       if (nextValue !== void 0) {
         if (property === "width") {
           const nextValueInNatural = nextValue * naturalToUncroppedWidthRatio;
-          const nextCropWidth2 = clamp4(
+          const nextCropWidth2 = clamp(
             nextValueInNatural,
             MIN_WIDTH,
             MAX_POSSIBLE_WIDTH
@@ -34990,7 +34951,7 @@ var handleDimensionChange = ({
           };
         } else if (property === "height") {
           const nextValueInNatural = nextValue * naturalToUncroppedHeightRatio;
-          const nextCropHeight2 = clamp4(
+          const nextCropHeight2 = clamp(
             nextValueInNatural,
             MIN_HEIGHT,
             MAX_POSSIBLE_HEIGHT
@@ -35010,12 +34971,12 @@ var handleDimensionChange = ({
       }
       const changeInWidth = property === "width" ? instantChange : 0;
       const changeInHeight = property === "height" ? instantChange : 0;
-      const nextCropWidth = clamp4(
+      const nextCropWidth = clamp(
         crop.width + changeInWidth,
         MIN_WIDTH,
         MAX_POSSIBLE_WIDTH
       );
-      const nextCropHeight = clamp4(
+      const nextCropHeight = clamp(
         crop.height + changeInHeight,
         MIN_WIDTH,
         MAX_POSSIBLE_HEIGHT
@@ -35160,16 +35121,16 @@ var DimensionDragInput = ({
   scene,
   appState
 }) => {
-  let value = round3(property === "width" ? element.width : element.height, 2);
+  let value = round(property === "width" ? element.width : element.height, 2);
   if (appState.croppingElementId && appState.croppingElementId === element.id && isImageElement(element) && element.crop) {
     const { width: uncroppedWidth, height: uncroppedHeight } = getUncroppedWidthAndHeight(element);
     if (property === "width") {
       const ratio = uncroppedWidth / element.crop.naturalWidth;
-      value = round3(element.crop.width * ratio, 2);
+      value = round(element.crop.width * ratio, 2);
     }
     if (property === "height") {
       const ratio = uncroppedHeight / element.crop.naturalHeight;
-      value = round3(element.crop.height * ratio, 2);
+      value = round(element.crop.height * ratio, 2);
     }
   }
   return /* @__PURE__ */ jsx120(
@@ -35255,7 +35216,6 @@ var FontSize = ({ element, scene, appState, property }) => {
 var FontSize_default = FontSize;
 
 // components/Stats/MultiAngle.tsx
-import { degreesToRadians as degreesToRadians2, radiansToDegrees as radiansToDegrees2 } from "@excalidraw/math";
 import { jsx as jsx122 } from "react/jsx-runtime";
 var STEP_SIZE6 = 15;
 var handleDegreeChange2 = ({
@@ -35272,7 +35232,7 @@ var handleDegreeChange2 = ({
     (el) => !isInGroup(el) && isPropertyEditable(el, property)
   );
   if (nextValue !== void 0) {
-    const nextAngle = degreesToRadians2(nextValue);
+    const nextAngle = degreesToRadians(nextValue);
     for (const element of editableLatestIndividualElements) {
       if (!element) {
         continue;
@@ -35294,14 +35254,14 @@ var handleDegreeChange2 = ({
       continue;
     }
     const originalElement = editableOriginalIndividualElements[i];
-    const originalAngleInDegrees = Math.round(radiansToDegrees2(originalElement.angle) * 100) / 100;
+    const originalAngleInDegrees = Math.round(radiansToDegrees(originalElement.angle) * 100) / 100;
     const changeInDegrees = Math.round(accumulatedChange);
     let nextAngleInDegrees = (originalAngleInDegrees + changeInDegrees) % 360;
     if (shouldChangeByStepSize) {
       nextAngleInDegrees = getStepSizedValue(nextAngleInDegrees, STEP_SIZE6);
     }
     nextAngleInDegrees = nextAngleInDegrees < 0 ? nextAngleInDegrees + 360 : nextAngleInDegrees;
-    const nextAngle = degreesToRadians2(nextAngleInDegrees);
+    const nextAngle = degreesToRadians(nextAngleInDegrees);
     scene.mutateElement(latestElement, {
       angle: nextAngle
     });
@@ -35322,7 +35282,7 @@ var MultiAngle = ({
     (el) => !isInGroup(el) && isPropertyEditable(el, "angle")
   );
   const angles = editableLatestIndividualElements.map(
-    (el) => Math.round(radiansToDegrees2(el.angle) % 360 * 100) / 100
+    (el) => Math.round(radiansToDegrees(el.angle) % 360 * 100) / 100
   );
   const value = new Set(angles).size === 1 ? angles[0] : "Mixed";
   const editable = editableLatestIndividualElements.some(
@@ -35346,7 +35306,6 @@ var MultiAngle = ({
 var MultiAngle_default = MultiAngle;
 
 // components/Stats/MultiDimension.tsx
-import { pointFrom as pointFrom15 } from "@excalidraw/math";
 import { useMemo as useMemo9 } from "react";
 import { jsx as jsx123 } from "react/jsx-runtime";
 var STEP_SIZE7 = 10;
@@ -35454,7 +35413,7 @@ var handleDimensionChange2 = ({
           nextHeight,
           initialHeight,
           aspectRatio,
-          pointFrom15(x1, y1),
+          pointFrom(x1, y1),
           property,
           latestElements,
           originalElements2,
@@ -35556,7 +35515,7 @@ var handleDimensionChange2 = ({
         nextHeight,
         initialHeight,
         aspectRatio,
-        pointFrom15(x1, y1),
+        pointFrom(x1, y1),
         property,
         latestElements,
         originalElements2,
@@ -35795,7 +35754,6 @@ var MultiFontSize = ({
 var MultiFontSize_default = MultiFontSize;
 
 // components/Stats/MultiPosition.tsx
-import { pointFrom as pointFrom16, pointRotateRads as pointRotateRads6 } from "@excalidraw/math";
 import { useMemo as useMemo10 } from "react";
 import { jsx as jsx125 } from "react/jsx-runtime";
 var moveElements = (property, changeInTopX, changeInTopY, originalElements, originalElementsMap, scene, appState) => {
@@ -35805,9 +35763,9 @@ var moveElements = (property, changeInTopX, changeInTopY, originalElements, orig
       origElement.x + origElement.width / 2,
       origElement.y + origElement.height / 2
     ];
-    const [topLeftX, topLeftY] = pointRotateRads6(
-      pointFrom16(origElement.x, origElement.y),
-      pointFrom16(cx, cy),
+    const [topLeftX, topLeftY] = pointRotateRads(
+      pointFrom(origElement.x, origElement.y),
+      pointFrom(cx, cy),
       origElement.angle
     );
     const newTopLeftX = property === "x" ? Math.round(topLeftX + changeInTopX) : topLeftX;
@@ -35839,9 +35797,9 @@ var moveGroupTo = (nextX, nextY, originalElements, originalElementsMap, scene, a
         latestElement.x + latestElement.width / 2,
         latestElement.y + latestElement.height / 2
       ];
-      const [topLeftX, topLeftY] = pointRotateRads6(
-        pointFrom16(latestElement.x, latestElement.y),
-        pointFrom16(cx, cy),
+      const [topLeftX, topLeftY] = pointRotateRads(
+        pointFrom(latestElement.x, latestElement.y),
+        pointFrom(cx, cy),
         latestElement.angle
       );
       moveElement(
@@ -35900,9 +35858,9 @@ var handlePositionChange = ({
             origElement.x + origElement.width / 2,
             origElement.y + origElement.height / 2
           ];
-          const [topLeftX, topLeftY] = pointRotateRads6(
-            pointFrom16(origElement.x, origElement.y),
-            pointFrom16(cx, cy),
+          const [topLeftX, topLeftY] = pointRotateRads(
+            pointFrom(origElement.x, origElement.y),
+            pointFrom(cx, cy),
             origElement.angle
           );
           const newTopLeftX = property === "x" ? nextValue : topLeftX;
@@ -35953,9 +35911,9 @@ var MultiPosition = ({
       }
       const [el] = elementsInUnit;
       const [cx, cy] = [el.x + el.width / 2, el.y + el.height / 2];
-      const [topLeftX, topLeftY] = pointRotateRads6(
-        pointFrom16(el.x, el.y),
-        pointFrom16(cx, cy),
+      const [topLeftX, topLeftY] = pointRotateRads(
+        pointFrom(el.x, el.y),
+        pointFrom(cx, cy),
         el.angle
       );
       return Math.round((property === "x" ? topLeftX : topLeftY) * 100) / 100;
@@ -35979,7 +35937,6 @@ var MultiPosition = ({
 var MultiPosition_default = MultiPosition;
 
 // components/Stats/Position.tsx
-import { clamp as clamp5, pointFrom as pointFrom17, pointRotateRads as pointRotateRads7, round as round4 } from "@excalidraw/math";
 import { jsx as jsx126 } from "react/jsx-runtime";
 var handlePositionChange2 = ({
   accumulatedChange,
@@ -35999,9 +35956,9 @@ var handlePositionChange2 = ({
     origElement.x + origElement.width / 2,
     origElement.y + origElement.height / 2
   ];
-  const [topLeftX, topLeftY] = pointRotateRads7(
-    pointFrom17(origElement.x, origElement.y),
-    pointFrom17(cx, cy),
+  const [topLeftX, topLeftY] = pointRotateRads(
+    pointFrom(origElement.x, origElement.y),
+    pointFrom(cx, cy),
     origElement.angle
   );
   if (originalAppState.croppingElementId === origElement.id) {
@@ -36020,7 +35977,7 @@ var handlePositionChange2 = ({
         if (isFlippedByX) {
           nextCrop = {
             ...crop,
-            x: clamp5(
+            x: clamp(
               crop.naturalWidth - nextValueInNatural - crop.width,
               0,
               crop.naturalWidth - crop.width
@@ -36029,7 +35986,7 @@ var handlePositionChange2 = ({
         } else {
           nextCrop = {
             ...crop,
-            x: clamp5(
+            x: clamp(
               nextValue * (crop.naturalWidth / uncroppedWidth),
               0,
               crop.naturalWidth - crop.width
@@ -36040,7 +35997,7 @@ var handlePositionChange2 = ({
       if (property === "y") {
         nextCrop = {
           ...crop,
-          y: clamp5(
+          y: clamp(
             nextValue * (crop.naturalHeight / uncroppedHeight),
             0,
             crop.naturalHeight - crop.height
@@ -36056,8 +36013,8 @@ var handlePositionChange2 = ({
     const changeInY = (property === "y" ? instantChange : 0) * (isFlippedByY ? -1 : 1);
     nextCrop = {
       ...crop,
-      x: clamp5(crop.x + changeInX, 0, crop.naturalWidth - crop.width),
-      y: clamp5(crop.y + changeInY, 0, crop.naturalHeight - crop.height)
+      x: clamp(crop.x + changeInX, 0, crop.naturalWidth - crop.width),
+      y: clamp(crop.y + changeInY, 0, crop.naturalHeight - crop.height)
     };
     scene.mutateElement(element, {
       crop: nextCrop
@@ -36101,16 +36058,16 @@ var Position = ({
   scene,
   appState
 }) => {
-  const [topLeftX, topLeftY] = pointRotateRads7(
-    pointFrom17(element.x, element.y),
-    pointFrom17(element.x + element.width / 2, element.y + element.height / 2),
+  const [topLeftX, topLeftY] = pointRotateRads(
+    pointFrom(element.x, element.y),
+    pointFrom(element.x + element.width / 2, element.y + element.height / 2),
     element.angle
   );
-  let value = round4(property === "x" ? topLeftX : topLeftY, 2);
+  let value = round(property === "x" ? topLeftX : topLeftY, 2);
   if (appState.croppingElementId === element.id && isImageElement(element) && element.crop) {
     const flipAdjustedPosition = getFlipAdjustedCropPosition(element);
     if (flipAdjustedPosition) {
-      value = round4(
+      value = round(
         property === "x" ? flipAdjustedPosition.x : flipAdjustedPosition.y,
         2
       );
@@ -36301,11 +36258,11 @@ var StatsInner = memo5(
                   cropMode && /* @__PURE__ */ jsx127(StatsRow, { heading: true, children: t("labels.unCroppedDimension") }),
                   appState.croppingElementId && isImageElement(singleElement) && unCroppedDimension && /* @__PURE__ */ jsxs66(StatsRow, { columns: 2, children: [
                     /* @__PURE__ */ jsx127("div", { children: t("stats.width") }),
-                    /* @__PURE__ */ jsx127("div", { children: round5(unCroppedDimension.width, 2) })
+                    /* @__PURE__ */ jsx127("div", { children: round(unCroppedDimension.width, 2) })
                   ] }),
                   appState.croppingElementId && isImageElement(singleElement) && unCroppedDimension && /* @__PURE__ */ jsxs66(StatsRow, { columns: 2, children: [
                     /* @__PURE__ */ jsx127("div", { children: t("stats.height") }),
-                    /* @__PURE__ */ jsx127("div", { children: round5(unCroppedDimension.height, 2) })
+                    /* @__PURE__ */ jsx127("div", { children: round(unCroppedDimension.height, 2) })
                   ] }),
                   /* @__PURE__ */ jsx127(
                     StatsRow,
@@ -37762,7 +37719,6 @@ var useMermaidRenderer = ({
 // components/TTDDialog/hooks/useTextGeneration.ts
 import { useRef as useRef39 } from "react";
 import { parseMermaidToExcalidraw } from "@excalidraw/mermaid-to-excalidraw";
-import { isFiniteNumber } from "@excalidraw/math";
 var MIN_PROMPT_LENGTH = 3;
 var MAX_PROMPT_LENGTH = 1e4;
 var useTextGeneration = ({

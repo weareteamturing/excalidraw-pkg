@@ -986,556 +986,864 @@ function validateWCAG2Parms(parms) {
   };
 }
 
-// ../common/src/colors.ts
-import { clamp } from "@excalidraw/math";
-import { degreesToRadians } from "@excalidraw/math";
-var DARK_MODE_COLORS_CACHE = typeof window !== "undefined" ? /* @__PURE__ */ new Map() : null;
-function cssHueRotate(red, green, blue, degrees) {
-  const r = red / 255;
-  const g = green / 255;
-  const b = blue / 255;
-  const a = degreesToRadians(degrees);
-  const c = Math.cos(a);
-  const s = Math.sin(a);
-  const matrix = [
-    0.213 + c * 0.787 - s * 0.213,
-    0.715 - c * 0.715 - s * 0.715,
-    0.072 - c * 0.072 + s * 0.928,
-    0.213 - c * 0.213 + s * 0.143,
-    0.715 + c * 0.285 + s * 0.14,
-    0.072 - c * 0.072 - s * 0.283,
-    0.213 - c * 0.213 - s * 0.787,
-    0.715 - c * 0.715 + s * 0.715,
-    0.072 + c * 0.928 + s * 0.072
-  ];
-  const newR = r * matrix[0] + g * matrix[1] + b * matrix[2];
-  const newG = r * matrix[3] + g * matrix[4] + b * matrix[5];
-  const newB = r * matrix[6] + g * matrix[7] + b * matrix[8];
-  return {
-    r: Math.round(Math.max(0, Math.min(1, newR)) * 255),
-    g: Math.round(Math.max(0, Math.min(1, newG)) * 255),
-    b: Math.round(Math.max(0, Math.min(1, newB)) * 255)
-  };
+// ../math/src/utils.ts
+var PRECISION = 1e-4;
+var clamp = (value, min, max) => {
+  return Math.min(Math.max(value, min), max);
+};
+var round = (value, precision, func = "round") => {
+  const multiplier = Math.pow(10, precision);
+  return Math[func]((value + Number.EPSILON) * multiplier) / multiplier;
+};
+var roundToStep = (value, step, func = "round") => {
+  const factor = 1 / step;
+  return Math[func](value * factor) / factor;
+};
+var average = (a, b) => (a + b) / 2;
+var isFiniteNumber = (value) => {
+  return typeof value === "number" && Number.isFinite(value);
+};
+var isCloseTo = (a, b, precision = PRECISION) => Math.abs(a - b) < precision;
+
+// ../math/src/angle.ts
+var normalizeRadians = (angle) => angle < 0 ? angle % (2 * Math.PI) + 2 * Math.PI : angle % (2 * Math.PI);
+function degreesToRadians(degrees) {
+  return degrees * Math.PI / 180;
 }
-var cssInvert = (r, g, b, percent) => {
-  const p = clamp(percent, 0, 100) / 100;
-  const invertComponent = (color) => {
-    const inverted = color * (1 - p) + (255 - color) * p;
-    return Math.round(clamp(inverted, 0, 255));
-  };
-  const invertedR = invertComponent(r);
-  const invertedG = invertComponent(g);
-  const invertedB = invertComponent(b);
-  return { r: invertedR, g: invertedG, b: invertedB };
-};
-var applyDarkModeFilter = (color) => {
-  const cached = DARK_MODE_COLORS_CACHE?.get(color);
-  if (cached) {
-    return cached;
+function radiansToDegrees(degrees) {
+  return degrees * 180 / Math.PI;
+}
+function isRightAngleRads(rads) {
+  return Math.abs(Math.sin(2 * rads)) < PRECISION;
+}
+function radiansBetweenAngles(a, min, max) {
+  a = normalizeRadians(a);
+  min = normalizeRadians(min);
+  max = normalizeRadians(max);
+  if (min < max) {
+    return a >= min && a <= max;
   }
-  const tc = tinycolor(color);
-  const alpha = tc.getAlpha();
-  const rgb = tc.toRgb();
-  const inverted = cssInvert(rgb.r, rgb.g, rgb.b, 93);
-  const rotated = cssHueRotate(
-    inverted.r,
-    inverted.g,
-    inverted.b,
-    180
+  return a >= min || a <= max;
+}
+function radiansDifference(a, b) {
+  a = normalizeRadians(a);
+  b = normalizeRadians(b);
+  let diff = a - b;
+  if (diff < -Math.PI) {
+    diff = diff + 2 * Math.PI;
+  } else if (diff > Math.PI) {
+    diff = diff - 2 * Math.PI;
+  }
+  return Math.abs(diff);
+}
+
+// ../math/src/vector.ts
+function vector(x, y, originX = 0, originY = 0) {
+  return [x - originX, y - originY];
+}
+function vectorFromPoint(p, origin = [0, 0], threshold, defaultValue = [0, 1]) {
+  const vec = vector(p[0] - origin[0], p[1] - origin[1]);
+  if (threshold && vectorMagnitudeSq(vec) < threshold * threshold) {
+    return defaultValue;
+  }
+  return vec;
+}
+function vectorCross(a, b) {
+  return a[0] * b[1] - b[0] * a[1];
+}
+function vectorDot(a, b) {
+  return a[0] * b[0] + a[1] * b[1];
+}
+function vectorAdd(a, b) {
+  return [a[0] + b[0], a[1] + b[1]];
+}
+function vectorSubtract(start, end) {
+  return [start[0] - end[0], start[1] - end[1]];
+}
+function vectorScale(v, scalar) {
+  return vector(v[0] * scalar, v[1] * scalar);
+}
+function vectorMagnitudeSq(v) {
+  return v[0] * v[0] + v[1] * v[1];
+}
+function vectorMagnitude(v) {
+  return Math.sqrt(vectorMagnitudeSq(v));
+}
+var vectorNormalize = (v) => {
+  const m = vectorMagnitude(v);
+  if (m === 0) {
+    return vector(0, 0);
+  }
+  return vector(v[0] / m, v[1] / m);
+};
+var vectorNormal = (v) => vector(v[1], -v[0]);
+
+// ../math/src/point.ts
+function pointFrom(xOrCoords, y) {
+  return typeof xOrCoords === "object" ? [xOrCoords.x, xOrCoords.y] : [xOrCoords, y];
+}
+function pointFromArray(numberArray) {
+  return numberArray.length === 2 ? pointFrom(numberArray[0], numberArray[1]) : void 0;
+}
+function pointFromPair(pair) {
+  return pair;
+}
+function pointFromVector(v, offset = pointFrom(0, 0)) {
+  return pointFrom(offset[0] + v[0], offset[1] + v[1]);
+}
+function pointsEqual(a, b, tolerance = PRECISION) {
+  const abs = Math.abs;
+  return abs(a[0] - b[0]) < tolerance && abs(a[1] - b[1]) < tolerance;
+}
+function pointRotateRads([x, y], [cx, cy], angle) {
+  return pointFrom(
+    (x - cx) * Math.cos(angle) - (y - cy) * Math.sin(angle) + cx,
+    (x - cx) * Math.sin(angle) + (y - cy) * Math.cos(angle) + cy
   );
-  const result = rgbToHex2(rotated.r, rotated.g, rotated.b, alpha);
-  if (DARK_MODE_COLORS_CACHE) {
-    DARK_MODE_COLORS_CACHE.set(color, result);
-  }
-  return result;
-};
-var pick = (source, keys) => {
-  return keys.reduce((acc, key) => {
-    if (key in source) {
-      acc[key] = source[key];
-    }
-    return acc;
-  }, {});
-};
-var MAX_CUSTOM_COLORS_USED_IN_CANVAS = 5;
-var COLORS_PER_ROW = 5;
-var DEFAULT_CHART_COLOR_INDEX = 4;
-var DEFAULT_ELEMENT_STROKE_COLOR_INDEX = 4;
-var DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX = 1;
-var COLOR_PALETTE = {
-  transparent: "transparent",
-  black: "#1e1e1e",
-  white: "#ffffff",
-  // open-color from https://github.com/yeun/open-color/blob/master/open-color.js
-  // corresponds to indexes [0,2,4,6,8] (weights: 50, 200, 400, 600, 800)
-  gray: ["#f8f9fa", "#e9ecef", "#ced4da", "#868e96", "#343a40"],
-  red: ["#fff5f5", "#ffc9c9", "#ff8787", "#fa5252", "#e03131"],
-  pink: ["#fff0f6", "#fcc2d7", "#f783ac", "#e64980", "#c2255c"],
-  grape: ["#f8f0fc", "#eebefa", "#da77f2", "#be4bdb", "#9c36b5"],
-  violet: ["#f3f0ff", "#d0bfff", "#9775fa", "#7950f2", "#6741d9"],
-  blue: ["#e7f5ff", "#a5d8ff", "#4dabf7", "#228be6", "#1971c2"],
-  cyan: ["#e3fafc", "#99e9f2", "#3bc9db", "#15aabf", "#0c8599"],
-  teal: ["#e6fcf5", "#96f2d7", "#38d9a9", "#12b886", "#099268"],
-  green: ["#ebfbee", "#b2f2bb", "#69db7c", "#40c057", "#2f9e44"],
-  yellow: ["#fff9db", "#ffec99", "#ffd43b", "#fab005", "#f08c00"],
-  orange: ["#fff4e6", "#ffd8a8", "#ffa94d", "#fd7e14", "#e8590c"],
-  // radix bronze shades [3,5,7,9,11]
-  bronze: ["#f8f1ee", "#eaddd7", "#d2bab0", "#a18072", "#846358"]
-};
-var COMMON_ELEMENT_SHADES = pick(COLOR_PALETTE, [
-  "cyan",
-  "blue",
-  "violet",
-  "grape",
-  "pink",
-  "green",
-  "teal",
-  "yellow",
-  "orange",
-  "red"
-]);
-var DEFAULT_ELEMENT_STROKE_PICKS = [
-  COLOR_PALETTE.black,
-  COLOR_PALETTE.red[DEFAULT_ELEMENT_STROKE_COLOR_INDEX],
-  COLOR_PALETTE.green[DEFAULT_ELEMENT_STROKE_COLOR_INDEX],
-  COLOR_PALETTE.blue[DEFAULT_ELEMENT_STROKE_COLOR_INDEX],
-  COLOR_PALETTE.yellow[DEFAULT_ELEMENT_STROKE_COLOR_INDEX]
-];
-var DEFAULT_ELEMENT_BACKGROUND_PICKS = [
-  COLOR_PALETTE.transparent,
-  COLOR_PALETTE.red[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX],
-  COLOR_PALETTE.green[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX],
-  COLOR_PALETTE.blue[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX],
-  COLOR_PALETTE.yellow[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX]
-];
-var DEFAULT_CANVAS_BACKGROUND_PICKS = [
-  COLOR_PALETTE.white,
-  // radix slate2
-  "#f8f9fa",
-  // radix blue2
-  "#f5faff",
-  // radix yellow2
-  "#fffce8",
-  // radix bronze2
-  "#fdf8f6"
-];
-var DEFAULT_ELEMENT_STROKE_COLOR_PALETTE = {
-  // 1st row
-  transparent: COLOR_PALETTE.transparent,
-  white: COLOR_PALETTE.white,
-  gray: COLOR_PALETTE.gray,
-  black: COLOR_PALETTE.black,
-  bronze: COLOR_PALETTE.bronze,
-  // rest
-  ...COMMON_ELEMENT_SHADES
-};
-var DEFAULT_ELEMENT_BACKGROUND_COLOR_PALETTE = {
-  transparent: COLOR_PALETTE.transparent,
-  white: COLOR_PALETTE.white,
-  gray: COLOR_PALETTE.gray,
-  black: COLOR_PALETTE.black,
-  bronze: COLOR_PALETTE.bronze,
-  ...COMMON_ELEMENT_SHADES
-};
-var getAllColorsSpecificShade = (index) => [
-  // 2nd row
-  COLOR_PALETTE.cyan[index],
-  COLOR_PALETTE.blue[index],
-  COLOR_PALETTE.violet[index],
-  COLOR_PALETTE.grape[index],
-  COLOR_PALETTE.pink[index],
-  // 3rd row
-  COLOR_PALETTE.green[index],
-  COLOR_PALETTE.teal[index],
-  COLOR_PALETTE.yellow[index],
-  COLOR_PALETTE.orange[index],
-  COLOR_PALETTE.red[index]
-];
-var rgbToHex2 = (r, g, b, a) => {
-  const hex6 = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-  if (a !== void 0 && a < 1) {
-    const alphaHex = Math.round(a * 255).toString(16).padStart(2, "0");
-    return `${hex6}${alphaHex}`;
-  }
-  return hex6;
-};
-var isTransparent = (color) => {
-  return tinycolor(color).getAlpha() === 0;
-};
-var COLOR_OUTLINE_CONTRAST_THRESHOLD = 240;
-var calculateContrast = (r, g, b) => {
-  const yiq = (r * 299 + g * 587 + b * 114) / 1e3;
-  return yiq;
-};
-var isColorDark = (color, threshold = 160) => {
-  if (!color) {
-    return true;
-  }
-  if (isTransparent(color)) {
-    return false;
-  }
-  const tc = tinycolor(color);
-  if (!tc.isValid()) {
-    return true;
-  }
-  const { r, g, b } = tc.toRgb();
-  return calculateContrast(r, g, b) < threshold;
-};
-var normalizeInputColor = (color) => {
-  color = color.trim();
-  if (isTransparent(color)) {
-    return color;
-  }
-  const tc = tinycolor(color);
-  if (tc.isValid()) {
-    if (["hex", "hex8"].includes(tc.getFormat()) && !color.startsWith("#")) {
-      return `#${color}`;
-    }
-    return color;
-  }
-  return null;
+}
+function pointTranslate(p, v = [0, 0]) {
+  return pointFrom(p[0] + v[0], p[1] + v[1]);
+}
+function pointCenter(a, b) {
+  return pointFrom((a[0] + b[0]) / 2, (a[1] + b[1]) / 2);
+}
+function pointDistance(a, b) {
+  return Math.hypot(b[0] - a[0], b[1] - a[1]);
+}
+function pointDistanceSq(a, b) {
+  const xDiff = b[0] - a[0];
+  const yDiff = b[1] - a[1];
+  return xDiff * xDiff + yDiff * yDiff;
+}
+var pointScaleFromOrigin = (p, mid, multiplier) => pointTranslate(mid, vectorScale(vectorFromPoint(p, mid), multiplier));
+var isPointWithinBounds = (p, q, r) => {
+  return q[0] <= Math.max(p[0], r[0]) && q[0] >= Math.min(p[0], r[0]) && q[1] <= Math.max(p[1], r[1]) && q[1] >= Math.min(p[1], r[1]);
 };
 
-// ../common/src/constants.ts
-var supportsResizeObserver = typeof window !== "undefined" && "ResizeObserver" in window;
-var APP_NAME = "Excalidraw";
-var TEXT_AUTOWRAP_THRESHOLD = 36;
-var DRAGGING_THRESHOLD = 10;
-var MINIMUM_ARROW_SIZE = 20;
-var LINE_CONFIRM_THRESHOLD = 8;
-var ELEMENT_SHIFT_TRANSLATE_AMOUNT = 5;
-var ELEMENT_TRANSLATE_AMOUNT = 1;
-var TEXT_TO_CENTER_SNAP_THRESHOLD = 30;
-var SHIFT_LOCKING_ANGLE = Math.PI / 12;
-var DEFAULT_LASER_COLOR = "red";
-var CURSOR_TYPE = {
-  TEXT: "text",
-  CROSSHAIR: "crosshair",
-  GRABBING: "grabbing",
-  GRAB: "grab",
-  POINTER: "pointer",
-  MOVE: "move",
-  AUTO: ""
-};
-var POINTER_BUTTON = {
-  MAIN: 0,
-  WHEEL: 1,
-  SECONDARY: 2,
-  TOUCH: -1,
-  ERASER: 5
-};
-var POINTER_EVENTS = {
-  enabled: "all",
-  disabled: "none",
-  // asserted as any so it can be freely assigned to React Element
-  // "pointerEnvets" CSS prop
-  inheritFromUI: "var(--ui-pointerEvents)"
-};
-var YOUTUBE_STATES = {
-  UNSTARTED: -1,
-  ENDED: 0,
-  PLAYING: 1,
-  PAUSED: 2,
-  BUFFERING: 3,
-  CUED: 5
-};
-var ENV = {
-  TEST: "test",
-  DEVELOPMENT: "development",
-  PRODUCTION: "production"
-};
-var CLASSES = {
-  SIDEBAR: "sidebar",
-  SHAPE_ACTIONS_MENU: "App-menu__left",
-  ZOOM_ACTIONS: "zoom-actions",
-  SEARCH_MENU_INPUT_WRAPPER: "layer-ui__search-inputWrapper",
-  CONVERT_ELEMENT_TYPE_POPUP: "ConvertElementTypePopup",
-  SHAPE_ACTIONS_THEME_SCOPE: "shape-actions-theme-scope",
-  FRAME_NAME: "frame-name",
-  DROPDOWN_MENU_EVENT_WRAPPER: "dropdown-menu-event-wrapper"
-};
-var FONT_SIZES = {
-  sm: 16,
-  md: 20,
-  lg: 28,
-  xl: 36
-};
-var CJK_HAND_DRAWN_FALLBACK_FONT = "Xiaolai";
-var WINDOWS_EMOJI_FALLBACK_FONT = "Segoe UI Emoji";
-var FONT_FAMILY = {
-  Virgil: 1,
-  Helvetica: 2,
-  Cascadia: 3,
-  // leave 4 unused as it was historically used for Assistant (which we don't use anymore) or custom font (Obsidian)
-  Excalifont: 5,
-  Nunito: 6,
-  "Lilita One": 7,
-  "Comic Shanns": 8,
-  "Liberation Sans": 9,
-  Assistant: 10
-};
-var SANS_SERIF_GENERIC_FONT = "sans-serif";
-var MONOSPACE_GENERIC_FONT = "monospace";
-var FONT_FAMILY_GENERIC_FALLBACKS = {
-  [SANS_SERIF_GENERIC_FONT]: 998,
-  [MONOSPACE_GENERIC_FONT]: 999
-};
-var FONT_FAMILY_FALLBACKS = {
-  [CJK_HAND_DRAWN_FALLBACK_FONT]: 100,
-  ...FONT_FAMILY_GENERIC_FALLBACKS,
-  [WINDOWS_EMOJI_FALLBACK_FONT]: 1e3
-};
-function getGenericFontFamilyFallback(fontFamily) {
-  switch (fontFamily) {
-    case FONT_FAMILY.Cascadia:
-    case FONT_FAMILY["Comic Shanns"]:
-      return MONOSPACE_GENERIC_FONT;
-    default:
-      return SANS_SERIF_GENERIC_FONT;
-  }
-}
-var getFontFamilyFallbacks = (fontFamily) => {
-  const genericFallbackFont = getGenericFontFamilyFallback(fontFamily);
-  switch (fontFamily) {
-    case FONT_FAMILY.Excalifont:
-      return [
-        CJK_HAND_DRAWN_FALLBACK_FONT,
-        genericFallbackFont,
-        WINDOWS_EMOJI_FALLBACK_FONT
-      ];
-    default:
-      return [genericFallbackFont, WINDOWS_EMOJI_FALLBACK_FONT];
-  }
-};
-var THEME = {
-  LIGHT: "light",
-  DARK: "dark"
-};
-var DARK_THEME_FILTER = "invert(93%) hue-rotate(180deg)";
-var FRAME_STYLE = {
-  strokeColor: "#bbb",
-  strokeWidth: 2,
-  strokeStyle: "solid",
-  fillStyle: "solid",
-  roughness: 0,
-  roundness: null,
-  backgroundColor: "transparent",
-  radius: 8,
-  nameOffsetY: 3,
-  nameColorLightTheme: "#999999",
-  nameColorDarkTheme: "#7a7a7a",
-  nameFontSize: 14,
-  nameLineHeight: 1.25
-};
-var MIN_FONT_SIZE = 1;
-var DEFAULT_FONT_SIZE = 20;
-var DEFAULT_FONT_FAMILY = FONT_FAMILY.Helvetica;
-var DEFAULT_TEXT_ALIGN = "left";
-var DEFAULT_VERTICAL_ALIGN = "top";
-var DEFAULT_TRANSFORM_HANDLE_SPACING = 2;
-var SIDE_RESIZING_THRESHOLD = 2 * DEFAULT_TRANSFORM_HANDLE_SPACING;
-var EPSILON = 1e-5;
-var DEFAULT_COLLISION_THRESHOLD = 2 * SIDE_RESIZING_THRESHOLD - EPSILON;
-var COLOR_WHITE = "#ffffff";
-var COLOR_CHARCOAL_BLACK = "#1e1e1e";
-var COLOR_VOICE_CALL = "#a2f1a6";
-var DEFAULT_GRID_SIZE = 20;
-var DEFAULT_GRID_STEP = 5;
-var IMAGE_MIME_TYPES = {
-  svg: "image/svg+xml",
-  png: "image/png",
-  jpg: "image/jpeg",
-  gif: "image/gif",
-  webp: "image/webp",
-  bmp: "image/bmp",
-  ico: "image/x-icon",
-  avif: "image/avif",
-  jfif: "image/jfif"
-};
-var STRING_MIME_TYPES = {
-  text: "text/plain",
-  html: "text/html",
-  json: "application/json",
-  // excalidraw data
-  excalidraw: "application/vnd.excalidraw+json",
-  excalidrawClipboard: "application/vnd.excalidraw.clipboard+json",
-  // LEGACY: fully-qualified library JSON data
-  excalidrawlib: "application/vnd.excalidrawlib+json",
-  // list of excalidraw library item ids
-  excalidrawlibIds: "application/vnd.excalidrawlib.ids+json"
-};
-var MIME_TYPES = {
-  ...STRING_MIME_TYPES,
-  // image-encoded excalidraw data
-  "excalidraw.svg": "image/svg+xml",
-  "excalidraw.png": "image/png",
-  // binary
-  binary: "application/octet-stream",
-  // image
-  ...IMAGE_MIME_TYPES
-};
-var ALLOWED_PASTE_MIME_TYPES = [
-  MIME_TYPES.text,
-  MIME_TYPES.html,
-  ...Object.values(IMAGE_MIME_TYPES)
+// ../math/src/constants.ts
+var LegendreGaussN24TValues = [
+  -0.06405689286260563,
+  0.06405689286260563,
+  -0.1911188674736163,
+  0.1911188674736163,
+  -0.3150426796961634,
+  0.3150426796961634,
+  -0.4337935076260451,
+  0.4337935076260451,
+  -0.5454214713888396,
+  0.5454214713888396,
+  -0.6480936519369755,
+  0.6480936519369755,
+  -0.7401241915785544,
+  0.7401241915785544,
+  -0.820001985973903,
+  0.820001985973903,
+  -0.8864155270044011,
+  0.8864155270044011,
+  -0.9382745520027328,
+  0.9382745520027328,
+  -0.9747285559713095,
+  0.9747285559713095,
+  -0.9951872199970213,
+  0.9951872199970213
 ];
-var EXPORT_DATA_TYPES = {
-  excalidraw: "excalidraw",
-  excalidrawClipboard: "excalidraw/clipboard",
-  excalidrawLibrary: "excalidrawlib",
-  excalidrawClipboardWithAPI: "excalidraw-api/clipboard"
+var LegendreGaussN24CValues = [
+  0.12793819534675216,
+  0.12793819534675216,
+  0.1258374563468283,
+  0.1258374563468283,
+  0.12167047292780339,
+  0.12167047292780339,
+  0.1155056680537256,
+  0.1155056680537256,
+  0.10744427011596563,
+  0.10744427011596563,
+  0.09761865210411388,
+  0.09761865210411388,
+  0.08619016153195327,
+  0.08619016153195327,
+  0.0733464814110803,
+  0.0733464814110803,
+  0.05929858491543678,
+  0.05929858491543678,
+  0.04427743881741981,
+  0.04427743881741981,
+  0.028531388628933663,
+  0.028531388628933663,
+  0.0123412297999872,
+  0.0123412297999872
+];
+
+// ../math/src/curve.ts
+function curve(a, b, c, d) {
+  return [a, b, c, d];
+}
+function solveWithAnalyticalJacobian(curve2, lineSegment2, t0, s0, tolerance = 1e-3, iterLimit = 10) {
+  let error = Infinity;
+  let iter = 0;
+  while (error >= tolerance) {
+    if (iter >= iterLimit) {
+      return null;
+    }
+    const bt = 1 - t0;
+    const bt2 = bt * bt;
+    const bt3 = bt2 * bt;
+    const t0_2 = t0 * t0;
+    const t0_3 = t0_2 * t0;
+    const bezierX = bt3 * curve2[0][0] + 3 * bt2 * t0 * curve2[1][0] + 3 * bt * t0_2 * curve2[2][0] + t0_3 * curve2[3][0];
+    const bezierY = bt3 * curve2[0][1] + 3 * bt2 * t0 * curve2[1][1] + 3 * bt * t0_2 * curve2[2][1] + t0_3 * curve2[3][1];
+    const lineX = lineSegment2[0][0] + s0 * (lineSegment2[1][0] - lineSegment2[0][0]);
+    const lineY = lineSegment2[0][1] + s0 * (lineSegment2[1][1] - lineSegment2[0][1]);
+    const fx = bezierX - lineX;
+    const fy = bezierY - lineY;
+    error = Math.abs(fx) + Math.abs(fy);
+    if (error < tolerance) {
+      break;
+    }
+    const dfx_dt = -3 * bt2 * curve2[0][0] + 3 * bt2 * curve2[1][0] - 6 * bt * t0 * curve2[1][0] - 3 * t0_2 * curve2[2][0] + 6 * bt * t0 * curve2[2][0] + 3 * t0_2 * curve2[3][0];
+    const dfy_dt = -3 * bt2 * curve2[0][1] + 3 * bt2 * curve2[1][1] - 6 * bt * t0 * curve2[1][1] - 3 * t0_2 * curve2[2][1] + 6 * bt * t0 * curve2[2][1] + 3 * t0_2 * curve2[3][1];
+    const dfx_ds = -(lineSegment2[1][0] - lineSegment2[0][0]);
+    const dfy_ds = -(lineSegment2[1][1] - lineSegment2[0][1]);
+    const det = dfx_dt * dfy_ds - dfx_ds * dfy_dt;
+    if (Math.abs(det) < 1e-12) {
+      return null;
+    }
+    const invDet = 1 / det;
+    const dt = invDet * (dfy_ds * -fx - dfx_ds * -fy);
+    const ds = invDet * (-dfy_dt * -fx + dfx_dt * -fy);
+    t0 += dt;
+    s0 += ds;
+    iter += 1;
+  }
+  return [t0, s0];
+}
+var bezierEquation = (c, t) => pointFrom(
+  (1 - t) ** 3 * c[0][0] + 3 * (1 - t) ** 2 * t * c[1][0] + 3 * (1 - t) * t ** 2 * c[2][0] + t ** 3 * c[3][0],
+  (1 - t) ** 3 * c[0][1] + 3 * (1 - t) ** 2 * t * c[1][1] + 3 * (1 - t) * t ** 2 * c[2][1] + t ** 3 * c[3][1]
+);
+var initial_guesses = [
+  [0.5, 0],
+  [0.2, 0],
+  [0.8, 0]
+];
+var calculate = ([t0, s0], l, c) => {
+  const solution = solveWithAnalyticalJacobian(c, l, t0, s0, 0.01, 4);
+  if (!solution) {
+    return null;
+  }
+  const [t, s] = solution;
+  if (t < 0 || t > 1 || s < 0 || s > 1) {
+    return null;
+  }
+  return bezierEquation(c, t);
 };
-var getExportSource = () => window.EXCALIDRAW_EXPORT_SOURCE || window.location.origin;
-var IMAGE_RENDER_TIMEOUT = 500;
-var TAP_TWICE_TIMEOUT = 300;
-var TOUCH_CTX_MENU_TIMEOUT = 500;
-var SCROLL_TIMEOUT = 100;
-var ZOOM_STEP = 0.1;
-var MIN_ZOOM = 0.1;
-var MAX_ZOOM = 30;
-var HYPERLINK_TOOLTIP_DELAY = 300;
-var URL_QUERY_KEYS = {
-  addLibrary: "addLibrary"
+function curveIntersectLineSegment(c, l) {
+  let solution = calculate(initial_guesses[0], l, c);
+  if (solution) {
+    return [solution];
+  }
+  solution = calculate(initial_guesses[1], l, c);
+  if (solution) {
+    return [solution];
+  }
+  solution = calculate(initial_guesses[2], l, c);
+  if (solution) {
+    return [solution];
+  }
+  return [];
+}
+function curveClosestPoint(c, p, tolerance = 1e-3) {
+  const localMinimum = (min, max, f, e = tolerance) => {
+    let m = min;
+    let n = max;
+    let k;
+    while (n - m > e) {
+      k = (n + m) / 2;
+      if (f(k - e) < f(k + e)) {
+        n = k;
+      } else {
+        m = k;
+      }
+    }
+    return k;
+  };
+  const maxSteps = 30;
+  let closestStep = 0;
+  for (let min = Infinity, step = 0; step < maxSteps; step++) {
+    const d = pointDistance(p, bezierEquation(c, step / maxSteps));
+    if (d < min) {
+      min = d;
+      closestStep = step;
+    }
+  }
+  const t0 = Math.max((closestStep - 1) / maxSteps, 0);
+  const t1 = Math.min((closestStep + 1) / maxSteps, 1);
+  const solution = localMinimum(
+    t0,
+    t1,
+    (t) => pointDistance(p, bezierEquation(c, t))
+  );
+  if (!solution) {
+    return null;
+  }
+  return bezierEquation(c, solution);
+}
+function curvePointDistance(c, p) {
+  const closest = curveClosestPoint(c, p);
+  if (!closest) {
+    return 0;
+  }
+  return pointDistance(p, closest);
+}
+function curveTangent([p0, p1, p2, p3], t) {
+  return vector(
+    -3 * (1 - t) * (1 - t) * p0[0] + 3 * (1 - t) * (1 - t) * p1[0] - 6 * t * (1 - t) * p1[0] - 3 * t * t * p2[0] + 6 * t * (1 - t) * p2[0] + 3 * t * t * p3[0],
+    -3 * (1 - t) * (1 - t) * p0[1] + 3 * (1 - t) * (1 - t) * p1[1] - 6 * t * (1 - t) * p1[1] - 3 * t * t * p2[1] + 6 * t * (1 - t) * p2[1] + 3 * t * t * p3[1]
+  );
+}
+function curveCatmullRomCubicApproxPoints(points, tension = 0.5) {
+  if (points.length < 2) {
+    return;
+  }
+  const pointSets = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1 < 0 ? 0 : i - 1];
+    const p1 = points[i];
+    const p2 = points[i + 1 >= points.length ? points.length - 1 : i + 1];
+    const p3 = points[i + 2 >= points.length ? points.length - 1 : i + 2];
+    const tangent1 = [(p2[0] - p0[0]) * tension, (p2[1] - p0[1]) * tension];
+    const tangent2 = [(p3[0] - p1[0]) * tension, (p3[1] - p1[1]) * tension];
+    const cp1x = p1[0] + tangent1[0] / 3;
+    const cp1y = p1[1] + tangent1[1] / 3;
+    const cp2x = p2[0] - tangent2[0] / 3;
+    const cp2y = p2[1] - tangent2[1] / 3;
+    pointSets.push(
+      curve(
+        pointFrom(p1[0], p1[1]),
+        pointFrom(cp1x, cp1y),
+        pointFrom(cp2x, cp2y),
+        pointFrom(p2[0], p2[1])
+      )
+    );
+  }
+  return pointSets;
+}
+function curveOffsetPoints([p0, p1, p2, p3], offset, steps = 50) {
+  const offsetPoints = [];
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const c = curve(p0, p1, p2, p3);
+    const point = bezierEquation(c, t);
+    const tangent = vectorNormalize(curveTangent(c, t));
+    const normal = vectorNormal(tangent);
+    offsetPoints.push(pointFromVector(vectorScale(normal, offset), point));
+  }
+  return offsetPoints;
+}
+function curveLength(c) {
+  const z2 = 0.5;
+  let sum = 0;
+  for (let i = 0; i < 24; i++) {
+    const t = z2 * LegendreGaussN24TValues[i] + z2;
+    const derivativeVector = curveTangent(c, t);
+    const magnitude = Math.sqrt(
+      derivativeVector[0] * derivativeVector[0] + derivativeVector[1] * derivativeVector[1]
+    );
+    sum += LegendreGaussN24CValues[i] * magnitude;
+  }
+  return z2 * sum;
+}
+function curveLengthAtParameter(c, t) {
+  if (t <= 0) {
+    return 0;
+  }
+  if (t >= 1) {
+    return curveLength(c);
+  }
+  const z1 = t / 2;
+  const z2 = t / 2;
+  let sum = 0;
+  for (let i = 0; i < 24; i++) {
+    const parameter = z1 * LegendreGaussN24TValues[i] + z2;
+    const derivativeVector = curveTangent(c, parameter);
+    const magnitude = Math.sqrt(
+      derivativeVector[0] * derivativeVector[0] + derivativeVector[1] * derivativeVector[1]
+    );
+    sum += LegendreGaussN24CValues[i] * magnitude;
+  }
+  return z1 * sum;
+}
+function curvePointAtLength(c, percent) {
+  if (percent <= 0) {
+    return bezierEquation(c, 0);
+  }
+  if (percent >= 1) {
+    return bezierEquation(c, 1);
+  }
+  const totalLength = curveLength(c);
+  const targetLength = totalLength * percent;
+  let tMin = 0;
+  let tMax = 1;
+  let t = percent;
+  let currentLength = 0;
+  const tolerance = totalLength * 1e-4;
+  const maxIterations = 20;
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
+    currentLength = curveLengthAtParameter(c, t);
+    const error = Math.abs(currentLength - targetLength);
+    if (error < tolerance) {
+      break;
+    }
+    if (currentLength < targetLength) {
+      tMin = t;
+    } else {
+      tMax = t;
+    }
+    t = (tMin + tMax) / 2;
+  }
+  return bezierEquation(c, t);
+}
+
+// ../math/src/ellipse.ts
+function ellipse(center, halfWidth, halfHeight) {
+  return {
+    center,
+    halfWidth,
+    halfHeight
+  };
+}
+var ellipseDistanceFromPoint = (p, ellipse2) => {
+  const { halfWidth, halfHeight, center } = ellipse2;
+  const a = halfWidth;
+  const b = halfHeight;
+  const translatedPoint = vectorAdd(
+    vectorFromPoint(p),
+    vectorScale(vectorFromPoint(center), -1)
+  );
+  const px = Math.abs(translatedPoint[0]);
+  const py = Math.abs(translatedPoint[1]);
+  let tx = 0.707;
+  let ty = 0.707;
+  for (let i = 0; i < 3; i++) {
+    const x = a * tx;
+    const y = b * ty;
+    const ex = (a * a - b * b) * tx ** 3 / a;
+    const ey = (b * b - a * a) * ty ** 3 / b;
+    const rx = x - ex;
+    const ry = y - ey;
+    const qx = px - ex;
+    const qy = py - ey;
+    const r = Math.hypot(ry, rx);
+    const q = Math.hypot(qy, qx);
+    tx = Math.min(1, Math.max(0, (qx * r / q + ex) / a));
+    ty = Math.min(1, Math.max(0, (qy * r / q + ey) / b));
+    const t = Math.hypot(ty, tx);
+    tx /= t;
+    ty /= t;
+  }
+  const [minX, minY] = [
+    a * tx * Math.sign(translatedPoint[0]),
+    b * ty * Math.sign(translatedPoint[1])
+  ];
+  return pointDistance(pointFromVector(translatedPoint), pointFrom(minX, minY));
 };
-var URL_HASH_KEYS = {
-  addLibrary: "addLibrary"
+function ellipseSegmentInterceptPoints(e, s) {
+  const rx = e.halfWidth;
+  const ry = e.halfHeight;
+  const dir = vectorFromPoint(s[1], s[0]);
+  const diff = vector(s[0][0] - e.center[0], s[0][1] - e.center[1]);
+  const mDir = vector(dir[0] / (rx * rx), dir[1] / (ry * ry));
+  const mDiff = vector(diff[0] / (rx * rx), diff[1] / (ry * ry));
+  const a = vectorDot(dir, mDir);
+  const b = vectorDot(dir, mDiff);
+  const c = vectorDot(diff, mDiff) - 1;
+  const d = b * b - a * c;
+  const intersections = [];
+  if (d > 0) {
+    const t_a = (-b - Math.sqrt(d)) / a;
+    const t_b = (-b + Math.sqrt(d)) / a;
+    if (0 <= t_a && t_a <= 1) {
+      intersections.push(
+        pointFrom(
+          s[0][0] + (s[1][0] - s[0][0]) * t_a,
+          s[0][1] + (s[1][1] - s[0][1]) * t_a
+        )
+      );
+    }
+    if (0 <= t_b && t_b <= 1) {
+      intersections.push(
+        pointFrom(
+          s[0][0] + (s[1][0] - s[0][0]) * t_b,
+          s[0][1] + (s[1][1] - s[0][1]) * t_b
+        )
+      );
+    }
+  } else if (d === 0) {
+    const t = -b / a;
+    if (0 <= t && t <= 1) {
+      intersections.push(
+        pointFrom(
+          s[0][0] + (s[1][0] - s[0][0]) * t,
+          s[0][1] + (s[1][1] - s[0][1]) * t
+        )
+      );
+    }
+  }
+  return intersections;
+}
+
+// ../math/src/line.ts
+function line(a, b) {
+  return [a, b];
+}
+function linesIntersectAt(a, b) {
+  const A1 = a[1][1] - a[0][1];
+  const B1 = a[0][0] - a[1][0];
+  const A2 = b[1][1] - b[0][1];
+  const B2 = b[0][0] - b[1][0];
+  const D = A1 * B2 - A2 * B1;
+  if (D !== 0) {
+    const C1 = A1 * a[0][0] + B1 * a[0][1];
+    const C2 = A2 * b[0][0] + B2 * b[0][1];
+    return pointFrom((C1 * B2 - C2 * B1) / D, (A1 * C2 - A2 * C1) / D);
+  }
+  return null;
+}
+
+// ../math/src/segment.ts
+function lineSegment(a, b) {
+  return [a, b];
+}
+var pointOnLineSegment = (point, line2, threshold = PRECISION) => {
+  const distance2 = distanceToLineSegment(point, line2);
+  if (distance2 === 0) {
+    return true;
+  }
+  return distance2 < threshold;
 };
-var DEFAULT_UI_OPTIONS = {
-  canvasActions: {
-    changeViewBackgroundColor: true,
-    clearCanvas: true,
-    export: { saveFileToDisk: true },
-    loadScene: true,
-    saveToActiveFile: true,
-    toggleTheme: null,
-    saveAsImage: true
-  },
-  tools: {
-    image: true
+var distanceToLineSegment = (point, line2) => {
+  const [x, y] = point;
+  const [[x1, y1], [x2, y2]] = line2;
+  const A = x - x1;
+  const B = y - y1;
+  const C = x2 - x1;
+  const D = y2 - y1;
+  const dot = A * C + B * D;
+  const len_sq = C * C + D * D;
+  let param = -1;
+  if (len_sq !== 0) {
+    param = dot / len_sq;
+  }
+  let xx;
+  let yy;
+  if (param < 0) {
+    xx = x1;
+    yy = y1;
+  } else if (param > 1) {
+    xx = x2;
+    yy = y2;
+  } else {
+    xx = x1 + param * C;
+    yy = y1 + param * D;
+  }
+  const dx = x - xx;
+  const dy = y - yy;
+  return Math.sqrt(dx * dx + dy * dy);
+};
+function lineSegmentIntersectionPoints(l, s, threshold) {
+  const candidate = linesIntersectAt(line(l[0], l[1]), line(s[0], s[1]));
+  if (!candidate || !pointOnLineSegment(candidate, s, threshold) || !pointOnLineSegment(candidate, l, threshold)) {
+    return null;
+  }
+  return candidate;
+}
+function lineSegmentsDistance(s1, s2) {
+  if (lineSegmentIntersectionPoints(s1, s2)) {
+    return 0;
+  }
+  return Math.min(
+    distanceToLineSegment(s1[0], s2),
+    distanceToLineSegment(s1[1], s2),
+    distanceToLineSegment(s2[0], s1),
+    distanceToLineSegment(s2[1], s1)
+  );
+}
+
+// ../math/src/polygon.ts
+function polygon(...points) {
+  return polygonClose(points);
+}
+function polygonFromPoints(points) {
+  return polygonClose(points);
+}
+var polygonIncludesPointNonZero = (point, polygon2) => {
+  const [x, y] = point;
+  let windingNumber = 0;
+  for (let i = 0; i < polygon2.length; i++) {
+    const j = (i + 1) % polygon2.length;
+    const [xi, yi] = polygon2[i];
+    const [xj, yj] = polygon2[j];
+    if (yi <= y) {
+      if (yj > y) {
+        if ((xj - xi) * (y - yi) - (x - xi) * (yj - yi) > 0) {
+          windingNumber++;
+        }
+      }
+    } else if (yj <= y) {
+      if ((xj - xi) * (y - yi) - (x - xi) * (yj - yi) < 0) {
+        windingNumber--;
+      }
+    }
+  }
+  return windingNumber !== 0;
+};
+function polygonClose(polygon2) {
+  return polygonIsClosed(polygon2) ? polygon2 : [...polygon2, polygon2[0]];
+}
+function polygonIsClosed(polygon2) {
+  return pointsEqual(polygon2[0], polygon2[polygon2.length - 1]);
+}
+
+// ../common/src/binary-heap.ts
+var BinaryHeap = class {
+  constructor(scoreFunction) {
+    this.scoreFunction = scoreFunction;
+    __publicField(this, "content", []);
+  }
+  sinkDown(idx) {
+    const node = this.content[idx];
+    const nodeScore = this.scoreFunction(node);
+    while (idx > 0) {
+      const parentN = (idx + 1 >> 1) - 1;
+      const parent = this.content[parentN];
+      if (nodeScore < this.scoreFunction(parent)) {
+        this.content[idx] = parent;
+        idx = parentN;
+      } else {
+        break;
+      }
+    }
+    this.content[idx] = node;
+  }
+  bubbleUp(idx) {
+    const length = this.content.length;
+    const node = this.content[idx];
+    const score = this.scoreFunction(node);
+    while (true) {
+      const child1N = (idx + 1 << 1) - 1;
+      const child2N = child1N + 1;
+      let smallestIdx = idx;
+      let smallestScore = score;
+      if (child1N < length) {
+        const child1Score = this.scoreFunction(this.content[child1N]);
+        if (child1Score < smallestScore) {
+          smallestIdx = child1N;
+          smallestScore = child1Score;
+        }
+      }
+      if (child2N < length) {
+        const child2Score = this.scoreFunction(this.content[child2N]);
+        if (child2Score < smallestScore) {
+          smallestIdx = child2N;
+        }
+      }
+      if (smallestIdx === idx) {
+        break;
+      }
+      this.content[idx] = this.content[smallestIdx];
+      idx = smallestIdx;
+    }
+    this.content[idx] = node;
+  }
+  push(node) {
+    this.content.push(node);
+    this.sinkDown(this.content.length - 1);
+  }
+  pop() {
+    if (this.content.length === 0) {
+      return null;
+    }
+    const result = this.content[0];
+    const end = this.content.pop();
+    if (this.content.length > 0) {
+      this.content[0] = end;
+      this.bubbleUp(0);
+    }
+    return result;
+  }
+  remove(node) {
+    if (this.content.length === 0) {
+      return;
+    }
+    const i = this.content.indexOf(node);
+    const end = this.content.pop();
+    if (i < this.content.length) {
+      this.content[i] = end;
+      if (this.scoreFunction(end) < this.scoreFunction(node)) {
+        this.sinkDown(i);
+      } else {
+        this.bubbleUp(i);
+      }
+    }
+  }
+  size() {
+    return this.content.length;
+  }
+  rescoreElement(node) {
+    this.sinkDown(this.content.indexOf(node));
   }
 };
-var MAX_DECIMALS_FOR_SVG_EXPORT = 2;
-var EXPORT_SCALES = [1, 2, 3];
-var DEFAULT_EXPORT_PADDING = 10;
-var DEFAULT_MAX_IMAGE_WIDTH_OR_HEIGHT = 1440;
-var MAX_ALLOWED_FILE_BYTES = 4 * 1024 * 1024;
-var SVG_NS = "http://www.w3.org/2000/svg";
-var SVG_DOCUMENT_PREAMBLE = `<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-`;
-var VERSIONS = {
-  excalidraw: 2,
-  excalidrawLibrary: 2
+
+// ../common/src/font-metadata.ts
+var FONT_METADATA = {
+  [FONT_FAMILY.Excalifont]: {
+    metrics: {
+      unitsPerEm: 1e3,
+      ascender: 886,
+      descender: -374,
+      lineHeight: 1.25
+    }
+  },
+  [FONT_FAMILY.Nunito]: {
+    metrics: {
+      unitsPerEm: 1e3,
+      ascender: 1011,
+      descender: -353,
+      lineHeight: 1.25
+    }
+  },
+  [FONT_FAMILY["Lilita One"]]: {
+    metrics: {
+      unitsPerEm: 1e3,
+      ascender: 923,
+      descender: -220,
+      lineHeight: 1.15
+    }
+  },
+  [FONT_FAMILY["Comic Shanns"]]: {
+    metrics: {
+      unitsPerEm: 1e3,
+      ascender: 750,
+      descender: -250,
+      lineHeight: 1.25
+    }
+  },
+  [FONT_FAMILY.Virgil]: {
+    metrics: {
+      unitsPerEm: 1e3,
+      ascender: 886,
+      descender: -374,
+      lineHeight: 1.25
+    },
+    deprecated: true
+  },
+  [FONT_FAMILY.Helvetica]: {
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1577,
+      descender: -471,
+      lineHeight: 1.15
+    },
+    deprecated: true,
+    local: true
+  },
+  [FONT_FAMILY.Cascadia]: {
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1900,
+      descender: -480,
+      lineHeight: 1.2
+    },
+    deprecated: true
+  },
+  [FONT_FAMILY["Liberation Sans"]]: {
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1854,
+      descender: -434,
+      lineHeight: 1.15
+    },
+    private: true
+  },
+  [FONT_FAMILY.Assistant]: {
+    metrics: {
+      unitsPerEm: 2048,
+      ascender: 1021,
+      descender: -287,
+      lineHeight: 1.25
+    },
+    private: true
+  },
+  [FONT_FAMILY_FALLBACKS.Xiaolai]: {
+    metrics: {
+      unitsPerEm: 1e3,
+      ascender: 880,
+      descender: -144,
+      lineHeight: 1.25
+    },
+    fallback: true
+  },
+  [FONT_FAMILY_FALLBACKS["Segoe UI Emoji"]]: {
+    metrics: {
+      // reusing Excalifont metrics
+      unitsPerEm: 1e3,
+      ascender: 886,
+      descender: -374,
+      lineHeight: 1.25
+    },
+    local: true,
+    fallback: true
+  }
 };
-var BOUND_TEXT_PADDING = 5;
-var ARROW_LABEL_WIDTH_FRACTION = 0.7;
-var ARROW_LABEL_FONT_SIZE_TO_MIN_WIDTH_RATIO = 11;
-var VERTICAL_ALIGN = {
-  TOP: "top",
-  MIDDLE: "middle",
-  BOTTOM: "bottom"
+var GOOGLE_FONTS_RANGES = {
+  LATIN: "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+  LATIN_EXT: "U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
+  CYRILIC_EXT: "U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F",
+  CYRILIC: "U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116",
+  VIETNAMESE: "U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB"
 };
-var TEXT_ALIGN = {
-  LEFT: "left",
-  CENTER: "center",
-  RIGHT: "right"
+var LOCAL_FONT_PROTOCOL = "local:";
+var getVerticalOffset = (fontFamily, fontSize, lineHeightPx) => {
+  const { unitsPerEm, ascender, descender } = FONT_METADATA[fontFamily]?.metrics || FONT_METADATA[FONT_FAMILY.Excalifont].metrics;
+  const fontSizeEm = fontSize / unitsPerEm;
+  const lineGap = (lineHeightPx - fontSizeEm * ascender + fontSizeEm * descender) / 2;
+  const verticalOffset = fontSizeEm * ascender + lineGap;
+  return verticalOffset;
 };
-var ELEMENT_READY_TO_ERASE_OPACITY = 20;
-var DEFAULT_PROPORTIONAL_RADIUS = 0.25;
-var DEFAULT_ADAPTIVE_RADIUS = 32;
-var ROUNDNESS = {
-  // Used for legacy rounding (rectangles), which currently works the same
-  // as PROPORTIONAL_RADIUS, but we need to differentiate for UI purposes and
-  // forwards-compat.
-  LEGACY: 1,
-  // Used for linear elements & diamonds
-  PROPORTIONAL_RADIUS: 2,
-  // Current default algorithm for rectangles, using fixed pixel radius.
-  // It's working similarly to a regular border-radius, but attemps to make
-  // radius visually similar across differnt element sizes, especially
-  // very large and very small elements.
-  //
-  // NOTE right now we don't allow configuration and use a constant radius
-  // (see DEFAULT_ADAPTIVE_RADIUS constant)
-  ADAPTIVE_RADIUS: 3
+var getLineHeight = (fontFamily) => {
+  const { lineHeight } = FONT_METADATA[fontFamily]?.metrics || FONT_METADATA[FONT_FAMILY.Excalifont].metrics;
+  return lineHeight;
 };
-var ROUGHNESS = {
-  architect: 0,
-  artist: 1,
-  cartoonist: 2
-};
-var STROKE_WIDTH = {
-  thin: 1,
-  bold: 2,
-  extraBold: 4
-};
-var DEFAULT_ELEMENT_PROPS = {
-  strokeColor: COLOR_PALETTE.black,
-  backgroundColor: COLOR_PALETTE.transparent,
-  fillStyle: "solid",
-  strokeWidth: 2,
-  strokeStyle: "solid",
-  roughness: ROUGHNESS.artist,
-  opacity: 100,
-  locked: false
-};
-var LIBRARY_SIDEBAR_TAB = "library";
-var CANVAS_SEARCH_TAB = "search";
-var DEFAULT_SIDEBAR = {
-  name: "default",
-  defaultTab: LIBRARY_SIDEBAR_TAB
-};
-var LIBRARY_DISABLED_TYPES = /* @__PURE__ */ new Set([
-  "iframe",
-  "embeddable",
-  "image"
-]);
-var TOOL_TYPE = {
-  selection: "selection",
-  lasso: "lasso",
-  rectangle: "rectangle",
-  diamond: "diamond",
-  ellipse: "ellipse",
-  arrow: "arrow",
-  line: "line",
-  freedraw: "freedraw",
-  text: "text",
-  image: "image",
-  eraser: "eraser",
-  hand: "hand",
-  frame: "frame",
-  magicframe: "magicframe",
-  embeddable: "embeddable",
-  laser: "laser"
-};
-var EDITOR_LS_KEYS = {
-  OAI_API_KEY: "excalidraw-oai-api-key",
-  // legacy naming (non)scheme
-  MERMAID_TO_EXCALIDRAW: "mermaid-to-excalidraw",
-  PUBLISH_LIBRARY: "publish-library-data"
-};
-var DEFAULT_FILENAME = "Untitled";
-var STATS_PANELS = { generalStats: 1, elementProperties: 2 };
-var MIN_WIDTH_OR_HEIGHT = 1;
-var ARROW_TYPE = {
-  sharp: "sharp",
-  round: "round",
-  elbow: "elbow"
-};
-var DEFAULT_REDUCED_GLOBAL_ALPHA = 0.3;
-var ELEMENT_LINK_KEY = "element";
-var ORIG_ID = Symbol.for("__test__originalId__");
-var UserIdleState = /* @__PURE__ */ ((UserIdleState2) => {
-  UserIdleState2["ACTIVE"] = "active";
-  UserIdleState2["AWAY"] = "away";
-  UserIdleState2["IDLE"] = "idle";
-  return UserIdleState2;
-})(UserIdleState || {});
-var LINE_POLYGON_POINT_MERGE_DISTANCE = 20;
-var DOUBLE_TAP_POSITION_THRESHOLD = 35;
-var BIND_MODE_TIMEOUT = 700;
-var MOBILE_ACTION_BUTTON_BG = {
-  background: "var(--mobile-action-button-bg)"
+
+// ../common/src/queue.ts
+var Queue = class {
+  constructor() {
+    __publicField(this, "jobs", []);
+    __publicField(this, "running", false);
+  }
+  tick() {
+    if (this.running) {
+      return;
+    }
+    const job = this.jobs.shift();
+    if (job) {
+      this.running = true;
+      job.promise.resolve(
+        promiseTry(job.jobFactory, ...job.args).finally(() => {
+          this.running = false;
+          this.tick();
+        })
+      );
+    } else {
+      this.running = false;
+    }
+  }
+  push(jobFactory, ...args) {
+    const promise = resolvablePromise();
+    this.jobs.push({ jobFactory, promise, args });
+    this.tick();
+    return promise;
+  }
 };
 
 // ../common/src/editorInterface.ts
@@ -1662,8 +1970,186 @@ var setDesktopUIMode = (mode) => {
   return mode;
 };
 
+// ../common/src/keys.ts
+var CODES = {
+  EQUAL: "Equal",
+  MINUS: "Minus",
+  NUM_ADD: "NumpadAdd",
+  NUM_SUBTRACT: "NumpadSubtract",
+  NUM_ZERO: "Numpad0",
+  BRACKET_RIGHT: "BracketRight",
+  BRACKET_LEFT: "BracketLeft",
+  ONE: "Digit1",
+  TWO: "Digit2",
+  THREE: "Digit3",
+  NINE: "Digit9",
+  QUOTE: "Quote",
+  ZERO: "Digit0",
+  SLASH: "Slash",
+  C: "KeyC",
+  D: "KeyD",
+  H: "KeyH",
+  V: "KeyV",
+  Z: "KeyZ",
+  Y: "KeyY",
+  R: "KeyR",
+  S: "KeyS"
+};
+var KEYS = {
+  ARROW_DOWN: "ArrowDown",
+  ARROW_LEFT: "ArrowLeft",
+  ARROW_RIGHT: "ArrowRight",
+  ARROW_UP: "ArrowUp",
+  PAGE_UP: "PageUp",
+  PAGE_DOWN: "PageDown",
+  BACKSPACE: "Backspace",
+  ALT: "Alt",
+  CTRL_OR_CMD: isDarwin ? "metaKey" : "ctrlKey",
+  DELETE: "Delete",
+  ENTER: "Enter",
+  ESCAPE: "Escape",
+  QUESTION_MARK: "?",
+  SPACE: " ",
+  TAB: "Tab",
+  CHEVRON_LEFT: "<",
+  CHEVRON_RIGHT: ">",
+  PERIOD: ".",
+  COMMA: ",",
+  SUBTRACT: "-",
+  SLASH: "/",
+  A: "a",
+  C: "c",
+  D: "d",
+  E: "e",
+  F: "f",
+  G: "g",
+  H: "h",
+  I: "i",
+  L: "l",
+  O: "o",
+  P: "p",
+  Q: "q",
+  R: "r",
+  S: "s",
+  T: "t",
+  V: "v",
+  X: "x",
+  Y: "y",
+  Z: "z",
+  K: "k",
+  W: "w",
+  0: "0",
+  1: "1",
+  2: "2",
+  3: "3",
+  4: "4",
+  5: "5",
+  6: "6",
+  7: "7",
+  8: "8",
+  9: "9"
+};
+var KeyCodeMap = /* @__PURE__ */ new Map([
+  [KEYS.Z, CODES.Z],
+  [KEYS.Y, CODES.Y]
+]);
+var isLatinChar = (key) => /^[a-z]$/.test(key.toLowerCase());
+var matchKey = (event, key) => {
+  if (key === event.key.toLowerCase()) {
+    return true;
+  }
+  const code = KeyCodeMap.get(key);
+  return Boolean(code && !isLatinChar(event.key) && event.code === code);
+};
+var isArrowKey = (key) => key === KEYS.ARROW_LEFT || key === KEYS.ARROW_RIGHT || key === KEYS.ARROW_DOWN || key === KEYS.ARROW_UP;
+var shouldResizeFromCenter = (event) => event.altKey;
+var shouldMaintainAspectRatio = (event) => event.shiftKey;
+var shouldRotateWithDiscreteAngle = (event) => event.shiftKey;
+
+// ../common/src/points.ts
+var getSizeFromPoints = (points) => {
+  const xs = points.map((point) => point[0]);
+  const ys = points.map((point) => point[1]);
+  return {
+    width: Math.max(...xs) - Math.min(...xs),
+    height: Math.max(...ys) - Math.min(...ys)
+  };
+};
+var rescalePoints = (dimension, newSize, points, normalize) => {
+  const coordinates = points.map((point) => point[dimension]);
+  const maxCoordinate = Math.max(...coordinates);
+  const minCoordinate = Math.min(...coordinates);
+  const size = maxCoordinate - minCoordinate;
+  const scale = size === 0 ? 1 : newSize / size;
+  let nextMinCoordinate = Infinity;
+  const scaledPoints = points.map((point) => {
+    const newCoordinate = point[dimension] * scale;
+    const newPoint = [...point];
+    newPoint[dimension] = newCoordinate;
+    if (newCoordinate < nextMinCoordinate) {
+      nextMinCoordinate = newCoordinate;
+    }
+    return newPoint;
+  });
+  if (!normalize) {
+    return scaledPoints;
+  }
+  if (scaledPoints.length === 2) {
+    return scaledPoints;
+  }
+  const translation = minCoordinate - nextMinCoordinate;
+  const nextPoints = scaledPoints.map(
+    (scaledPoint) => pointFromPair(
+      scaledPoint.map((value, currentDimension) => {
+        return currentDimension === dimension ? value + translation : value;
+      })
+    )
+  );
+  return nextPoints;
+};
+var getGridPoint = (x, y, gridSize) => {
+  if (gridSize) {
+    return [
+      Math.round(x / gridSize) * gridSize,
+      Math.round(y / gridSize) * gridSize
+    ];
+  }
+  return [x, y];
+};
+
+// ../common/src/promise-pool.ts
+import Pool from "es6-promise-pool";
+var PromisePool = class {
+  constructor(source, concurrency) {
+    __publicField(this, "pool");
+    __publicField(this, "entries", {});
+    this.pool = new Pool(
+      source,
+      concurrency
+    );
+  }
+  all() {
+    const listener = (event) => {
+      if (event.data.result) {
+        const [index, value] = event.data.result;
+        this.entries[index] = value;
+      }
+    };
+    this.pool.addEventListener("fulfilled", listener);
+    return this.pool.start().then(() => {
+      setTimeout(() => {
+        this.pool.removeEventListener("fulfilled", listener);
+      });
+      return Object.values(this.entries);
+    });
+  }
+};
+
+// ../common/src/random.ts
+import { nanoid } from "nanoid";
+import { Random } from "roughjs/bin/math";
+
 // ../common/src/utils.ts
-import { average } from "@excalidraw/math";
 var mockDateTime = null;
 var getDateTime = () => {
   if (mockDateTime) {
@@ -2281,6 +2767,12 @@ var oneOf = (needle, haystack) => {
   return haystack.includes(needle);
 };
 
+// ../common/src/random.ts
+var random = new Random(Date.now());
+var testIdBase = 0;
+var randomInteger = () => Math.floor(random.next() * 2 ** 31);
+var randomId = () => isTestEnv() ? `id${testIdBase++}` : nanoid();
+
 // ../common/src/url.ts
 import { sanitizeUrl } from "@braintree/sanitize-url";
 var normalizeLink = (link) => {
@@ -2305,434 +2797,6 @@ var toValidURL = (link) => {
   }
   return link;
 };
-
-// ../common/src/binary-heap.ts
-var BinaryHeap = class {
-  constructor(scoreFunction) {
-    this.scoreFunction = scoreFunction;
-    __publicField(this, "content", []);
-  }
-  sinkDown(idx) {
-    const node = this.content[idx];
-    const nodeScore = this.scoreFunction(node);
-    while (idx > 0) {
-      const parentN = (idx + 1 >> 1) - 1;
-      const parent = this.content[parentN];
-      if (nodeScore < this.scoreFunction(parent)) {
-        this.content[idx] = parent;
-        idx = parentN;
-      } else {
-        break;
-      }
-    }
-    this.content[idx] = node;
-  }
-  bubbleUp(idx) {
-    const length = this.content.length;
-    const node = this.content[idx];
-    const score = this.scoreFunction(node);
-    while (true) {
-      const child1N = (idx + 1 << 1) - 1;
-      const child2N = child1N + 1;
-      let smallestIdx = idx;
-      let smallestScore = score;
-      if (child1N < length) {
-        const child1Score = this.scoreFunction(this.content[child1N]);
-        if (child1Score < smallestScore) {
-          smallestIdx = child1N;
-          smallestScore = child1Score;
-        }
-      }
-      if (child2N < length) {
-        const child2Score = this.scoreFunction(this.content[child2N]);
-        if (child2Score < smallestScore) {
-          smallestIdx = child2N;
-        }
-      }
-      if (smallestIdx === idx) {
-        break;
-      }
-      this.content[idx] = this.content[smallestIdx];
-      idx = smallestIdx;
-    }
-    this.content[idx] = node;
-  }
-  push(node) {
-    this.content.push(node);
-    this.sinkDown(this.content.length - 1);
-  }
-  pop() {
-    if (this.content.length === 0) {
-      return null;
-    }
-    const result = this.content[0];
-    const end = this.content.pop();
-    if (this.content.length > 0) {
-      this.content[0] = end;
-      this.bubbleUp(0);
-    }
-    return result;
-  }
-  remove(node) {
-    if (this.content.length === 0) {
-      return;
-    }
-    const i = this.content.indexOf(node);
-    const end = this.content.pop();
-    if (i < this.content.length) {
-      this.content[i] = end;
-      if (this.scoreFunction(end) < this.scoreFunction(node)) {
-        this.sinkDown(i);
-      } else {
-        this.bubbleUp(i);
-      }
-    }
-  }
-  size() {
-    return this.content.length;
-  }
-  rescoreElement(node) {
-    this.sinkDown(this.content.indexOf(node));
-  }
-};
-
-// ../common/src/font-metadata.ts
-var FONT_METADATA = {
-  [FONT_FAMILY.Excalifont]: {
-    metrics: {
-      unitsPerEm: 1e3,
-      ascender: 886,
-      descender: -374,
-      lineHeight: 1.25
-    }
-  },
-  [FONT_FAMILY.Nunito]: {
-    metrics: {
-      unitsPerEm: 1e3,
-      ascender: 1011,
-      descender: -353,
-      lineHeight: 1.25
-    }
-  },
-  [FONT_FAMILY["Lilita One"]]: {
-    metrics: {
-      unitsPerEm: 1e3,
-      ascender: 923,
-      descender: -220,
-      lineHeight: 1.15
-    }
-  },
-  [FONT_FAMILY["Comic Shanns"]]: {
-    metrics: {
-      unitsPerEm: 1e3,
-      ascender: 750,
-      descender: -250,
-      lineHeight: 1.25
-    }
-  },
-  [FONT_FAMILY.Virgil]: {
-    metrics: {
-      unitsPerEm: 1e3,
-      ascender: 886,
-      descender: -374,
-      lineHeight: 1.25
-    },
-    deprecated: true
-  },
-  [FONT_FAMILY.Helvetica]: {
-    metrics: {
-      unitsPerEm: 2048,
-      ascender: 1577,
-      descender: -471,
-      lineHeight: 1.15
-    },
-    deprecated: true,
-    local: true
-  },
-  [FONT_FAMILY.Cascadia]: {
-    metrics: {
-      unitsPerEm: 2048,
-      ascender: 1900,
-      descender: -480,
-      lineHeight: 1.2
-    },
-    deprecated: true
-  },
-  [FONT_FAMILY["Liberation Sans"]]: {
-    metrics: {
-      unitsPerEm: 2048,
-      ascender: 1854,
-      descender: -434,
-      lineHeight: 1.15
-    },
-    private: true
-  },
-  [FONT_FAMILY.Assistant]: {
-    metrics: {
-      unitsPerEm: 2048,
-      ascender: 1021,
-      descender: -287,
-      lineHeight: 1.25
-    },
-    private: true
-  },
-  [FONT_FAMILY_FALLBACKS.Xiaolai]: {
-    metrics: {
-      unitsPerEm: 1e3,
-      ascender: 880,
-      descender: -144,
-      lineHeight: 1.25
-    },
-    fallback: true
-  },
-  [FONT_FAMILY_FALLBACKS["Segoe UI Emoji"]]: {
-    metrics: {
-      // reusing Excalifont metrics
-      unitsPerEm: 1e3,
-      ascender: 886,
-      descender: -374,
-      lineHeight: 1.25
-    },
-    local: true,
-    fallback: true
-  }
-};
-var GOOGLE_FONTS_RANGES = {
-  LATIN: "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
-  LATIN_EXT: "U+0100-02AF, U+0304, U+0308, U+0329, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
-  CYRILIC_EXT: "U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F",
-  CYRILIC: "U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116",
-  VIETNAMESE: "U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB"
-};
-var LOCAL_FONT_PROTOCOL = "local:";
-var getVerticalOffset = (fontFamily, fontSize, lineHeightPx) => {
-  const { unitsPerEm, ascender, descender } = FONT_METADATA[fontFamily]?.metrics || FONT_METADATA[FONT_FAMILY.Excalifont].metrics;
-  const fontSizeEm = fontSize / unitsPerEm;
-  const lineGap = (lineHeightPx - fontSizeEm * ascender + fontSizeEm * descender) / 2;
-  const verticalOffset = fontSizeEm * ascender + lineGap;
-  return verticalOffset;
-};
-var getLineHeight = (fontFamily) => {
-  const { lineHeight } = FONT_METADATA[fontFamily]?.metrics || FONT_METADATA[FONT_FAMILY.Excalifont].metrics;
-  return lineHeight;
-};
-
-// ../common/src/queue.ts
-var Queue = class {
-  constructor() {
-    __publicField(this, "jobs", []);
-    __publicField(this, "running", false);
-  }
-  tick() {
-    if (this.running) {
-      return;
-    }
-    const job = this.jobs.shift();
-    if (job) {
-      this.running = true;
-      job.promise.resolve(
-        promiseTry(job.jobFactory, ...job.args).finally(() => {
-          this.running = false;
-          this.tick();
-        })
-      );
-    } else {
-      this.running = false;
-    }
-  }
-  push(jobFactory, ...args) {
-    const promise = resolvablePromise();
-    this.jobs.push({ jobFactory, promise, args });
-    this.tick();
-    return promise;
-  }
-};
-
-// ../common/src/keys.ts
-var CODES = {
-  EQUAL: "Equal",
-  MINUS: "Minus",
-  NUM_ADD: "NumpadAdd",
-  NUM_SUBTRACT: "NumpadSubtract",
-  NUM_ZERO: "Numpad0",
-  BRACKET_RIGHT: "BracketRight",
-  BRACKET_LEFT: "BracketLeft",
-  ONE: "Digit1",
-  TWO: "Digit2",
-  THREE: "Digit3",
-  NINE: "Digit9",
-  QUOTE: "Quote",
-  ZERO: "Digit0",
-  SLASH: "Slash",
-  C: "KeyC",
-  D: "KeyD",
-  H: "KeyH",
-  V: "KeyV",
-  Z: "KeyZ",
-  Y: "KeyY",
-  R: "KeyR",
-  S: "KeyS"
-};
-var KEYS = {
-  ARROW_DOWN: "ArrowDown",
-  ARROW_LEFT: "ArrowLeft",
-  ARROW_RIGHT: "ArrowRight",
-  ARROW_UP: "ArrowUp",
-  PAGE_UP: "PageUp",
-  PAGE_DOWN: "PageDown",
-  BACKSPACE: "Backspace",
-  ALT: "Alt",
-  CTRL_OR_CMD: isDarwin ? "metaKey" : "ctrlKey",
-  DELETE: "Delete",
-  ENTER: "Enter",
-  ESCAPE: "Escape",
-  QUESTION_MARK: "?",
-  SPACE: " ",
-  TAB: "Tab",
-  CHEVRON_LEFT: "<",
-  CHEVRON_RIGHT: ">",
-  PERIOD: ".",
-  COMMA: ",",
-  SUBTRACT: "-",
-  SLASH: "/",
-  A: "a",
-  C: "c",
-  D: "d",
-  E: "e",
-  F: "f",
-  G: "g",
-  H: "h",
-  I: "i",
-  L: "l",
-  O: "o",
-  P: "p",
-  Q: "q",
-  R: "r",
-  S: "s",
-  T: "t",
-  V: "v",
-  X: "x",
-  Y: "y",
-  Z: "z",
-  K: "k",
-  W: "w",
-  0: "0",
-  1: "1",
-  2: "2",
-  3: "3",
-  4: "4",
-  5: "5",
-  6: "6",
-  7: "7",
-  8: "8",
-  9: "9"
-};
-var KeyCodeMap = /* @__PURE__ */ new Map([
-  [KEYS.Z, CODES.Z],
-  [KEYS.Y, CODES.Y]
-]);
-var isLatinChar = (key) => /^[a-z]$/.test(key.toLowerCase());
-var matchKey = (event, key) => {
-  if (key === event.key.toLowerCase()) {
-    return true;
-  }
-  const code = KeyCodeMap.get(key);
-  return Boolean(code && !isLatinChar(event.key) && event.code === code);
-};
-var isArrowKey = (key) => key === KEYS.ARROW_LEFT || key === KEYS.ARROW_RIGHT || key === KEYS.ARROW_DOWN || key === KEYS.ARROW_UP;
-var shouldResizeFromCenter = (event) => event.altKey;
-var shouldMaintainAspectRatio = (event) => event.shiftKey;
-var shouldRotateWithDiscreteAngle = (event) => event.shiftKey;
-
-// ../common/src/points.ts
-import {
-  pointFromPair
-} from "@excalidraw/math";
-var getSizeFromPoints = (points) => {
-  const xs = points.map((point) => point[0]);
-  const ys = points.map((point) => point[1]);
-  return {
-    width: Math.max(...xs) - Math.min(...xs),
-    height: Math.max(...ys) - Math.min(...ys)
-  };
-};
-var rescalePoints = (dimension, newSize, points, normalize) => {
-  const coordinates = points.map((point) => point[dimension]);
-  const maxCoordinate = Math.max(...coordinates);
-  const minCoordinate = Math.min(...coordinates);
-  const size = maxCoordinate - minCoordinate;
-  const scale = size === 0 ? 1 : newSize / size;
-  let nextMinCoordinate = Infinity;
-  const scaledPoints = points.map((point) => {
-    const newCoordinate = point[dimension] * scale;
-    const newPoint = [...point];
-    newPoint[dimension] = newCoordinate;
-    if (newCoordinate < nextMinCoordinate) {
-      nextMinCoordinate = newCoordinate;
-    }
-    return newPoint;
-  });
-  if (!normalize) {
-    return scaledPoints;
-  }
-  if (scaledPoints.length === 2) {
-    return scaledPoints;
-  }
-  const translation = minCoordinate - nextMinCoordinate;
-  const nextPoints = scaledPoints.map(
-    (scaledPoint) => pointFromPair(
-      scaledPoint.map((value, currentDimension) => {
-        return currentDimension === dimension ? value + translation : value;
-      })
-    )
-  );
-  return nextPoints;
-};
-var getGridPoint = (x, y, gridSize) => {
-  if (gridSize) {
-    return [
-      Math.round(x / gridSize) * gridSize,
-      Math.round(y / gridSize) * gridSize
-    ];
-  }
-  return [x, y];
-};
-
-// ../common/src/promise-pool.ts
-import Pool from "es6-promise-pool";
-var PromisePool = class {
-  constructor(source, concurrency) {
-    __publicField(this, "pool");
-    __publicField(this, "entries", {});
-    this.pool = new Pool(
-      source,
-      concurrency
-    );
-  }
-  all() {
-    const listener = (event) => {
-      if (event.data.result) {
-        const [index, value] = event.data.result;
-        this.entries[index] = value;
-      }
-    };
-    this.pool.addEventListener("fulfilled", listener);
-    return this.pool.start().then(() => {
-      setTimeout(() => {
-        this.pool.removeEventListener("fulfilled", listener);
-      });
-      return Object.values(this.entries);
-    });
-  }
-};
-
-// ../common/src/random.ts
-import { nanoid } from "nanoid";
-import { Random } from "roughjs/bin/math";
-var random = new Random(Date.now());
-var testIdBase = 0;
-var randomInteger = () => Math.floor(random.next() * 2 ** 31);
-var randomId = () => isTestEnv() ? `id${testIdBase++}` : nanoid();
 
 // ../common/src/emitter.ts
 var Emitter = class {
@@ -2939,8 +3003,598 @@ function deepEqual(a, b) {
   return true;
 }
 
+// ../math/src/range.ts
+function rangeInclusive(start, end) {
+  return toBrandedType([start, end]);
+}
+var rangesOverlap = ([a0, a1], [b0, b1]) => {
+  if (a0 <= b0) {
+    return a1 >= b0;
+  }
+  if (a0 >= b0) {
+    return b1 >= a0;
+  }
+  return false;
+};
+var rangeIntersection = ([a0, a1], [b0, b1]) => {
+  const rangeStart = Math.max(a0, b0);
+  const rangeEnd = Math.min(a1, b1);
+  if (rangeStart <= rangeEnd) {
+    return toBrandedType([rangeStart, rangeEnd]);
+  }
+  return null;
+};
+var rangeIncludesValue = (value, [min, max]) => {
+  return value >= min && value <= max;
+};
+
+// ../math/src/rectangle.ts
+function rectangle(topLeft, bottomRight) {
+  return [topLeft, bottomRight];
+}
+
+// ../math/src/triangle.ts
+function triangleIncludesPoint([a, b, c], p) {
+  const triangleSign = (p1, p2, p3) => (p1[0] - p3[0]) * (p2[1] - p3[1]) - (p2[0] - p3[0]) * (p1[1] - p3[1]);
+  const d1 = triangleSign(p, a, b);
+  const d2 = triangleSign(p, b, c);
+  const d3 = triangleSign(p, c, a);
+  const has_neg = d1 < 0 || d2 < 0 || d3 < 0;
+  const has_pos = d1 > 0 || d2 > 0 || d3 > 0;
+  return !(has_neg && has_pos);
+}
+
+// ../common/src/colors.ts
+var DARK_MODE_COLORS_CACHE = typeof window !== "undefined" ? /* @__PURE__ */ new Map() : null;
+function cssHueRotate(red, green, blue, degrees) {
+  const r = red / 255;
+  const g = green / 255;
+  const b = blue / 255;
+  const a = degreesToRadians(degrees);
+  const c = Math.cos(a);
+  const s = Math.sin(a);
+  const matrix = [
+    0.213 + c * 0.787 - s * 0.213,
+    0.715 - c * 0.715 - s * 0.715,
+    0.072 - c * 0.072 + s * 0.928,
+    0.213 - c * 0.213 + s * 0.143,
+    0.715 + c * 0.285 + s * 0.14,
+    0.072 - c * 0.072 - s * 0.283,
+    0.213 - c * 0.213 - s * 0.787,
+    0.715 - c * 0.715 + s * 0.715,
+    0.072 + c * 0.928 + s * 0.072
+  ];
+  const newR = r * matrix[0] + g * matrix[1] + b * matrix[2];
+  const newG = r * matrix[3] + g * matrix[4] + b * matrix[5];
+  const newB = r * matrix[6] + g * matrix[7] + b * matrix[8];
+  return {
+    r: Math.round(Math.max(0, Math.min(1, newR)) * 255),
+    g: Math.round(Math.max(0, Math.min(1, newG)) * 255),
+    b: Math.round(Math.max(0, Math.min(1, newB)) * 255)
+  };
+}
+var cssInvert = (r, g, b, percent) => {
+  const p = clamp(percent, 0, 100) / 100;
+  const invertComponent = (color) => {
+    const inverted = color * (1 - p) + (255 - color) * p;
+    return Math.round(clamp(inverted, 0, 255));
+  };
+  const invertedR = invertComponent(r);
+  const invertedG = invertComponent(g);
+  const invertedB = invertComponent(b);
+  return { r: invertedR, g: invertedG, b: invertedB };
+};
+var applyDarkModeFilter = (color) => {
+  const cached = DARK_MODE_COLORS_CACHE?.get(color);
+  if (cached) {
+    return cached;
+  }
+  const tc = tinycolor(color);
+  const alpha = tc.getAlpha();
+  const rgb = tc.toRgb();
+  const inverted = cssInvert(rgb.r, rgb.g, rgb.b, 93);
+  const rotated = cssHueRotate(
+    inverted.r,
+    inverted.g,
+    inverted.b,
+    180
+  );
+  const result = rgbToHex2(rotated.r, rotated.g, rotated.b, alpha);
+  if (DARK_MODE_COLORS_CACHE) {
+    DARK_MODE_COLORS_CACHE.set(color, result);
+  }
+  return result;
+};
+var pick = (source, keys) => {
+  return keys.reduce((acc, key) => {
+    if (key in source) {
+      acc[key] = source[key];
+    }
+    return acc;
+  }, {});
+};
+var MAX_CUSTOM_COLORS_USED_IN_CANVAS = 5;
+var COLORS_PER_ROW = 5;
+var DEFAULT_CHART_COLOR_INDEX = 4;
+var DEFAULT_ELEMENT_STROKE_COLOR_INDEX = 4;
+var DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX = 1;
+var COLOR_PALETTE = {
+  transparent: "transparent",
+  black: "#1e1e1e",
+  white: "#ffffff",
+  // open-color from https://github.com/yeun/open-color/blob/master/open-color.js
+  // corresponds to indexes [0,2,4,6,8] (weights: 50, 200, 400, 600, 800)
+  gray: ["#f8f9fa", "#e9ecef", "#ced4da", "#868e96", "#343a40"],
+  red: ["#fff5f5", "#ffc9c9", "#ff8787", "#fa5252", "#e03131"],
+  pink: ["#fff0f6", "#fcc2d7", "#f783ac", "#e64980", "#c2255c"],
+  grape: ["#f8f0fc", "#eebefa", "#da77f2", "#be4bdb", "#9c36b5"],
+  violet: ["#f3f0ff", "#d0bfff", "#9775fa", "#7950f2", "#6741d9"],
+  blue: ["#e7f5ff", "#a5d8ff", "#4dabf7", "#228be6", "#1971c2"],
+  cyan: ["#e3fafc", "#99e9f2", "#3bc9db", "#15aabf", "#0c8599"],
+  teal: ["#e6fcf5", "#96f2d7", "#38d9a9", "#12b886", "#099268"],
+  green: ["#ebfbee", "#b2f2bb", "#69db7c", "#40c057", "#2f9e44"],
+  yellow: ["#fff9db", "#ffec99", "#ffd43b", "#fab005", "#f08c00"],
+  orange: ["#fff4e6", "#ffd8a8", "#ffa94d", "#fd7e14", "#e8590c"],
+  // radix bronze shades [3,5,7,9,11]
+  bronze: ["#f8f1ee", "#eaddd7", "#d2bab0", "#a18072", "#846358"]
+};
+var COMMON_ELEMENT_SHADES = pick(COLOR_PALETTE, [
+  "cyan",
+  "blue",
+  "violet",
+  "grape",
+  "pink",
+  "green",
+  "teal",
+  "yellow",
+  "orange",
+  "red"
+]);
+var DEFAULT_ELEMENT_STROKE_PICKS = [
+  COLOR_PALETTE.black,
+  COLOR_PALETTE.red[DEFAULT_ELEMENT_STROKE_COLOR_INDEX],
+  COLOR_PALETTE.green[DEFAULT_ELEMENT_STROKE_COLOR_INDEX],
+  COLOR_PALETTE.blue[DEFAULT_ELEMENT_STROKE_COLOR_INDEX],
+  COLOR_PALETTE.yellow[DEFAULT_ELEMENT_STROKE_COLOR_INDEX]
+];
+var DEFAULT_ELEMENT_BACKGROUND_PICKS = [
+  COLOR_PALETTE.transparent,
+  COLOR_PALETTE.red[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX],
+  COLOR_PALETTE.green[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX],
+  COLOR_PALETTE.blue[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX],
+  COLOR_PALETTE.yellow[DEFAULT_ELEMENT_BACKGROUND_COLOR_INDEX]
+];
+var DEFAULT_CANVAS_BACKGROUND_PICKS = [
+  COLOR_PALETTE.white,
+  // radix slate2
+  "#f8f9fa",
+  // radix blue2
+  "#f5faff",
+  // radix yellow2
+  "#fffce8",
+  // radix bronze2
+  "#fdf8f6"
+];
+var DEFAULT_ELEMENT_STROKE_COLOR_PALETTE = {
+  // 1st row
+  transparent: COLOR_PALETTE.transparent,
+  white: COLOR_PALETTE.white,
+  gray: COLOR_PALETTE.gray,
+  black: COLOR_PALETTE.black,
+  bronze: COLOR_PALETTE.bronze,
+  // rest
+  ...COMMON_ELEMENT_SHADES
+};
+var DEFAULT_ELEMENT_BACKGROUND_COLOR_PALETTE = {
+  transparent: COLOR_PALETTE.transparent,
+  white: COLOR_PALETTE.white,
+  gray: COLOR_PALETTE.gray,
+  black: COLOR_PALETTE.black,
+  bronze: COLOR_PALETTE.bronze,
+  ...COMMON_ELEMENT_SHADES
+};
+var getAllColorsSpecificShade = (index) => [
+  // 2nd row
+  COLOR_PALETTE.cyan[index],
+  COLOR_PALETTE.blue[index],
+  COLOR_PALETTE.violet[index],
+  COLOR_PALETTE.grape[index],
+  COLOR_PALETTE.pink[index],
+  // 3rd row
+  COLOR_PALETTE.green[index],
+  COLOR_PALETTE.teal[index],
+  COLOR_PALETTE.yellow[index],
+  COLOR_PALETTE.orange[index],
+  COLOR_PALETTE.red[index]
+];
+var rgbToHex2 = (r, g, b, a) => {
+  const hex6 = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+  if (a !== void 0 && a < 1) {
+    const alphaHex = Math.round(a * 255).toString(16).padStart(2, "0");
+    return `${hex6}${alphaHex}`;
+  }
+  return hex6;
+};
+var isTransparent = (color) => {
+  return tinycolor(color).getAlpha() === 0;
+};
+var COLOR_OUTLINE_CONTRAST_THRESHOLD = 240;
+var calculateContrast = (r, g, b) => {
+  const yiq = (r * 299 + g * 587 + b * 114) / 1e3;
+  return yiq;
+};
+var isColorDark = (color, threshold = 160) => {
+  if (!color) {
+    return true;
+  }
+  if (isTransparent(color)) {
+    return false;
+  }
+  const tc = tinycolor(color);
+  if (!tc.isValid()) {
+    return true;
+  }
+  const { r, g, b } = tc.toRgb();
+  return calculateContrast(r, g, b) < threshold;
+};
+var normalizeInputColor = (color) => {
+  color = color.trim();
+  if (isTransparent(color)) {
+    return color;
+  }
+  const tc = tinycolor(color);
+  if (tc.isValid()) {
+    if (["hex", "hex8"].includes(tc.getFormat()) && !color.startsWith("#")) {
+      return `#${color}`;
+    }
+    return color;
+  }
+  return null;
+};
+
+// ../common/src/constants.ts
+var supportsResizeObserver = typeof window !== "undefined" && "ResizeObserver" in window;
+var APP_NAME = "Excalidraw";
+var TEXT_AUTOWRAP_THRESHOLD = 36;
+var DRAGGING_THRESHOLD = 10;
+var MINIMUM_ARROW_SIZE = 20;
+var LINE_CONFIRM_THRESHOLD = 8;
+var ELEMENT_SHIFT_TRANSLATE_AMOUNT = 5;
+var ELEMENT_TRANSLATE_AMOUNT = 1;
+var TEXT_TO_CENTER_SNAP_THRESHOLD = 30;
+var SHIFT_LOCKING_ANGLE = Math.PI / 12;
+var DEFAULT_LASER_COLOR = "red";
+var CURSOR_TYPE = {
+  TEXT: "text",
+  CROSSHAIR: "crosshair",
+  GRABBING: "grabbing",
+  GRAB: "grab",
+  POINTER: "pointer",
+  MOVE: "move",
+  AUTO: ""
+};
+var POINTER_BUTTON = {
+  MAIN: 0,
+  WHEEL: 1,
+  SECONDARY: 2,
+  TOUCH: -1,
+  ERASER: 5
+};
+var POINTER_EVENTS = {
+  enabled: "all",
+  disabled: "none",
+  // asserted as any so it can be freely assigned to React Element
+  // "pointerEnvets" CSS prop
+  inheritFromUI: "var(--ui-pointerEvents)"
+};
+var YOUTUBE_STATES = {
+  UNSTARTED: -1,
+  ENDED: 0,
+  PLAYING: 1,
+  PAUSED: 2,
+  BUFFERING: 3,
+  CUED: 5
+};
+var ENV = {
+  TEST: "test",
+  DEVELOPMENT: "development",
+  PRODUCTION: "production"
+};
+var CLASSES = {
+  SIDEBAR: "sidebar",
+  SHAPE_ACTIONS_MENU: "App-menu__left",
+  ZOOM_ACTIONS: "zoom-actions",
+  SEARCH_MENU_INPUT_WRAPPER: "layer-ui__search-inputWrapper",
+  CONVERT_ELEMENT_TYPE_POPUP: "ConvertElementTypePopup",
+  SHAPE_ACTIONS_THEME_SCOPE: "shape-actions-theme-scope",
+  FRAME_NAME: "frame-name",
+  DROPDOWN_MENU_EVENT_WRAPPER: "dropdown-menu-event-wrapper"
+};
+var FONT_SIZES = {
+  sm: 16,
+  md: 20,
+  lg: 28,
+  xl: 36
+};
+var CJK_HAND_DRAWN_FALLBACK_FONT = "Xiaolai";
+var WINDOWS_EMOJI_FALLBACK_FONT = "Segoe UI Emoji";
+var FONT_FAMILY = {
+  Virgil: 1,
+  Helvetica: 2,
+  Cascadia: 3,
+  // leave 4 unused as it was historically used for Assistant (which we don't use anymore) or custom font (Obsidian)
+  Excalifont: 5,
+  Nunito: 6,
+  "Lilita One": 7,
+  "Comic Shanns": 8,
+  "Liberation Sans": 9,
+  Assistant: 10
+};
+var SANS_SERIF_GENERIC_FONT = "sans-serif";
+var MONOSPACE_GENERIC_FONT = "monospace";
+var FONT_FAMILY_GENERIC_FALLBACKS = {
+  [SANS_SERIF_GENERIC_FONT]: 998,
+  [MONOSPACE_GENERIC_FONT]: 999
+};
+var FONT_FAMILY_FALLBACKS = {
+  [CJK_HAND_DRAWN_FALLBACK_FONT]: 100,
+  ...FONT_FAMILY_GENERIC_FALLBACKS,
+  [WINDOWS_EMOJI_FALLBACK_FONT]: 1e3
+};
+function getGenericFontFamilyFallback(fontFamily) {
+  switch (fontFamily) {
+    case FONT_FAMILY.Cascadia:
+    case FONT_FAMILY["Comic Shanns"]:
+      return MONOSPACE_GENERIC_FONT;
+    default:
+      return SANS_SERIF_GENERIC_FONT;
+  }
+}
+var getFontFamilyFallbacks = (fontFamily) => {
+  const genericFallbackFont = getGenericFontFamilyFallback(fontFamily);
+  switch (fontFamily) {
+    case FONT_FAMILY.Excalifont:
+      return [
+        CJK_HAND_DRAWN_FALLBACK_FONT,
+        genericFallbackFont,
+        WINDOWS_EMOJI_FALLBACK_FONT
+      ];
+    default:
+      return [genericFallbackFont, WINDOWS_EMOJI_FALLBACK_FONT];
+  }
+};
+var THEME = {
+  LIGHT: "light",
+  DARK: "dark"
+};
+var DARK_THEME_FILTER = "invert(93%) hue-rotate(180deg)";
+var FRAME_STYLE = {
+  strokeColor: "#bbb",
+  strokeWidth: 2,
+  strokeStyle: "solid",
+  fillStyle: "solid",
+  roughness: 0,
+  roundness: null,
+  backgroundColor: "transparent",
+  radius: 8,
+  nameOffsetY: 3,
+  nameColorLightTheme: "#999999",
+  nameColorDarkTheme: "#7a7a7a",
+  nameFontSize: 14,
+  nameLineHeight: 1.25
+};
+var MIN_FONT_SIZE = 1;
+var DEFAULT_FONT_SIZE = 20;
+var DEFAULT_FONT_FAMILY = FONT_FAMILY.Helvetica;
+var DEFAULT_TEXT_ALIGN = "left";
+var DEFAULT_VERTICAL_ALIGN = "top";
+var DEFAULT_TRANSFORM_HANDLE_SPACING = 2;
+var SIDE_RESIZING_THRESHOLD = 2 * DEFAULT_TRANSFORM_HANDLE_SPACING;
+var EPSILON = 1e-5;
+var DEFAULT_COLLISION_THRESHOLD = 2 * SIDE_RESIZING_THRESHOLD - EPSILON;
+var COLOR_WHITE = "#ffffff";
+var COLOR_CHARCOAL_BLACK = "#1e1e1e";
+var COLOR_VOICE_CALL = "#a2f1a6";
+var DEFAULT_GRID_SIZE = 20;
+var DEFAULT_GRID_STEP = 5;
+var IMAGE_MIME_TYPES = {
+  svg: "image/svg+xml",
+  png: "image/png",
+  jpg: "image/jpeg",
+  gif: "image/gif",
+  webp: "image/webp",
+  bmp: "image/bmp",
+  ico: "image/x-icon",
+  avif: "image/avif",
+  jfif: "image/jfif"
+};
+var STRING_MIME_TYPES = {
+  text: "text/plain",
+  html: "text/html",
+  json: "application/json",
+  // excalidraw data
+  excalidraw: "application/vnd.excalidraw+json",
+  excalidrawClipboard: "application/vnd.excalidraw.clipboard+json",
+  // LEGACY: fully-qualified library JSON data
+  excalidrawlib: "application/vnd.excalidrawlib+json",
+  // list of excalidraw library item ids
+  excalidrawlibIds: "application/vnd.excalidrawlib.ids+json"
+};
+var MIME_TYPES = {
+  ...STRING_MIME_TYPES,
+  // image-encoded excalidraw data
+  "excalidraw.svg": "image/svg+xml",
+  "excalidraw.png": "image/png",
+  // binary
+  binary: "application/octet-stream",
+  // image
+  ...IMAGE_MIME_TYPES
+};
+var ALLOWED_PASTE_MIME_TYPES = [
+  MIME_TYPES.text,
+  MIME_TYPES.html,
+  ...Object.values(IMAGE_MIME_TYPES)
+];
+var EXPORT_DATA_TYPES = {
+  excalidraw: "excalidraw",
+  excalidrawClipboard: "excalidraw/clipboard",
+  excalidrawLibrary: "excalidrawlib",
+  excalidrawClipboardWithAPI: "excalidraw-api/clipboard"
+};
+var getExportSource = () => window.EXCALIDRAW_EXPORT_SOURCE || window.location.origin;
+var IMAGE_RENDER_TIMEOUT = 500;
+var TAP_TWICE_TIMEOUT = 300;
+var TOUCH_CTX_MENU_TIMEOUT = 500;
+var SCROLL_TIMEOUT = 100;
+var ZOOM_STEP = 0.1;
+var MIN_ZOOM = 0.1;
+var MAX_ZOOM = 30;
+var HYPERLINK_TOOLTIP_DELAY = 300;
+var URL_QUERY_KEYS = {
+  addLibrary: "addLibrary"
+};
+var URL_HASH_KEYS = {
+  addLibrary: "addLibrary"
+};
+var DEFAULT_UI_OPTIONS = {
+  canvasActions: {
+    changeViewBackgroundColor: true,
+    clearCanvas: true,
+    export: { saveFileToDisk: true },
+    loadScene: true,
+    saveToActiveFile: true,
+    toggleTheme: null,
+    saveAsImage: true
+  },
+  tools: {
+    image: true
+  }
+};
+var MAX_DECIMALS_FOR_SVG_EXPORT = 2;
+var EXPORT_SCALES = [1, 2, 3];
+var DEFAULT_EXPORT_PADDING = 10;
+var DEFAULT_MAX_IMAGE_WIDTH_OR_HEIGHT = 1440;
+var MAX_ALLOWED_FILE_BYTES = 4 * 1024 * 1024;
+var SVG_NS = "http://www.w3.org/2000/svg";
+var SVG_DOCUMENT_PREAMBLE = `<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+`;
+var VERSIONS = {
+  excalidraw: 2,
+  excalidrawLibrary: 2
+};
+var BOUND_TEXT_PADDING = 5;
+var ARROW_LABEL_WIDTH_FRACTION = 0.7;
+var ARROW_LABEL_FONT_SIZE_TO_MIN_WIDTH_RATIO = 11;
+var VERTICAL_ALIGN = {
+  TOP: "top",
+  MIDDLE: "middle",
+  BOTTOM: "bottom"
+};
+var TEXT_ALIGN = {
+  LEFT: "left",
+  CENTER: "center",
+  RIGHT: "right"
+};
+var ELEMENT_READY_TO_ERASE_OPACITY = 20;
+var DEFAULT_PROPORTIONAL_RADIUS = 0.25;
+var DEFAULT_ADAPTIVE_RADIUS = 32;
+var ROUNDNESS = {
+  // Used for legacy rounding (rectangles), which currently works the same
+  // as PROPORTIONAL_RADIUS, but we need to differentiate for UI purposes and
+  // forwards-compat.
+  LEGACY: 1,
+  // Used for linear elements & diamonds
+  PROPORTIONAL_RADIUS: 2,
+  // Current default algorithm for rectangles, using fixed pixel radius.
+  // It's working similarly to a regular border-radius, but attemps to make
+  // radius visually similar across differnt element sizes, especially
+  // very large and very small elements.
+  //
+  // NOTE right now we don't allow configuration and use a constant radius
+  // (see DEFAULT_ADAPTIVE_RADIUS constant)
+  ADAPTIVE_RADIUS: 3
+};
+var ROUGHNESS = {
+  architect: 0,
+  artist: 1,
+  cartoonist: 2
+};
+var STROKE_WIDTH = {
+  thin: 1,
+  bold: 2,
+  extraBold: 4
+};
+var DEFAULT_ELEMENT_PROPS = {
+  strokeColor: COLOR_PALETTE.black,
+  backgroundColor: COLOR_PALETTE.transparent,
+  fillStyle: "solid",
+  strokeWidth: 2,
+  strokeStyle: "solid",
+  roughness: ROUGHNESS.artist,
+  opacity: 100,
+  locked: false
+};
+var LIBRARY_SIDEBAR_TAB = "library";
+var CANVAS_SEARCH_TAB = "search";
+var DEFAULT_SIDEBAR = {
+  name: "default",
+  defaultTab: LIBRARY_SIDEBAR_TAB
+};
+var LIBRARY_DISABLED_TYPES = /* @__PURE__ */ new Set([
+  "iframe",
+  "embeddable",
+  "image"
+]);
+var TOOL_TYPE = {
+  selection: "selection",
+  lasso: "lasso",
+  rectangle: "rectangle",
+  diamond: "diamond",
+  ellipse: "ellipse",
+  arrow: "arrow",
+  line: "line",
+  freedraw: "freedraw",
+  text: "text",
+  image: "image",
+  eraser: "eraser",
+  hand: "hand",
+  frame: "frame",
+  magicframe: "magicframe",
+  embeddable: "embeddable",
+  laser: "laser"
+};
+var EDITOR_LS_KEYS = {
+  OAI_API_KEY: "excalidraw-oai-api-key",
+  // legacy naming (non)scheme
+  MERMAID_TO_EXCALIDRAW: "mermaid-to-excalidraw",
+  PUBLISH_LIBRARY: "publish-library-data"
+};
+var DEFAULT_FILENAME = "Untitled";
+var STATS_PANELS = { generalStats: 1, elementProperties: 2 };
+var MIN_WIDTH_OR_HEIGHT = 1;
+var ARROW_TYPE = {
+  sharp: "sharp",
+  round: "round",
+  elbow: "elbow"
+};
+var DEFAULT_REDUCED_GLOBAL_ALPHA = 0.3;
+var ELEMENT_LINK_KEY = "element";
+var ORIG_ID = Symbol.for("__test__originalId__");
+var UserIdleState = /* @__PURE__ */ ((UserIdleState2) => {
+  UserIdleState2["ACTIVE"] = "active";
+  UserIdleState2["AWAY"] = "away";
+  UserIdleState2["IDLE"] = "idle";
+  return UserIdleState2;
+})(UserIdleState || {});
+var LINE_POLYGON_POINT_MERGE_DISTANCE = 20;
+var DOUBLE_TAP_POSITION_THRESHOLD = 35;
+var BIND_MODE_TIMEOUT = 700;
+var MOBILE_ACTION_BUTTON_BG = {
+  background: "var(--mobile-action-button-bg)"
+};
+
 // ../element/src/typeChecks.ts
-import { pointsEqual } from "@excalidraw/math";
 var isInitializedImageElement = (element) => {
   return !!element && element.type === "image" && !!element.fileId;
 };
@@ -3182,8 +3836,8 @@ var getLineWidth = (text, font) => {
 var getTextWidth = (text, font) => {
   const lines = splitIntoLines(text);
   let width = 0;
-  lines.forEach((line) => {
-    width = Math.max(width, getLineWidth(line, font));
+  lines.forEach((line2) => {
+    width = Math.max(width, getLineWidth(line2, font));
   });
   return width;
 };
@@ -3193,7 +3847,7 @@ var getTextHeight = (text, fontSize, lineHeight) => {
 };
 var charWidth = /* @__PURE__ */ (() => {
   const cachedCharWidth = {};
-  const calculate = (char, font) => {
+  const calculate2 = (char, font) => {
     const unicode = char.charCodeAt(0);
     if (!cachedCharWidth[font]) {
       cachedCharWidth[font] = [];
@@ -3211,7 +3865,7 @@ var charWidth = /* @__PURE__ */ (() => {
     cachedCharWidth[font] = [];
   };
   return {
-    calculate,
+    calculate: calculate2,
     getCache,
     clearCache
   };
@@ -3224,9 +3878,6 @@ var getMaxCharWidth = (font) => {
   const cacheWithOutEmpty = cache.filter((val) => val !== void 0);
   return Math.max(...cacheWithOutEmpty);
 };
-
-// ../element/src/textElement.ts
-import { pointFrom as pointFrom20, pointRotateRads as pointRotateRads16 } from "@excalidraw/math";
 
 // ../element/src/containerCache.ts
 var originalContainerCache = {};
@@ -3244,91 +3895,22 @@ var getOriginalContainerHeightFromCache = (id) => {
   return originalContainerCache[id]?.height ?? null;
 };
 
-// ../element/src/linearElementEditor.ts
-import {
-  pointCenter as pointCenter3,
-  pointFrom as pointFrom19,
-  pointRotateRads as pointRotateRads15,
-  pointsEqual as pointsEqual7,
-  pointDistance as pointDistance8,
-  vectorFromPoint as vectorFromPoint9,
-  curveLength,
-  curvePointAtLength
-} from "@excalidraw/math";
-
 // ../utils/src/shape.ts
 import { pointsOnBezierCurves as pointsOnBezierCurves2 } from "points-on-curve";
-import {
-  curve as curve2,
-  lineSegment as lineSegment6,
-  pointFrom as pointFrom18,
-  pointDistance as pointDistance7,
-  pointFromArray as pointFromArray3,
-  pointFromVector as pointFromVector6,
-  pointRotateRads as pointRotateRads14,
-  polygon,
-  polygonFromPoints,
-  PRECISION as PRECISION2,
-  segmentsIntersectAt,
-  vector as vector2,
-  vectorAdd as vectorAdd2,
-  vectorFromPoint as vectorFromPoint8,
-  vectorScale as vectorScale7
-} from "@excalidraw/math";
-
-// ../element/src/sizeHelpers.ts
-import {
-  normalizeRadians,
-  radiansBetweenAngles,
-  radiansDifference
-} from "@excalidraw/math";
-import { pointsEqual as pointsEqual6 } from "@excalidraw/math";
 
 // ../element/src/bounds.ts
 import rough2 from "roughjs/bin/rough";
-import {
-  degreesToRadians as degreesToRadians2,
-  lineSegment as lineSegment5,
-  pointDistance as pointDistance5,
-  pointFrom as pointFrom11,
-  pointFromArray as pointFromArray2,
-  pointRotateRads as pointRotateRads10
-} from "@excalidraw/math";
 import { pointsOnBezierCurves } from "points-on-curve";
 
 // ../element/src/shape.ts
 import { simplify } from "points-on-curve";
 import { getStroke } from "perfect-freehand";
-import {
-  pointFrom as pointFrom10,
-  pointDistance as pointDistance4,
-  pointRotateRads as pointRotateRads9
-} from "@excalidraw/math";
 import { RoughGenerator } from "roughjs/bin/generator";
 
 // ../element/src/renderElement.ts
 import rough from "roughjs/bin/rough";
-import {
-  isRightAngleRads,
-  lineSegment as lineSegment4,
-  pointFrom as pointFrom9,
-  pointRotateRads as pointRotateRads8
-} from "@excalidraw/math";
 
 // ../element/src/cropElement.ts
-import {
-  pointFrom,
-  pointCenter,
-  pointRotateRads,
-  vectorFromPoint,
-  vectorNormalize,
-  vectorSubtract,
-  vectorAdd,
-  vectorScale,
-  pointFromVector,
-  clamp as clamp2,
-  isCloseTo
-} from "@excalidraw/math";
 var MINIMAL_CROP_SIZE = 10;
 var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalHeight, pointerX, pointerY, widthAspectRatio) => {
   const { width: uncroppedWidth, height: uncroppedHeight } = getUncroppedWidthAndHeight(element);
@@ -3360,7 +3942,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
   let changeInHeight = pointerY - element.y;
   let changeInWidth = pointerX - element.x;
   if (transformHandle.includes("n")) {
-    nextHeight = clamp2(
+    nextHeight = clamp(
       element.height - changeInHeight,
       MINIMAL_CROP_SIZE,
       isFlippedByY ? uncroppedHeight - croppedTop : element.height + croppedTop
@@ -3368,7 +3950,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
   }
   if (transformHandle.includes("s")) {
     changeInHeight = pointerY - element.y - element.height;
-    nextHeight = clamp2(
+    nextHeight = clamp(
       element.height + changeInHeight,
       MINIMAL_CROP_SIZE,
       isFlippedByY ? element.height + croppedTop : uncroppedHeight - croppedTop
@@ -3376,14 +3958,14 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
   }
   if (transformHandle.includes("e")) {
     changeInWidth = pointerX - element.x - element.width;
-    nextWidth = clamp2(
+    nextWidth = clamp(
       element.width + changeInWidth,
       MINIMAL_CROP_SIZE,
       isFlippedByX ? element.width + croppedLeft : uncroppedWidth - croppedLeft
     );
   }
   if (transformHandle.includes("w")) {
-    nextWidth = clamp2(
+    nextWidth = clamp(
       element.width - changeInWidth,
       MINIMAL_CROP_SIZE,
       isFlippedByX ? uncroppedWidth - croppedLeft : element.width + croppedLeft
@@ -3423,7 +4005,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
         const distanceToLeft = croppedLeft + element.width / 2;
         const distanceToRight = uncroppedWidth - croppedLeft - element.width / 2;
         const MAX_WIDTH = Math.min(distanceToLeft, distanceToRight) * 2;
-        nextWidth = clamp2(
+        nextWidth = clamp(
           nextHeight * widthAspectRatio,
           MINIMAL_CROP_SIZE,
           MAX_WIDTH
@@ -3441,7 +4023,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
         const distanceToLeft = croppedLeft + element.width / 2;
         const distanceToRight = uncroppedWidth - croppedLeft - element.width / 2;
         const MAX_WIDTH = Math.min(distanceToLeft, distanceToRight) * 2;
-        nextWidth = clamp2(
+        nextWidth = clamp(
           nextHeight * widthAspectRatio,
           MINIMAL_CROP_SIZE,
           MAX_WIDTH
@@ -3459,7 +4041,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
         const distanceToTop = croppedTop + element.height / 2;
         const distanceToBottom = uncroppedHeight - croppedTop - element.height / 2;
         const MAX_HEIGHT = Math.min(distanceToTop, distanceToBottom) * 2;
-        nextHeight = clamp2(
+        nextHeight = clamp(
           nextWidth / widthAspectRatio,
           MINIMAL_CROP_SIZE,
           MAX_HEIGHT
@@ -3477,7 +4059,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
         const distanceToTop = croppedTop + element.height / 2;
         const distanceToBottom = uncroppedHeight - croppedTop - element.height / 2;
         const MAX_HEIGHT = Math.min(distanceToTop, distanceToBottom) * 2;
-        nextHeight = clamp2(
+        nextHeight = clamp(
           nextWidth / widthAspectRatio,
           MINIMAL_CROP_SIZE,
           MAX_HEIGHT
@@ -3494,7 +4076,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
       if (widthAspectRatio) {
         if (changeInWidth > -changeInHeight) {
           const MAX_HEIGHT = isFlippedByY ? uncroppedHeight - croppedTop : croppedTop + element.height;
-          nextHeight = clamp2(
+          nextHeight = clamp(
             nextWidth / widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_HEIGHT
@@ -3502,7 +4084,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
           nextWidth = nextHeight * widthAspectRatio;
         } else {
           const MAX_WIDTH = isFlippedByX ? croppedLeft + element.width : uncroppedWidth - croppedLeft;
-          nextWidth = clamp2(
+          nextWidth = clamp(
             nextHeight * widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_WIDTH
@@ -3517,7 +4099,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
       if (widthAspectRatio) {
         if (changeInWidth < changeInHeight) {
           const MAX_HEIGHT = isFlippedByY ? uncroppedHeight - croppedTop : croppedTop + element.height;
-          nextHeight = clamp2(
+          nextHeight = clamp(
             nextWidth / widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_HEIGHT
@@ -3525,7 +4107,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
           nextWidth = nextHeight * widthAspectRatio;
         } else {
           const MAX_WIDTH = isFlippedByX ? uncroppedWidth - croppedLeft : croppedLeft + element.width;
-          nextWidth = clamp2(
+          nextWidth = clamp(
             nextHeight * widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_WIDTH
@@ -3540,7 +4122,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
       if (widthAspectRatio) {
         if (changeInWidth > changeInHeight) {
           const MAX_HEIGHT = isFlippedByY ? croppedTop + element.height : uncroppedHeight - croppedTop;
-          nextHeight = clamp2(
+          nextHeight = clamp(
             nextWidth / widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_HEIGHT
@@ -3548,7 +4130,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
           nextWidth = nextHeight * widthAspectRatio;
         } else {
           const MAX_WIDTH = isFlippedByX ? croppedLeft + element.width : uncroppedWidth - croppedLeft;
-          nextWidth = clamp2(
+          nextWidth = clamp(
             nextHeight * widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_WIDTH
@@ -3563,7 +4145,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
       if (widthAspectRatio) {
         if (-changeInWidth > changeInHeight) {
           const MAX_HEIGHT = isFlippedByY ? croppedTop + element.height : uncroppedHeight - croppedTop;
-          nextHeight = clamp2(
+          nextHeight = clamp(
             nextWidth / widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_HEIGHT
@@ -3571,7 +4153,7 @@ var cropElement = (element, elementsMap, transformHandle, naturalWidth, naturalH
           nextWidth = nextHeight * widthAspectRatio;
         } else {
           const MAX_WIDTH = isFlippedByX ? uncroppedWidth - croppedLeft : croppedLeft + element.width;
-          nextWidth = clamp2(
+          nextWidth = clamp(
             nextHeight * widthAspectRatio,
             MINIMAL_CROP_SIZE,
             MAX_WIDTH
@@ -3772,20 +4354,13 @@ var getFlipAdjustedCropPosition = (element, natural = false) => {
   };
 };
 
-// ../element/src/frame.ts
-import { isPointWithinBounds as isPointWithinBounds2, pointFrom as pointFrom8 } from "@excalidraw/math";
-
 // ../utils/src/bbox.ts
-import {
-  vectorCross,
-  vectorFromPoint as vectorFromPoint2
-} from "@excalidraw/math";
-function getBBox(line) {
+function getBBox(line2) {
   return [
-    Math.min(line[0][0], line[1][0]),
-    Math.min(line[0][1], line[1][1]),
-    Math.max(line[0][0], line[1][0]),
-    Math.max(line[0][1], line[1][1])
+    Math.min(line2[0][0], line2[1][0]),
+    Math.min(line2[0][1], line2[1][1]),
+    Math.max(line2[0][0], line2[1][0]),
+    Math.max(line2[0][1], line2[1][1])
   ];
 }
 function doBBoxesIntersect(a, b) {
@@ -3793,14 +4368,14 @@ function doBBoxesIntersect(a, b) {
 }
 var EPSILON2 = 1e-6;
 function isPointOnLine(l, p) {
-  const p1 = vectorFromPoint2(l[1], l[0]);
-  const p2 = vectorFromPoint2(p, l[0]);
+  const p1 = vectorFromPoint(l[1], l[0]);
+  const p2 = vectorFromPoint(p, l[0]);
   const r = vectorCross(p1, p2);
   return Math.abs(r) < EPSILON2;
 }
 function isPointRightOfLine(l, p) {
-  const p1 = vectorFromPoint2(l[1], l[0]);
-  const p2 = vectorFromPoint2(p, l[0]);
+  const p1 = vectorFromPoint(l[1], l[0]);
+  const p2 = vectorFromPoint(p, l[0]);
   return vectorCross(p1, p2) < 0;
 }
 function isLineSegmentTouchingOrCrossingLine(a, b) {
@@ -3811,26 +4386,20 @@ function doLineSegmentsIntersect(a, b) {
 }
 
 // ../utils/src/withinBounds.ts
-import {
-  rangeIncludesValue,
-  pointFrom as pointFrom2,
-  pointRotateRads as pointRotateRads2,
-  rangeInclusive
-} from "@excalidraw/math";
 var getNonLinearElementRelativePoints = (element) => {
   if (element.type === "diamond") {
     return [
-      pointFrom2(element.width / 2, 0),
-      pointFrom2(element.width, element.height / 2),
-      pointFrom2(element.width / 2, element.height),
-      pointFrom2(0, element.height / 2)
+      pointFrom(element.width / 2, 0),
+      pointFrom(element.width, element.height / 2),
+      pointFrom(element.width / 2, element.height),
+      pointFrom(0, element.height / 2)
     ];
   }
   return [
-    pointFrom2(0, 0),
-    pointFrom2(0 + element.width, 0),
-    pointFrom2(0 + element.width, element.height),
-    pointFrom2(0, element.height)
+    pointFrom(0, 0),
+    pointFrom(0 + element.width, 0),
+    pointFrom(0 + element.width, element.height),
+    pointFrom(0, element.height)
   ];
 };
 var getElementRelativePoints = (element) => {
@@ -3864,9 +4433,9 @@ var getMinMaxPoints = (points) => {
 var getRotatedBBox = (element) => {
   const points = getElementRelativePoints(element);
   const { cx, cy } = getMinMaxPoints(points);
-  const centerPoint = pointFrom2(cx, cy);
+  const centerPoint = pointFrom(cx, cy);
   const rotatedPoints = points.map(
-    (p) => pointRotateRads2(p, centerPoint, element.angle)
+    (p) => pointRotateRads(p, centerPoint, element.angle)
   );
   const { minX, minY, maxX, maxY } = getMinMaxPoints(rotatedPoints);
   return [
@@ -4369,74 +4938,7 @@ var getSelectionStateForElements = (targetElements, allElements, appState) => {
   };
 };
 
-// ../element/src/elbowArrow.ts
-import {
-  clamp as clamp4,
-  pointDistance as pointDistance3,
-  pointFrom as pointFrom7,
-  pointScaleFromOrigin as pointScaleFromOrigin2,
-  pointsEqual as pointsEqual5,
-  pointTranslate as pointTranslate2,
-  vector,
-  vectorCross as vectorCross3,
-  vectorFromPoint as vectorFromPoint7,
-  vectorScale as vectorScale6
-} from "@excalidraw/math";
-
-// ../element/src/binding.ts
-import {
-  PRECISION,
-  clamp as clamp3,
-  lineSegment as lineSegment3,
-  pointDistance as pointDistance2,
-  pointDistanceSq,
-  pointFrom as pointFrom6,
-  pointFromVector as pointFromVector5,
-  pointRotateRads as pointRotateRads7,
-  pointsEqual as pointsEqual4,
-  vectorFromPoint as vectorFromPoint6,
-  vectorNormalize as vectorNormalize4,
-  vectorScale as vectorScale5
-} from "@excalidraw/math";
-
-// ../element/src/collision.ts
-import {
-  curveIntersectLineSegment,
-  isPointWithinBounds,
-  lineSegment as lineSegment2,
-  lineSegmentIntersectionPoints as lineSegmentIntersectionPoints2,
-  pointFrom as pointFrom4,
-  pointFromVector as pointFromVector3,
-  pointRotateRads as pointRotateRads5,
-  pointsEqual as pointsEqual2,
-  vectorFromPoint as vectorFromPoint4,
-  vectorNormalize as vectorNormalize3,
-  vectorScale as vectorScale3
-} from "@excalidraw/math";
-import {
-  ellipse as ellipse2,
-  ellipseSegmentInterceptPoints
-} from "@excalidraw/math/ellipse";
-
 // ../element/src/utils.ts
-import {
-  bezierEquation,
-  curve,
-  curveCatmullRomCubicApproxPoints,
-  curveOffsetPoints,
-  lineSegment,
-  lineSegmentIntersectionPoints,
-  pointDistance,
-  pointFrom as pointFrom3,
-  pointFromArray,
-  pointFromVector as pointFromVector2,
-  pointRotateRads as pointRotateRads3,
-  pointTranslate,
-  rectangle,
-  vectorFromPoint as vectorFromPoint3,
-  vectorNormalize as vectorNormalize2,
-  vectorScale as vectorScale2
-} from "@excalidraw/math";
 var ElementShapesCache = /* @__PURE__ */ new WeakMap();
 var getElementShapesCacheEntry = (element, offset) => {
   const record = ElementShapesCache.get(element);
@@ -4489,11 +4991,11 @@ function deconstructLinearOrFreeDrawElement(element) {
         }
         lines.push(
           lineSegment(
-            pointFrom3(
+            pointFrom(
               element.x + prevPoint[0],
               element.y + prevPoint[1]
             ),
-            pointFrom3(
+            pointFrom(
               element.x + op.data[0],
               element.y + op.data[1]
             )
@@ -4506,19 +5008,19 @@ function deconstructLinearOrFreeDrawElement(element) {
         }
         curves.push(
           curve(
-            pointFrom3(
+            pointFrom(
               element.x + prevPoint[0],
               element.y + prevPoint[1]
             ),
-            pointFrom3(
+            pointFrom(
               element.x + op.data[0],
               element.y + op.data[1]
             ),
-            pointFrom3(
+            pointFrom(
               element.x + op.data[2],
               element.y + op.data[3]
             ),
-            pointFrom3(
+            pointFrom(
               element.x + op.data[4],
               element.y + op.data[5]
             )
@@ -4547,33 +5049,33 @@ function deconstructRectanguloidElement(element, offset = 0) {
     radius = 0.01;
   }
   const r = rectangle(
-    pointFrom3(element.x, element.y),
-    pointFrom3(element.x + element.width, element.y + element.height)
+    pointFrom(element.x, element.y),
+    pointFrom(element.x + element.width, element.y + element.height)
   );
   const top = lineSegment(
-    pointFrom3(r[0][0] + radius, r[0][1]),
-    pointFrom3(r[1][0] - radius, r[0][1])
+    pointFrom(r[0][0] + radius, r[0][1]),
+    pointFrom(r[1][0] - radius, r[0][1])
   );
   const right = lineSegment(
-    pointFrom3(r[1][0], r[0][1] + radius),
-    pointFrom3(r[1][0], r[1][1] - radius)
+    pointFrom(r[1][0], r[0][1] + radius),
+    pointFrom(r[1][0], r[1][1] - radius)
   );
   const bottom = lineSegment(
-    pointFrom3(r[0][0] + radius, r[1][1]),
-    pointFrom3(r[1][0] - radius, r[1][1])
+    pointFrom(r[0][0] + radius, r[1][1]),
+    pointFrom(r[1][0] - radius, r[1][1])
   );
   const left = lineSegment(
-    pointFrom3(r[0][0], r[1][1] - radius),
-    pointFrom3(r[0][0], r[0][1] + radius)
+    pointFrom(r[0][0], r[1][1] - radius),
+    pointFrom(r[0][0], r[0][1] + radius)
   );
   const baseCorners = [
     curve(
       left[1],
-      pointFrom3(
+      pointFrom(
         left[1][0] + 2 / 3 * (r[0][0] - left[1][0]),
         left[1][1] + 2 / 3 * (r[0][1] - left[1][1])
       ),
-      pointFrom3(
+      pointFrom(
         top[0][0] + 2 / 3 * (r[0][0] - top[0][0]),
         top[0][1] + 2 / 3 * (r[0][1] - top[0][1])
       ),
@@ -4582,11 +5084,11 @@ function deconstructRectanguloidElement(element, offset = 0) {
     // TOP LEFT
     curve(
       top[1],
-      pointFrom3(
+      pointFrom(
         top[1][0] + 2 / 3 * (r[1][0] - top[1][0]),
         top[1][1] + 2 / 3 * (r[0][1] - top[1][1])
       ),
-      pointFrom3(
+      pointFrom(
         right[0][0] + 2 / 3 * (r[1][0] - right[0][0]),
         right[0][1] + 2 / 3 * (r[0][1] - right[0][1])
       ),
@@ -4595,11 +5097,11 @@ function deconstructRectanguloidElement(element, offset = 0) {
     // TOP RIGHT
     curve(
       right[1],
-      pointFrom3(
+      pointFrom(
         right[1][0] + 2 / 3 * (r[1][0] - right[1][0]),
         right[1][1] + 2 / 3 * (r[1][1] - right[1][1])
       ),
-      pointFrom3(
+      pointFrom(
         bottom[1][0] + 2 / 3 * (r[1][0] - bottom[1][0]),
         bottom[1][1] + 2 / 3 * (r[1][1] - bottom[1][1])
       ),
@@ -4608,11 +5110,11 @@ function deconstructRectanguloidElement(element, offset = 0) {
     // BOTTOM RIGHT
     curve(
       bottom[0],
-      pointFrom3(
+      pointFrom(
         bottom[0][0] + 2 / 3 * (r[0][0] - bottom[0][0]),
         bottom[0][1] + 2 / 3 * (r[1][1] - bottom[0][1])
       ),
-      pointFrom3(
+      pointFrom(
         left[0][0] + 2 / 3 * (r[0][0] - left[0][0]),
         left[0][1] + 2 / 3 * (r[1][1] - left[0][1])
       ),
@@ -4657,59 +5159,59 @@ function getDiamondBaseCorners(element, offset = 0) {
   const verticalRadius = element.roundness ? getCornerRadius(Math.abs(topX - leftX), element) : (topX - leftX) * 0.01;
   const horizontalRadius = element.roundness ? getCornerRadius(Math.abs(rightY - topY), element) : (rightY - topY) * 0.01;
   const [top, right, bottom, left] = [
-    pointFrom3(element.x + topX, element.y + topY),
-    pointFrom3(element.x + rightX, element.y + rightY),
-    pointFrom3(element.x + bottomX, element.y + bottomY),
-    pointFrom3(element.x + leftX, element.y + leftY)
+    pointFrom(element.x + topX, element.y + topY),
+    pointFrom(element.x + rightX, element.y + rightY),
+    pointFrom(element.x + bottomX, element.y + bottomY),
+    pointFrom(element.x + leftX, element.y + leftY)
   ];
   return [
     curve(
-      pointFrom3(
+      pointFrom(
         right[0] - verticalRadius,
         right[1] - horizontalRadius
       ),
       right,
       right,
-      pointFrom3(
+      pointFrom(
         right[0] - verticalRadius,
         right[1] + horizontalRadius
       )
     ),
     // RIGHT
     curve(
-      pointFrom3(
+      pointFrom(
         bottom[0] + verticalRadius,
         bottom[1] - horizontalRadius
       ),
       bottom,
       bottom,
-      pointFrom3(
+      pointFrom(
         bottom[0] - verticalRadius,
         bottom[1] - horizontalRadius
       )
     ),
     // BOTTOM
     curve(
-      pointFrom3(
+      pointFrom(
         left[0] + verticalRadius,
         left[1] + horizontalRadius
       ),
       left,
       left,
-      pointFrom3(
+      pointFrom(
         left[0] + verticalRadius,
         left[1] - horizontalRadius
       )
     ),
     // LEFT
     curve(
-      pointFrom3(
+      pointFrom(
         top[0] - verticalRadius,
         top[1] + horizontalRadius
       ),
       top,
       top,
-      pointFrom3(
+      pointFrom(
         top[0] + verticalRadius,
         top[1] + horizontalRadius
       )
@@ -4773,23 +5275,23 @@ var getCornerRadius = (x, element) => {
 var getDiagonalsForBindableElement = (element, elementsMap) => {
   const OFFSET_PX = element.type === "rectangle" ? 15 : 0;
   const shrinkSegment = (seg) => {
-    const v = vectorNormalize2(vectorFromPoint3(seg[1], seg[0]));
-    const offset = vectorScale2(v, OFFSET_PX);
+    const v = vectorNormalize(vectorFromPoint(seg[1], seg[0]));
+    const offset = vectorScale(v, OFFSET_PX);
     return lineSegment(
       pointTranslate(seg[0], offset),
-      pointTranslate(seg[1], vectorScale2(offset, -1))
+      pointTranslate(seg[1], vectorScale(offset, -1))
     );
   };
   const center = elementCenterPoint(element, elementsMap);
   const diagonalOne = shrinkSegment(
     isRectangularElement(element) ? lineSegment(
-      pointRotateRads3(
-        pointFrom3(element.x, element.y),
+      pointRotateRads(
+        pointFrom(element.x, element.y),
         center,
         element.angle
       ),
-      pointRotateRads3(
-        pointFrom3(
+      pointRotateRads(
+        pointFrom(
           element.x + element.width,
           element.y + element.height
         ),
@@ -4797,13 +5299,13 @@ var getDiagonalsForBindableElement = (element, elementsMap) => {
         element.angle
       )
     ) : lineSegment(
-      pointRotateRads3(
-        pointFrom3(element.x + element.width / 2, element.y),
+      pointRotateRads(
+        pointFrom(element.x + element.width / 2, element.y),
         center,
         element.angle
       ),
-      pointRotateRads3(
-        pointFrom3(
+      pointRotateRads(
+        pointFrom(
           element.x + element.width / 2,
           element.y + element.height
         ),
@@ -4814,24 +5316,24 @@ var getDiagonalsForBindableElement = (element, elementsMap) => {
   );
   const diagonalTwo = shrinkSegment(
     isRectangularElement(element) ? lineSegment(
-      pointRotateRads3(
-        pointFrom3(element.x + element.width, element.y),
+      pointRotateRads(
+        pointFrom(element.x + element.width, element.y),
         center,
         element.angle
       ),
-      pointRotateRads3(
-        pointFrom3(element.x, element.y + element.height),
+      pointRotateRads(
+        pointFrom(element.x, element.y + element.height),
         center,
         element.angle
       )
     ) : lineSegment(
-      pointRotateRads3(
-        pointFrom3(element.x, element.y + element.height / 2),
+      pointRotateRads(
+        pointFrom(element.x, element.y + element.height / 2),
         center,
         element.angle
       ),
-      pointRotateRads3(
-        pointFrom3(
+      pointRotateRads(
+        pointFrom(
           element.x + element.width,
           element.y + element.height / 2
         ),
@@ -4844,14 +5346,14 @@ var getDiagonalsForBindableElement = (element, elementsMap) => {
 };
 var getSnapOutlineMidPoint = (point, element, elementsMap, zoom) => {
   const center = elementCenterPoint(element, elementsMap);
-  const sideMidpoints = element.type === "diamond" ? getDiamondBaseCorners(element).map((curve3) => {
-    const point2 = bezierEquation(curve3, 0.5);
-    const rotatedPoint = pointRotateRads3(point2, center, element.angle);
-    return pointFrom3(rotatedPoint[0], rotatedPoint[1]);
+  const sideMidpoints = element.type === "diamond" ? getDiamondBaseCorners(element).map((curve2) => {
+    const point2 = bezierEquation(curve2, 0.5);
+    const rotatedPoint = pointRotateRads(point2, center, element.angle);
+    return pointFrom(rotatedPoint[0], rotatedPoint[1]);
   }) : [
     // RIGHT midpoint
-    pointRotateRads3(
-      pointFrom3(
+    pointRotateRads(
+      pointFrom(
         element.x + element.width,
         element.y + element.height / 2
       ),
@@ -4859,8 +5361,8 @@ var getSnapOutlineMidPoint = (point, element, elementsMap, zoom) => {
       element.angle
     ),
     // BOTTOM midpoint
-    pointRotateRads3(
-      pointFrom3(
+    pointRotateRads(
+      pointFrom(
         element.x + element.width / 2,
         element.y + element.height
       ),
@@ -4868,14 +5370,14 @@ var getSnapOutlineMidPoint = (point, element, elementsMap, zoom) => {
       element.angle
     ),
     // LEFT midpoint
-    pointRotateRads3(
-      pointFrom3(element.x, element.y + element.height / 2),
+    pointRotateRads(
+      pointFrom(element.x, element.y + element.height / 2),
       center,
       element.angle
     ),
     // TOP midpoint
-    pointRotateRads3(
-      pointFrom3(element.x + element.width / 2, element.y),
+    pointRotateRads(
+      pointFrom(element.x + element.width / 2, element.y),
       center,
       element.angle
     )
@@ -4928,9 +5430,9 @@ var projectFixedPointOntoDiagonal = (arrow, point, element, startOrEnd, elements
       a = otherFocusPoint;
     }
   }
-  const b = pointFromVector2(
-    vectorScale2(
-      vectorFromPoint3(point, a),
+  const b = pointFromVector(
+    vectorScale(
+      vectorFromPoint(point, a),
       2 * pointDistance(a, point) + Math.max(
         pointDistance(diagonalOne[0], diagonalOne[1]),
         pointDistance(diagonalTwo[0], diagonalTwo[1])
@@ -4956,12 +5458,6 @@ var projectFixedPointOntoDiagonal = (arrow, point, element, startOrEnd, elements
 };
 
 // ../element/src/distance.ts
-import {
-  curvePointDistance,
-  distanceToLineSegment,
-  pointRotateRads as pointRotateRads4
-} from "@excalidraw/math";
-import { ellipse, ellipseDistanceFromPoint } from "@excalidraw/math/ellipse";
 var distanceToElement = (element, elementsMap, p) => {
   switch (element.type) {
     case "selection":
@@ -4985,7 +5481,7 @@ var distanceToElement = (element, elementsMap, p) => {
 };
 var distanceToRectanguloidElement = (element, elementsMap, p) => {
   const center = elementCenterPoint(element, elementsMap);
-  const rotatedPoint = pointRotateRads4(p, center, -element.angle);
+  const rotatedPoint = pointRotateRads(p, center, -element.angle);
   const [sides, corners] = deconstructRectanguloidElement(element);
   return Math.min(
     ...sides.map((s) => distanceToLineSegment(rotatedPoint, s)),
@@ -4994,7 +5490,7 @@ var distanceToRectanguloidElement = (element, elementsMap, p) => {
 };
 var distanceToDiamondElement = (element, elementsMap, p) => {
   const center = elementCenterPoint(element, elementsMap);
-  const rotatedPoint = pointRotateRads4(p, center, -element.angle);
+  const rotatedPoint = pointRotateRads(p, center, -element.angle);
   const [sides, curves] = deconstructDiamondElement(element);
   return Math.min(
     ...sides.map((s) => distanceToLineSegment(rotatedPoint, s)),
@@ -5005,7 +5501,7 @@ var distanceToEllipseElement = (element, elementsMap, p) => {
   const center = elementCenterPoint(element, elementsMap);
   return ellipseDistanceFromPoint(
     // Instead of rotating the ellipse, rotate the point to the inverse angle
-    pointRotateRads4(p, center, -element.angle),
+    pointRotateRads(p, center, -element.angle),
     ellipse(center, element.width / 2, element.height / 2)
   );
 };
@@ -5044,29 +5540,29 @@ var hitElementItself = ({
   frameNameBound = null,
   overrideShouldTestInside = false
 }) => {
-  if (cachedPoint && pointsEqual2(point, cachedPoint) && cachedThreshold <= threshold && overrideShouldTestInside === cachedOverrideShouldTestInside) {
+  if (cachedPoint && pointsEqual(point, cachedPoint) && cachedThreshold <= threshold && overrideShouldTestInside === cachedOverrideShouldTestInside) {
     const derefElement = cachedElement?.deref();
     if (derefElement && derefElement.id === element.id && derefElement.version === element.version && derefElement.versionNonce === element.versionNonce) {
       return cachedHit;
     }
   }
   const hitFrameName = frameNameBound ? isPointWithinBounds(
-    pointFrom4(frameNameBound.x - threshold, frameNameBound.y - threshold),
+    pointFrom(frameNameBound.x - threshold, frameNameBound.y - threshold),
     point,
-    pointFrom4(
+    pointFrom(
       frameNameBound.x + frameNameBound.width + threshold,
       frameNameBound.y + frameNameBound.height + threshold
     )
   ) : false;
   const bounds = getElementBounds(element, elementsMap, true);
   const hitBounds = isPointWithinBounds(
-    pointFrom4(bounds[0] - threshold, bounds[1] - threshold),
-    pointRotateRads5(
+    pointFrom(bounds[0] - threshold, bounds[1] - threshold),
+    pointRotateRads(
       point,
       getCenterForBounds(bounds),
       -element.angle
     ),
-    pointFrom4(bounds[2] + threshold, bounds[3] + threshold)
+    pointFrom(bounds[2] + threshold, bounds[3] + threshold)
   );
   if (!hitBounds && !hitFrameName) {
     return false;
@@ -5090,7 +5586,7 @@ var hitElementBoundingBox = (point, element, elementsMap, tolerance = 0) => {
   y1 -= tolerance;
   x2 += tolerance;
   y2 += tolerance;
-  return isPointWithinBounds(pointFrom4(x1, y1), point, pointFrom4(x2, y2));
+  return isPointWithinBounds(pointFrom(x1, y1), point, pointFrom(x2, y2));
 };
 var hitElementBoundingBoxOnly = (hitArgs, elementsMap) => !hitElementItself(hitArgs) && // bound text is considered part of the element (even if it's outside the bounding box)
 !hitElementBoundText(hitArgs.point, hitArgs.element, elementsMap) && hitElementBoundingBox(hitArgs.point, hitArgs.element, elementsMap);
@@ -5112,7 +5608,7 @@ var hitElementBoundText = (point, element, elementsMap) => {
   return isPointInElement(point, boundTextElement, elementsMap);
 };
 var bindingBorderTest = (element, [x, y], elementsMap, tolerance = 0) => {
-  const p = pointFrom4(x, y);
+  const p = pointFrom(x, y);
   const shouldTestInside2 = (
     // disable fullshape snapping for frame elements so we
     // can bind to frame children
@@ -5139,7 +5635,7 @@ var bindingBorderTest = (element, [x, y], elementsMap, tolerance = 0) => {
   const intersections = intersectElementWithLineSegment(
     element,
     elementsMap,
-    lineSegment2(elementCenterPoint(element, elementsMap), p)
+    lineSegment(elementCenterPoint(element, elementsMap), p)
   );
   const distance2 = distanceToElement(element, elementsMap, p);
   return shouldTestInside2 ? intersections.length === 0 || distance2 <= tolerance : intersections.length > 0 && distance2 <= t;
@@ -5204,12 +5700,12 @@ var getHoveredElementForFocusPoint = (point, arrow, elements, elementsMap, toler
   }
   return distanceFilteredCandidateElements[0];
 };
-var intersectElementWithLineSegment = (element, elementsMap, line, offset = 0, onlyFirst = false) => {
+var intersectElementWithLineSegment = (element, elementsMap, line2, offset = 0, onlyFirst = false) => {
   const intersectorBounds = [
-    Math.min(line[0][0] - offset, line[1][0] - offset),
-    Math.min(line[0][1] - offset, line[1][1] - offset),
-    Math.max(line[0][0] + offset, line[1][0] + offset),
-    Math.max(line[0][1] + offset, line[1][1] + offset)
+    Math.min(line2[0][0] - offset, line2[1][0] - offset),
+    Math.min(line2[0][1] - offset, line2[1][1] - offset),
+    Math.max(line2[0][0] + offset, line2[1][0] + offset),
+    Math.max(line2[0][1] + offset, line2[1][1] + offset)
   ];
   const elementBounds = getElementBounds(element, elementsMap);
   if (!doBoundsIntersect(intersectorBounds, elementBounds)) {
@@ -5227,7 +5723,7 @@ var intersectElementWithLineSegment = (element, elementsMap, line, offset = 0, o
       return intersectRectanguloidWithLineSegment(
         element,
         elementsMap,
-        line,
+        line2,
         offset,
         onlyFirst
       );
@@ -5235,7 +5731,7 @@ var intersectElementWithLineSegment = (element, elementsMap, line, offset = 0, o
       return intersectDiamondWithLineSegment(
         element,
         elementsMap,
-        line,
+        line2,
         offset,
         onlyFirst
       );
@@ -5243,13 +5739,13 @@ var intersectElementWithLineSegment = (element, elementsMap, line, offset = 0, o
       return intersectEllipseWithLineSegment(
         element,
         elementsMap,
-        line,
+        line2,
         offset
       );
     case "line":
     case "freedraw":
     case "arrow":
-      return intersectLinearOrFreeDrawWithLineSegment(element, line, onlyFirst);
+      return intersectLinearOrFreeDrawWithLineSegment(element, line2, onlyFirst);
   }
 };
 var curveIntersections = (curves, segment, intersections, center, angle, onlyFirst = false) => {
@@ -5267,7 +5763,7 @@ var curveIntersections = (curves, segment, intersections, center, angle, onlyFir
     const hits = curveIntersectLineSegment(c, segment);
     if (hits.length > 0) {
       for (const j of hits) {
-        intersections.push(pointRotateRads5(j, center, angle));
+        intersections.push(pointRotateRads(j, center, angle));
       }
       if (onlyFirst) {
         return intersections;
@@ -5278,9 +5774,9 @@ var curveIntersections = (curves, segment, intersections, center, angle, onlyFir
 };
 var lineIntersections = (lines, segment, intersections, center, angle, onlyFirst = false) => {
   for (const l of lines) {
-    const intersection = lineSegmentIntersectionPoints2(l, segment);
+    const intersection = lineSegmentIntersectionPoints(l, segment);
     if (intersection) {
-      intersections.push(pointRotateRads5(intersection, center, angle));
+      intersections.push(pointRotateRads(intersection, center, angle));
       if (onlyFirst) {
         return intersections;
       }
@@ -5292,7 +5788,7 @@ var intersectLinearOrFreeDrawWithLineSegment = (element, segment, onlyFirst = fa
   const [lines, curves] = deconstructLinearOrFreeDrawElement(element);
   const intersections = [];
   for (const l of lines) {
-    const intersection = lineSegmentIntersectionPoints2(l, segment);
+    const intersection = lineSegmentIntersectionPoints(l, segment);
     if (intersection) {
       intersections.push(intersection);
       if (onlyFirst) {
@@ -5323,17 +5819,17 @@ var intersectLinearOrFreeDrawWithLineSegment = (element, segment, onlyFirst = fa
 };
 var intersectRectanguloidWithLineSegment = (element, elementsMap, segment, offset = 0, onlyFirst = false) => {
   const center = elementCenterPoint(element, elementsMap);
-  const rotatedA = pointRotateRads5(
+  const rotatedA = pointRotateRads(
     segment[0],
     center,
     -element.angle
   );
-  const rotatedB = pointRotateRads5(
+  const rotatedB = pointRotateRads(
     segment[1],
     center,
     -element.angle
   );
-  const rotatedIntersector = lineSegment2(rotatedA, rotatedB);
+  const rotatedIntersector = lineSegment(rotatedA, rotatedB);
   const [sides, corners] = deconstructRectanguloidElement(element, offset);
   const intersections = [];
   lineIntersections(
@@ -5359,9 +5855,9 @@ var intersectRectanguloidWithLineSegment = (element, elementsMap, segment, offse
 };
 var intersectDiamondWithLineSegment = (element, elementsMap, l, offset = 0, onlyFirst = false) => {
   const center = elementCenterPoint(element, elementsMap);
-  const rotatedA = pointRotateRads5(l[0], center, -element.angle);
-  const rotatedB = pointRotateRads5(l[1], center, -element.angle);
-  const rotatedIntersector = lineSegment2(rotatedA, rotatedB);
+  const rotatedA = pointRotateRads(l[0], center, -element.angle);
+  const rotatedB = pointRotateRads(l[1], center, -element.angle);
+  const rotatedIntersector = lineSegment(rotatedA, rotatedB);
   const [sides, corners] = deconstructDiamondElement(element, offset);
   const intersections = [];
   lineIntersections(
@@ -5387,12 +5883,12 @@ var intersectDiamondWithLineSegment = (element, elementsMap, l, offset = 0, only
 };
 var intersectEllipseWithLineSegment = (element, elementsMap, l, offset = 0) => {
   const center = elementCenterPoint(element, elementsMap);
-  const rotatedA = pointRotateRads5(l[0], center, -element.angle);
-  const rotatedB = pointRotateRads5(l[1], center, -element.angle);
+  const rotatedA = pointRotateRads(l[0], center, -element.angle);
+  const rotatedB = pointRotateRads(l[1], center, -element.angle);
   return ellipseSegmentInterceptPoints(
-    ellipse2(center, element.width / 2 + offset, element.height / 2 + offset),
-    lineSegment2(rotatedA, rotatedB)
-  ).map((p) => pointRotateRads5(p, center, element.angle));
+    ellipse(center, element.width / 2 + offset, element.height / 2 + offset),
+    lineSegment(rotatedA, rotatedB)
+  ).map((p) => pointRotateRads(p, center, element.angle));
 };
 var isPointOnElementOutline = (point, element, elementsMap, tolerance = 1) => distanceToElement(element, elementsMap, point) <= tolerance;
 var isPointInElement = (point, element, elementsMap) => {
@@ -5400,23 +5896,23 @@ var isPointInElement = (point, element, elementsMap) => {
     return false;
   }
   const [x1, y1, x2, y2] = getElementBounds(element, elementsMap);
-  if (!isPointWithinBounds(pointFrom4(x1, y1), point, pointFrom4(x2, y2))) {
+  if (!isPointWithinBounds(pointFrom(x1, y1), point, pointFrom(x2, y2))) {
     return false;
   }
-  const center = pointFrom4((x1 + x2) / 2, (y1 + y2) / 2);
-  const otherPoint = pointFromVector3(
-    vectorScale3(
-      vectorNormalize3(vectorFromPoint4(point, center, 0.1)),
+  const center = pointFrom((x1 + x2) / 2, (y1 + y2) / 2);
+  const otherPoint = pointFromVector(
+    vectorScale(
+      vectorNormalize(vectorFromPoint(point, center, 0.1)),
       Math.max(element.width, element.height) * 2
     ),
     center
   );
-  const intersector = lineSegment2(point, otherPoint);
+  const intersector = lineSegment(point, otherPoint);
   const intersections = intersectElementWithLineSegment(
     element,
     elementsMap,
     intersector
-  ).filter((p, pos, arr) => arr.findIndex((q) => pointsEqual2(q, p)) === pos);
+  ).filter((p, pos, arr) => arr.findIndex((q) => pointsEqual(q, p)) === pos);
   return intersections.length % 2 === 1;
 };
 var isBindableElementInsideOtherBindable = (innerElement, outerElement, elementsMap) => {
@@ -5426,16 +5922,16 @@ var isBindableElementInsideOtherBindable = (innerElement, outerElement, elements
     if (element.type === "diamond") {
       const [topX, topY, rightX, rightY, bottomX, bottomY, leftX, leftY] = getDiamondPoints(element);
       const corners2 = [
-        pointFrom4(x + topX, y + topY - offset2),
+        pointFrom(x + topX, y + topY - offset2),
         // top
-        pointFrom4(x + rightX + offset2, y + rightY),
+        pointFrom(x + rightX + offset2, y + rightY),
         // right
-        pointFrom4(x + bottomX, y + bottomY + offset2),
+        pointFrom(x + bottomX, y + bottomY + offset2),
         // bottom
-        pointFrom4(x + leftX - offset2, y + leftY)
+        pointFrom(x + leftX - offset2, y + leftY)
         // left
       ];
-      return corners2.map((corner) => pointRotateRads5(corner, center, angle));
+      return corners2.map((corner) => pointRotateRads(corner, center, angle));
     }
     if (element.type === "ellipse") {
       const cx = x + width / 2;
@@ -5443,28 +5939,28 @@ var isBindableElementInsideOtherBindable = (innerElement, outerElement, elements
       const rx = width / 2;
       const ry = height / 2;
       const corners2 = [
-        pointFrom4(cx, cy - ry - offset2),
+        pointFrom(cx, cy - ry - offset2),
         // top
-        pointFrom4(cx + rx + offset2, cy),
+        pointFrom(cx + rx + offset2, cy),
         // right
-        pointFrom4(cx, cy + ry + offset2),
+        pointFrom(cx, cy + ry + offset2),
         // bottom
-        pointFrom4(cx - rx - offset2, cy)
+        pointFrom(cx - rx - offset2, cy)
         // left
       ];
-      return corners2.map((corner) => pointRotateRads5(corner, center, angle));
+      return corners2.map((corner) => pointRotateRads(corner, center, angle));
     }
     const corners = [
-      pointFrom4(x - offset2, y - offset2),
+      pointFrom(x - offset2, y - offset2),
       // top-left
-      pointFrom4(x + width + offset2, y - offset2),
+      pointFrom(x + width + offset2, y - offset2),
       // top-right
-      pointFrom4(x + width + offset2, y + height + offset2),
+      pointFrom(x + width + offset2, y + height + offset2),
       // bottom-right
-      pointFrom4(x - offset2, y + height + offset2)
+      pointFrom(x - offset2, y + height + offset2)
       // bottom-left
     ];
-    return corners.map((corner) => pointRotateRads5(corner, center, angle));
+    return corners.map((corner) => pointRotateRads(corner, center, angle));
   };
   const offset = -1 * Math.max(innerElement.width, innerElement.height) / 20;
   const innerCorners = getCornerPoints(innerElement, offset);
@@ -5474,17 +5970,6 @@ var isBindableElementInsideOtherBindable = (innerElement, outerElement, elements
 };
 
 // ../element/src/heading.ts
-import {
-  pointFrom as pointFrom5,
-  pointFromVector as pointFromVector4,
-  pointRotateRads as pointRotateRads6,
-  pointScaleFromOrigin,
-  pointsEqual as pointsEqual3,
-  triangleIncludesPoint,
-  vectorCross as vectorCross2,
-  vectorFromPoint as vectorFromPoint5,
-  vectorScale as vectorScale4
-} from "@excalidraw/math";
 var HEADING_RIGHT = [1, 0];
 var HEADING_DOWN = [0, 1];
 var HEADING_LEFT = [-1, 0];
@@ -5502,7 +5987,7 @@ var vectorToHeading = (vec) => {
   }
   return HEADING_UP;
 };
-var headingForPoint = (p, o) => vectorToHeading(vectorFromPoint5(p, o));
+var headingForPoint = (p, o) => vectorToHeading(vectorFromPoint(p, o));
 var headingForPointIsHorizontal = (p, o) => headingIsHorizontal(headingForPoint(p, o));
 var compareHeading = (a, b) => a[0] === b[0] && a[1] === b[1];
 var headingIsHorizontal = (a) => compareHeading(a, HEADING_RIGHT) || compareHeading(a, HEADING_LEFT);
@@ -5514,16 +5999,16 @@ var headingForPointFromDiamondElement = (element, aabb, point) => {
       "Diamond element has no width or height"
     );
     invariant(
-      !pointsEqual3(midPoint, point),
+      !pointsEqual(midPoint, point),
       "The point is too close to the element mid point to determine heading"
     );
   }
   const SHRINK = 0.95;
-  const top = pointFromVector4(
-    vectorScale4(
-      vectorFromPoint5(
-        pointRotateRads6(
-          pointFrom5(element.x + element.width / 2, element.y),
+  const top = pointFromVector(
+    vectorScale(
+      vectorFromPoint(
+        pointRotateRads(
+          pointFrom(element.x + element.width / 2, element.y),
           midPoint,
           element.angle
         ),
@@ -5533,11 +6018,11 @@ var headingForPointFromDiamondElement = (element, aabb, point) => {
     ),
     midPoint
   );
-  const right = pointFromVector4(
-    vectorScale4(
-      vectorFromPoint5(
-        pointRotateRads6(
-          pointFrom5(
+  const right = pointFromVector(
+    vectorScale(
+      vectorFromPoint(
+        pointRotateRads(
+          pointFrom(
             element.x + element.width,
             element.y + element.height / 2
           ),
@@ -5550,11 +6035,11 @@ var headingForPointFromDiamondElement = (element, aabb, point) => {
     ),
     midPoint
   );
-  const bottom = pointFromVector4(
-    vectorScale4(
-      vectorFromPoint5(
-        pointRotateRads6(
-          pointFrom5(
+  const bottom = pointFromVector(
+    vectorScale(
+      vectorFromPoint(
+        pointRotateRads(
+          pointFrom(
             element.x + element.width / 2,
             element.y + element.height
           ),
@@ -5567,11 +6052,11 @@ var headingForPointFromDiamondElement = (element, aabb, point) => {
     ),
     midPoint
   );
-  const left = pointFromVector4(
-    vectorScale4(
-      vectorFromPoint5(
-        pointRotateRads6(
-          pointFrom5(element.x, element.y + element.height / 2),
+  const left = pointFromVector(
+    vectorScale(
+      vectorFromPoint(
+        pointRotateRads(
+          pointFrom(element.x, element.y + element.height / 2),
           midPoint,
           element.angle
         ),
@@ -5581,48 +6066,48 @@ var headingForPointFromDiamondElement = (element, aabb, point) => {
     ),
     midPoint
   );
-  if (vectorCross2(vectorFromPoint5(point, top), vectorFromPoint5(top, right)) <= 0 && vectorCross2(vectorFromPoint5(point, top), vectorFromPoint5(top, left)) > 0) {
+  if (vectorCross(vectorFromPoint(point, top), vectorFromPoint(top, right)) <= 0 && vectorCross(vectorFromPoint(point, top), vectorFromPoint(top, left)) > 0) {
     return headingForPoint(top, midPoint);
-  } else if (vectorCross2(
-    vectorFromPoint5(point, right),
-    vectorFromPoint5(right, bottom)
-  ) <= 0 && vectorCross2(vectorFromPoint5(point, right), vectorFromPoint5(right, top)) > 0) {
+  } else if (vectorCross(
+    vectorFromPoint(point, right),
+    vectorFromPoint(right, bottom)
+  ) <= 0 && vectorCross(vectorFromPoint(point, right), vectorFromPoint(right, top)) > 0) {
     return headingForPoint(right, midPoint);
-  } else if (vectorCross2(
-    vectorFromPoint5(point, bottom),
-    vectorFromPoint5(bottom, left)
-  ) <= 0 && vectorCross2(
-    vectorFromPoint5(point, bottom),
-    vectorFromPoint5(bottom, right)
+  } else if (vectorCross(
+    vectorFromPoint(point, bottom),
+    vectorFromPoint(bottom, left)
+  ) <= 0 && vectorCross(
+    vectorFromPoint(point, bottom),
+    vectorFromPoint(bottom, right)
   ) > 0) {
     return headingForPoint(bottom, midPoint);
-  } else if (vectorCross2(vectorFromPoint5(point, left), vectorFromPoint5(left, top)) <= 0 && vectorCross2(vectorFromPoint5(point, left), vectorFromPoint5(left, bottom)) > 0) {
+  } else if (vectorCross(vectorFromPoint(point, left), vectorFromPoint(left, top)) <= 0 && vectorCross(vectorFromPoint(point, left), vectorFromPoint(left, bottom)) > 0) {
     return headingForPoint(left, midPoint);
   }
-  if (vectorCross2(
-    vectorFromPoint5(point, midPoint),
-    vectorFromPoint5(top, midPoint)
-  ) <= 0 && vectorCross2(
-    vectorFromPoint5(point, midPoint),
-    vectorFromPoint5(right, midPoint)
+  if (vectorCross(
+    vectorFromPoint(point, midPoint),
+    vectorFromPoint(top, midPoint)
+  ) <= 0 && vectorCross(
+    vectorFromPoint(point, midPoint),
+    vectorFromPoint(right, midPoint)
   ) > 0) {
     const p2 = element.width > element.height ? top : right;
     return headingForPoint(p2, midPoint);
-  } else if (vectorCross2(
-    vectorFromPoint5(point, midPoint),
-    vectorFromPoint5(right, midPoint)
-  ) <= 0 && vectorCross2(
-    vectorFromPoint5(point, midPoint),
-    vectorFromPoint5(bottom, midPoint)
+  } else if (vectorCross(
+    vectorFromPoint(point, midPoint),
+    vectorFromPoint(right, midPoint)
+  ) <= 0 && vectorCross(
+    vectorFromPoint(point, midPoint),
+    vectorFromPoint(bottom, midPoint)
   ) > 0) {
     const p2 = element.width > element.height ? bottom : right;
     return headingForPoint(p2, midPoint);
-  } else if (vectorCross2(
-    vectorFromPoint5(point, midPoint),
-    vectorFromPoint5(bottom, midPoint)
-  ) <= 0 && vectorCross2(
-    vectorFromPoint5(point, midPoint),
-    vectorFromPoint5(left, midPoint)
+  } else if (vectorCross(
+    vectorFromPoint(point, midPoint),
+    vectorFromPoint(bottom, midPoint)
+  ) <= 0 && vectorCross(
+    vectorFromPoint(point, midPoint),
+    vectorFromPoint(left, midPoint)
   ) > 0) {
     const p2 = element.width > element.height ? bottom : left;
     return headingForPoint(p2, midPoint);
@@ -5637,22 +6122,22 @@ var headingForPointFromElement = (element, aabb, p) => {
     return headingForPointFromDiamondElement(element, aabb, p);
   }
   const topLeft = pointScaleFromOrigin(
-    pointFrom5(aabb[0], aabb[1]),
+    pointFrom(aabb[0], aabb[1]),
     midPoint,
     SEARCH_CONE_MULTIPLIER
   );
   const topRight = pointScaleFromOrigin(
-    pointFrom5(aabb[2], aabb[1]),
+    pointFrom(aabb[2], aabb[1]),
     midPoint,
     SEARCH_CONE_MULTIPLIER
   );
   const bottomLeft = pointScaleFromOrigin(
-    pointFrom5(aabb[0], aabb[3]),
+    pointFrom(aabb[0], aabb[3]),
     midPoint,
     SEARCH_CONE_MULTIPLIER
   );
   const bottomRight = pointScaleFromOrigin(
-    pointFrom5(aabb[2], aabb[3]),
+    pointFrom(aabb[2], aabb[3]),
     midPoint,
     SEARCH_CONE_MULTIPLIER
   );
@@ -5687,7 +6172,7 @@ var getBindingGap = (bindTarget, opts) => {
 var maxBindingDistance_simple = (zoom) => {
   const BASE_BINDING_DISTANCE = Math.max(BASE_BINDING_GAP, 15);
   const zoomValue = zoom?.value && zoom.value < 1 ? zoom.value : 1;
-  return clamp3(
+  return clamp(
     // reducing zoom impact so that the diff between binding distance and
     // binding gap is kept to minimum when possible
     BASE_BINDING_DISTANCE / (zoomValue * 1.5),
@@ -5827,7 +6312,7 @@ var bindingStrategyForNewSimpleArrowEndpointDragging = (arrow, draggingPoints, e
   if (endDragged) {
     const origin = appState?.selectedLinearElement?.initialState.origin;
     if (hit && arrow.startBinding?.elementId === hit.id) {
-      const center = pointFrom6(
+      const center = pointFrom(
         hit.x + hit.width / 2,
         hit.y + hit.height / 2
       );
@@ -5852,7 +6337,7 @@ var bindingStrategyForNewSimpleArrowEndpointDragging = (arrow, draggingPoints, e
           start: isMultiPoint ? { mode: void 0 } : {
             mode: otherElement.id !== hit.id ? "orbit" : "inside",
             element: otherElement,
-            focusPoint: origin ?? pointFrom6(arrow.x, arrow.y)
+            focusPoint: origin ?? pointFrom(arrow.x, arrow.y)
           },
           end: {
             mode: "orbit",
@@ -5871,7 +6356,7 @@ var bindingStrategyForNewSimpleArrowEndpointDragging = (arrow, draggingPoints, e
       const other = {
         mode: otherIsInsideBinding ? "inside" : "orbit",
         element: otherElement,
-        focusPoint: shiftKey ? elementCenterPoint(otherElement, elementsMap) : origin ?? pointFrom6(arrow.x, arrow.y)
+        focusPoint: shiftKey ? elementCenterPoint(otherElement, elementsMap) : origin ?? pointFrom(arrow.x, arrow.y)
       };
       const isNested = hit && isBindableElementInsideOtherBindable(otherElement, hit, elementsMap);
       let current;
@@ -6043,7 +6528,7 @@ var getBindingStrategyForDraggingBindingElementEndpoints_simple = (arrow, draggi
     maxBindingDistance_simple(appState.zoom)
   );
   const pointInElement = hit && (opts?.angleLocked ? isPointInElement(
-    pointFrom6(scenePointerX, scenePointerY),
+    pointFrom(scenePointerX, scenePointerY),
     hit,
     elementsMap
   ) : isPointInElement(globalPoint, hit, elementsMap));
@@ -6463,7 +6948,7 @@ var getSimultaneouslyUpdatedElementIds = (simultaneouslyUpdated) => {
   return new Set((simultaneouslyUpdated || []).map((element) => element.id));
 };
 var getHeadingForElbowArrowSnap = (p, otherPoint, bindableElement, aabb, origPoint, elementsMap, zoom) => {
-  const otherPointHeading = vectorToHeading(vectorFromPoint6(otherPoint, p));
+  const otherPointHeading = vectorToHeading(vectorFromPoint(otherPoint, p));
   if (!bindableElement || !aabb) {
     return otherPointHeading;
   }
@@ -6475,7 +6960,7 @@ var getHeadingForElbowArrowSnap = (p, otherPoint, bindableElement, aabb, origPoi
   );
   if (!distance2) {
     return vectorToHeading(
-      vectorFromPoint6(p, elementCenterPoint(bindableElement, elementsMap))
+      vectorFromPoint(p, elementCenterPoint(bindableElement, elementsMap))
     );
   }
   return headingForPointFromElement(bindableElement, aabb, p);
@@ -6516,15 +7001,15 @@ var bindPointToSnapToElementOutline = (arrowElement, bindableElement, startOrEnd
     );
     const snapPoint = isMidpointSnappingEnabled ? snapToMid(bindableElement, elementsMap, edgePoint, 0.05, arrowElement) : void 0;
     const resolved = snapPoint || point;
-    const otherPoint = pointFrom6(
+    const otherPoint = pointFrom(
       isHorizontal ? bindableCenter[0] : resolved[0],
       !isHorizontal ? bindableCenter[1] : resolved[1]
     );
-    const intersector = customIntersector ?? lineSegment3(
+    const intersector = customIntersector ?? lineSegment(
       otherPoint,
-      pointFromVector5(
-        vectorScale5(
-          vectorNormalize4(vectorFromPoint6(resolved, otherPoint)),
+      pointFromVector(
+        vectorScale(
+          vectorNormalize(vectorFromPoint(resolved, otherPoint)),
           Math.max(bindableElement.width, bindableElement.height) * 2
         ),
         otherPoint
@@ -6537,15 +7022,15 @@ var bindPointToSnapToElementOutline = (arrowElement, bindableElement, startOrEnd
       bindingGap
     ).sort(pointDistanceSq)[0];
     if (!intersection) {
-      const anotherPoint = pointFrom6(
+      const anotherPoint = pointFrom(
         !isHorizontal ? bindableCenter[0] : resolved[0],
         isHorizontal ? bindableCenter[1] : resolved[1]
       );
-      const anotherIntersector = lineSegment3(
+      const anotherIntersector = lineSegment(
         anotherPoint,
-        pointFromVector5(
-          vectorScale5(
-            vectorNormalize4(vectorFromPoint6(resolved, anotherPoint)),
+        pointFromVector(
+          vectorScale(
+            vectorNormalize(vectorFromPoint(resolved, anotherPoint)),
             Math.max(bindableElement.width, bindableElement.height) * 2
           ),
           anotherPoint
@@ -6561,16 +7046,16 @@ var bindPointToSnapToElementOutline = (arrowElement, bindableElement, startOrEnd
   } else {
     let intersector = customIntersector;
     if (!intersector) {
-      const halfVector = vectorScale5(
-        vectorNormalize4(vectorFromPoint6(edgePoint, adjacentPoint)),
-        pointDistance2(edgePoint, adjacentPoint) + Math.max(bindableElement.width, bindableElement.height) + bindingGap * 2
+      const halfVector = vectorScale(
+        vectorNormalize(vectorFromPoint(edgePoint, adjacentPoint)),
+        pointDistance(edgePoint, adjacentPoint) + Math.max(bindableElement.width, bindableElement.height) + bindingGap * 2
       );
-      intersector = customIntersector ?? lineSegment3(
-        pointFromVector5(halfVector, adjacentPoint),
-        pointFromVector5(vectorScale5(halfVector, -1), adjacentPoint)
+      intersector = customIntersector ?? lineSegment(
+        pointFromVector(halfVector, adjacentPoint),
+        pointFromVector(vectorScale(halfVector, -1), adjacentPoint)
       );
     }
-    intersection = pointDistance2(edgePoint, adjacentPoint) < 1 ? edgePoint : intersectElementWithLineSegment(
+    intersection = pointDistance(edgePoint, adjacentPoint) < 1 ? edgePoint : intersectElementWithLineSegment(
       bindableElement,
       elementsMap,
       intersector,
@@ -6587,7 +7072,7 @@ var bindPointToSnapToElementOutline = (arrowElement, bindableElement, startOrEnd
 };
 var avoidRectangularCorner = (arrowElement, bindTarget, elementsMap, p) => {
   const center = elementCenterPoint(bindTarget, elementsMap);
-  const nonRotatedPoint = pointRotateRads7(
+  const nonRotatedPoint = pointRotateRads(
     p,
     center,
     -bindTarget.angle
@@ -6595,34 +7080,34 @@ var avoidRectangularCorner = (arrowElement, bindTarget, elementsMap, p) => {
   const bindingGap = getBindingGap(bindTarget, arrowElement);
   if (nonRotatedPoint[0] < bindTarget.x && nonRotatedPoint[1] < bindTarget.y) {
     if (nonRotatedPoint[1] - bindTarget.y > -bindingGap) {
-      return pointRotateRads7(
-        pointFrom6(bindTarget.x - bindingGap, bindTarget.y),
+      return pointRotateRads(
+        pointFrom(bindTarget.x - bindingGap, bindTarget.y),
         center,
         bindTarget.angle
       );
     }
-    return pointRotateRads7(
-      pointFrom6(bindTarget.x, bindTarget.y - bindingGap),
+    return pointRotateRads(
+      pointFrom(bindTarget.x, bindTarget.y - bindingGap),
       center,
       bindTarget.angle
     );
   } else if (nonRotatedPoint[0] < bindTarget.x && nonRotatedPoint[1] > bindTarget.y + bindTarget.height) {
     if (nonRotatedPoint[0] - bindTarget.x > -bindingGap) {
-      return pointRotateRads7(
-        pointFrom6(bindTarget.x, bindTarget.y + bindTarget.height + bindingGap),
+      return pointRotateRads(
+        pointFrom(bindTarget.x, bindTarget.y + bindTarget.height + bindingGap),
         center,
         bindTarget.angle
       );
     }
-    return pointRotateRads7(
-      pointFrom6(bindTarget.x - bindingGap, bindTarget.y + bindTarget.height),
+    return pointRotateRads(
+      pointFrom(bindTarget.x - bindingGap, bindTarget.y + bindTarget.height),
       center,
       bindTarget.angle
     );
   } else if (nonRotatedPoint[0] > bindTarget.x + bindTarget.width && nonRotatedPoint[1] > bindTarget.y + bindTarget.height) {
     if (nonRotatedPoint[0] - bindTarget.x < bindTarget.width + bindingGap) {
-      return pointRotateRads7(
-        pointFrom6(
+      return pointRotateRads(
+        pointFrom(
           bindTarget.x + bindTarget.width,
           bindTarget.y + bindTarget.height + bindingGap
         ),
@@ -6630,8 +7115,8 @@ var avoidRectangularCorner = (arrowElement, bindTarget, elementsMap, p) => {
         bindTarget.angle
       );
     }
-    return pointRotateRads7(
-      pointFrom6(
+    return pointRotateRads(
+      pointFrom(
         bindTarget.x + bindTarget.width + bindingGap,
         bindTarget.y + bindTarget.height
       ),
@@ -6640,14 +7125,14 @@ var avoidRectangularCorner = (arrowElement, bindTarget, elementsMap, p) => {
     );
   } else if (nonRotatedPoint[0] > bindTarget.x + bindTarget.width && nonRotatedPoint[1] < bindTarget.y) {
     if (nonRotatedPoint[0] - bindTarget.x < bindTarget.width + bindingGap) {
-      return pointRotateRads7(
-        pointFrom6(bindTarget.x + bindTarget.width, bindTarget.y - bindingGap),
+      return pointRotateRads(
+        pointFrom(bindTarget.x + bindTarget.width, bindTarget.y - bindingGap),
         center,
         bindTarget.angle
       );
     }
-    return pointRotateRads7(
-      pointFrom6(bindTarget.x + bindTarget.width + bindingGap, bindTarget.y),
+    return pointRotateRads(
+      pointFrom(bindTarget.x + bindTarget.width + bindingGap, bindTarget.y),
       center,
       bindTarget.angle
     );
@@ -6657,66 +7142,66 @@ var avoidRectangularCorner = (arrowElement, bindTarget, elementsMap, p) => {
 var snapToMid = (bindTarget, elementsMap, p, tolerance = 0.05, arrowElement) => {
   const { x, y, width, height, angle } = bindTarget;
   const center = elementCenterPoint(bindTarget, elementsMap, -0.1, -0.1);
-  const nonRotated = pointRotateRads7(p, center, -angle);
+  const nonRotated = pointRotateRads(p, center, -angle);
   const bindingGap = arrowElement ? getBindingGap(bindTarget, arrowElement) : 0;
-  const verticalThreshold = clamp3(tolerance * height, 5, 80);
-  const horizontalThreshold = clamp3(tolerance * width, 5, 80);
-  if (pointDistance2(center, nonRotated) < bindingGap) {
+  const verticalThreshold = clamp(tolerance * height, 5, 80);
+  const horizontalThreshold = clamp(tolerance * width, 5, 80);
+  if (pointDistance(center, nonRotated) < bindingGap) {
     return void 0;
   }
   if (nonRotated[0] <= x + width / 2 && nonRotated[1] > center[1] - verticalThreshold && nonRotated[1] < center[1] + verticalThreshold) {
-    return pointRotateRads7(
-      pointFrom6(x - bindingGap, center[1]),
+    return pointRotateRads(
+      pointFrom(x - bindingGap, center[1]),
       center,
       angle
     );
   } else if (nonRotated[1] <= y + height / 2 && nonRotated[0] > center[0] - horizontalThreshold && nonRotated[0] < center[0] + horizontalThreshold) {
-    return pointRotateRads7(
-      pointFrom6(center[0], y - bindingGap),
+    return pointRotateRads(
+      pointFrom(center[0], y - bindingGap),
       center,
       angle
     );
   } else if (nonRotated[0] >= x + width / 2 && nonRotated[1] > center[1] - verticalThreshold && nonRotated[1] < center[1] + verticalThreshold) {
-    return pointRotateRads7(
-      pointFrom6(x + width + bindingGap, center[1]),
+    return pointRotateRads(
+      pointFrom(x + width + bindingGap, center[1]),
       center,
       angle
     );
   } else if (nonRotated[1] >= y + height / 2 && nonRotated[0] > center[0] - horizontalThreshold && nonRotated[0] < center[0] + horizontalThreshold) {
-    return pointRotateRads7(
-      pointFrom6(center[0], y + height + bindingGap),
+    return pointRotateRads(
+      pointFrom(center[0], y + height + bindingGap),
       center,
       angle
     );
   } else if (bindTarget.type === "diamond") {
     const distance2 = bindingGap;
-    const topLeft = pointFrom6(
+    const topLeft = pointFrom(
       x + width / 4 - distance2,
       y + height / 4 - distance2
     );
-    const topRight = pointFrom6(
+    const topRight = pointFrom(
       x + 3 * width / 4 + distance2,
       y + height / 4 - distance2
     );
-    const bottomLeft = pointFrom6(
+    const bottomLeft = pointFrom(
       x + width / 4 - distance2,
       y + 3 * height / 4 + distance2
     );
-    const bottomRight = pointFrom6(
+    const bottomRight = pointFrom(
       x + 3 * width / 4 + distance2,
       y + 3 * height / 4 + distance2
     );
-    if (pointDistance2(topLeft, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
-      return pointRotateRads7(topLeft, center, angle);
+    if (pointDistance(topLeft, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
+      return pointRotateRads(topLeft, center, angle);
     }
-    if (pointDistance2(topRight, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
-      return pointRotateRads7(topRight, center, angle);
+    if (pointDistance(topRight, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
+      return pointRotateRads(topRight, center, angle);
     }
-    if (pointDistance2(bottomLeft, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
-      return pointRotateRads7(bottomLeft, center, angle);
+    if (pointDistance(bottomLeft, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
+      return pointRotateRads(bottomLeft, center, angle);
     }
-    if (pointDistance2(bottomRight, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
-      return pointRotateRads7(bottomRight, center, angle);
+    if (pointDistance(bottomRight, nonRotated) < Math.max(horizontalThreshold, verticalThreshold)) {
+      return pointRotateRads(bottomRight, center, angle);
     }
   }
   return void 0;
@@ -6751,9 +7236,9 @@ var elementArea = (element) => element.width * element.height;
 var updateBoundPoint = (arrow, startOrEnd, binding, bindableElement, elementsMap, dragging) => {
   if (binding == null || // We only need to update the other end if this is a 2 point line element
   binding.elementId !== bindableElement.id && arrow.points.length > 2 || // Initial arrow created on pointer down needs to not update the points
-  pointsEqual4(
+  pointsEqual(
     arrow.points[arrow.points.length - 1],
-    pointFrom6(0, 0)
+    pointFrom(0, 0)
   )) {
     return null;
   }
@@ -6782,7 +7267,7 @@ var updateBoundPoint = (arrow, startOrEnd, binding, bindableElement, elementsMap
     elementsMap
   );
   const otherFocusPointOrArrowPoint = arrow.points.length === 2 ? otherFocusPoint || otherArrowPoint : otherArrowPoint;
-  const intersector = otherFocusPointOrArrowPoint && lineSegment3(focusPoint, otherFocusPointOrArrowPoint);
+  const intersector = otherFocusPointOrArrowPoint && lineSegment(focusPoint, otherFocusPointOrArrowPoint);
   const otherOutlinePoint = otherBindable && intersector && intersectElementWithLineSegment(
     otherBindable,
     elementsMap,
@@ -6819,7 +7304,7 @@ var updateBoundPoint = (arrow, startOrEnd, binding, bindableElement, elementsMap
     );
   }
   const otherTargetPoint = otherBindable ? otherOutlinePoint || otherFocusPoint || otherArrowPoint : otherArrowPoint;
-  const arrowTooShort = pointDistance2(otherTargetPoint, outlinePoint || focusPoint) <= BASE_ARROW_MIN_LENGTH;
+  const arrowTooShort = pointDistance(otherTargetPoint, outlinePoint || focusPoint) <= BASE_ARROW_MIN_LENGTH;
   if (!otherBindable) {
     return LinearElementEditor.createPointAt(
       arrow,
@@ -6865,11 +7350,11 @@ var calculateFixedPointForElbowArrowBinding = (linearElement, hoveredElement, st
     startOrEnd === "start" ? 0 : -1,
     elementsMap
   );
-  const globalMidPoint = pointFrom6(
+  const globalMidPoint = pointFrom(
     bounds[0] + (bounds[2] - bounds[0]) / 2,
     bounds[1] + (bounds[3] - bounds[1]) / 2
   );
-  const nonRotatedSnappedGlobalPoint = pointRotateRads7(
+  const nonRotatedSnappedGlobalPoint = pointRotateRads(
     snappedPoint,
     globalMidPoint,
     -hoveredElement.angle
@@ -6888,7 +7373,7 @@ var calculateFixedPointForNonElbowArrowBinding = (linearElement, hoveredElement,
     elementsMap
   );
   const elementCenter = elementCenterPoint(hoveredElement, elementsMap);
-  const nonRotatedPoint = pointRotateRads7(
+  const nonRotatedPoint = pointRotateRads(
     edgePoint,
     elementCenter,
     -hoveredElement.angle
@@ -7179,8 +7664,8 @@ __publicField(BindableElement, "rebindAffected", (elements, bindableElement, upd
 });
 var getGlobalFixedPointForBindableElement = (fixedPointRatio, element, elementsMap) => {
   const [fixedX, fixedY] = normalizeFixedPoint(fixedPointRatio);
-  return pointRotateRads7(
-    pointFrom6(
+  return pointRotateRads(
+    pointFrom(
       element.x + element.width * fixedX,
       element.y + element.height * fixedY
     ),
@@ -7195,7 +7680,7 @@ var getGlobalFixedPoints = (arrow, elementsMap) => {
     arrow.startBinding.fixedPoint,
     startElement,
     elementsMap
-  ) : pointFrom6(
+  ) : pointFrom(
     arrow.x + arrow.points[0][0],
     arrow.y + arrow.points[0][1]
   );
@@ -7203,7 +7688,7 @@ var getGlobalFixedPoints = (arrow, elementsMap) => {
     arrow.endBinding.fixedPoint,
     endElement,
     elementsMap
-  ) : pointFrom6(
+  ) : pointFrom(
     arrow.x + arrow.points[arrow.points.length - 1][0],
     arrow.y + arrow.points[arrow.points.length - 1][1]
   );
@@ -7239,7 +7724,7 @@ var handleSegmentRenormalization = (arrow, elementsMap) => {
   const nextFixedSegments = arrow.fixedSegments ? arrow.fixedSegments.slice() : null;
   if (nextFixedSegments) {
     const _nextPoints = [];
-    arrow.points.map((p) => pointFrom7(arrow.x + p[0], arrow.y + p[1])).forEach((p, i, points) => {
+    arrow.points.map((p) => pointFrom(arrow.x + p[0], arrow.y + p[1])).forEach((p, i, points) => {
       if (i < 2) {
         return _nextPoints.push(p);
       }
@@ -7257,7 +7742,7 @@ var handleSegmentRenormalization = (arrow, elementsMap) => {
         ) ?? -1;
         const segmentIdx = nextFixedSegments?.findIndex((segment) => segment.index === i) ?? -1;
         if (segmentIdx !== -1) {
-          nextFixedSegments[segmentIdx].start = pointFrom7(
+          nextFixedSegments[segmentIdx].start = pointFrom(
             points[i - 2][0] - arrow.x,
             points[i - 2][1] - arrow.y
           );
@@ -7281,7 +7766,7 @@ var handleSegmentRenormalization = (arrow, elementsMap) => {
       }
       if (
         // Remove segments that are too short
-        pointDistance3(points[i - 2], points[i - 1]) < DEDUP_TRESHOLD
+        pointDistance(points[i - 2], points[i - 1]) < DEDUP_TRESHOLD
       ) {
         const prevPrevSegmentIdx = nextFixedSegments?.findIndex((segment) => segment.index === i - 2) ?? -1;
         const prevSegmentIdx = nextFixedSegments?.findIndex((segment) => segment.index === i - 1) ?? -1;
@@ -7299,7 +7784,7 @@ var handleSegmentRenormalization = (arrow, elementsMap) => {
         });
         const isHorizontal = headingForPointIsHorizontal(p, points[i - 1]);
         return nextPoints.push(
-          pointFrom7(
+          pointFrom(
             !isHorizontal ? points[i - 2][0] : p[0],
             isHorizontal ? points[i - 2][1] : p[1]
           )
@@ -7320,7 +7805,7 @@ var handleSegmentRenormalization = (arrow, elementsMap) => {
                 arrow,
                 elementsMap,
                 nextPoints.map(
-                  (p) => pointFrom7(p[0] - arrow.x, p[1] - arrow.y)
+                  (p) => pointFrom(p[0] - arrow.x, p[1] - arrow.y)
                 )
               )
             ) ?? []
@@ -7389,8 +7874,8 @@ var handleSegmentRelease = (arrow, fixedSegments, elementsMap) => {
     },
     elementsMap,
     [
-      pointFrom7(0, 0),
-      pointFrom7(
+      pointFrom(0, 0),
+      pointFrom(
         arrow.x + (nextSegment?.start[0] ?? arrow.points[arrow.points.length - 1][0]) - x,
         arrow.y + (nextSegment?.start[1] ?? arrow.points[arrow.points.length - 1][1]) - y
       )
@@ -7424,7 +7909,7 @@ var handleSegmentRelease = (arrow, fixedSegments, elementsMap) => {
   if (prevSegment) {
     for (let i = 0; i < prevSegment.index; i++) {
       nextPoints.push(
-        pointFrom7(
+        pointFrom(
           arrow.x + arrow.points[i][0],
           arrow.y + arrow.points[i][1]
         )
@@ -7433,7 +7918,7 @@ var handleSegmentRelease = (arrow, fixedSegments, elementsMap) => {
   }
   restoredPoints.forEach((p) => {
     nextPoints.push(
-      pointFrom7(
+      pointFrom(
         arrow.x + (prevSegment ? prevSegment.end[0] : 0) + p[0],
         arrow.y + (prevSegment ? prevSegment.end[1] : 0) + p[1]
       )
@@ -7442,7 +7927,7 @@ var handleSegmentRelease = (arrow, fixedSegments, elementsMap) => {
   if (nextSegment) {
     for (let i = nextSegment.index; i < arrow.points.length; i++) {
       nextPoints.push(
-        pointFrom7(
+        pointFrom(
           arrow.x + arrow.points[i][0],
           arrow.y + arrow.points[i][1]
         )
@@ -7504,7 +7989,7 @@ var handleSegmentMove = (arrow, fixedSegments, startHeading, endHeading, hovered
   const lastSegmentIdx = arrow.fixedSegments?.findIndex(
     (segment) => segment.index === arrow.points.length - 1
   ) ?? -1;
-  const segmentLength = pointDistance3(
+  const segmentLength = pointDistance(
     fixedSegments[activelyModifiedSegmentIdx].start,
     fixedSegments[activelyModifiedSegmentIdx].end
   );
@@ -7513,7 +7998,7 @@ var handleSegmentMove = (arrow, fixedSegments, startHeading, endHeading, hovered
     const startIsHorizontal = headingIsHorizontal(startHeading);
     const startIsPositive = startIsHorizontal ? compareHeading(startHeading, HEADING_RIGHT) : compareHeading(startHeading, HEADING_DOWN);
     const padding = startIsPositive ? segmentIsTooShort ? segmentLength / 2 : BASE_PADDING : segmentIsTooShort ? -segmentLength / 2 : -BASE_PADDING;
-    fixedSegments[activelyModifiedSegmentIdx].start = pointFrom7(
+    fixedSegments[activelyModifiedSegmentIdx].start = pointFrom(
       fixedSegments[activelyModifiedSegmentIdx].start[0] + (startIsHorizontal ? padding : 0),
       fixedSegments[activelyModifiedSegmentIdx].start[1] + (!startIsHorizontal ? padding : 0)
     );
@@ -7522,34 +8007,34 @@ var handleSegmentMove = (arrow, fixedSegments, startHeading, endHeading, hovered
     const endIsHorizontal = headingIsHorizontal(endHeading);
     const endIsPositive = endIsHorizontal ? compareHeading(endHeading, HEADING_RIGHT) : compareHeading(endHeading, HEADING_DOWN);
     const padding = endIsPositive ? segmentIsTooShort ? segmentLength / 2 : BASE_PADDING : segmentIsTooShort ? -segmentLength / 2 : -BASE_PADDING;
-    fixedSegments[activelyModifiedSegmentIdx].end = pointFrom7(
+    fixedSegments[activelyModifiedSegmentIdx].end = pointFrom(
       fixedSegments[activelyModifiedSegmentIdx].end[0] + (endIsHorizontal ? padding : 0),
       fixedSegments[activelyModifiedSegmentIdx].end[1] + (!endIsHorizontal ? padding : 0)
     );
   }
   const nextFixedSegments = fixedSegments.map((segment) => ({
     ...segment,
-    start: pointFrom7(
+    start: pointFrom(
       arrow.x + segment.start[0],
       arrow.y + segment.start[1]
     ),
-    end: pointFrom7(
+    end: pointFrom(
       arrow.x + segment.end[0],
       arrow.y + segment.end[1]
     )
   }));
   const newPoints = arrow.points.map(
-    (p, i) => pointFrom7(arrow.x + p[0], arrow.y + p[1])
+    (p, i) => pointFrom(arrow.x + p[0], arrow.y + p[1])
   );
   const startIdx = nextFixedSegments[activelyModifiedSegmentIdx].index - 1;
   const endIdx = nextFixedSegments[activelyModifiedSegmentIdx].index;
   const start = nextFixedSegments[activelyModifiedSegmentIdx].start;
   const end = nextFixedSegments[activelyModifiedSegmentIdx].end;
-  const prevSegmentIsHorizontal = newPoints[startIdx - 1] && !pointsEqual5(newPoints[startIdx], newPoints[startIdx - 1]) ? headingForPointIsHorizontal(
+  const prevSegmentIsHorizontal = newPoints[startIdx - 1] && !pointsEqual(newPoints[startIdx], newPoints[startIdx - 1]) ? headingForPointIsHorizontal(
     newPoints[startIdx - 1],
     newPoints[startIdx]
   ) : void 0;
-  const nextSegmentIsHorizontal = newPoints[endIdx + 1] && !pointsEqual5(newPoints[endIdx], newPoints[endIdx + 1]) ? headingForPointIsHorizontal(newPoints[endIdx + 1], newPoints[endIdx]) : void 0;
+  const nextSegmentIsHorizontal = newPoints[endIdx + 1] && !pointsEqual(newPoints[endIdx], newPoints[endIdx + 1]) ? headingForPointIsHorizontal(newPoints[endIdx + 1], newPoints[endIdx]) : void 0;
   if (prevSegmentIsHorizontal !== void 0) {
     const dir = prevSegmentIsHorizontal ? 1 : 0;
     newPoints[startIdx - 1][dir] = start[dir];
@@ -7585,14 +8070,14 @@ var handleSegmentMove = (arrow, fixedSegments, startHeading, endHeading, hovered
   if (firstSegmentIdx === -1 && startIdx === 0) {
     const startIsHorizontal = hoveredStartElement ? headingIsHorizontal(startHeading) : headingForPointIsHorizontal(newPoints[1], newPoints[0]);
     newPoints.unshift(
-      pointFrom7(
+      pointFrom(
         startIsHorizontal ? start[0] : arrow.x + arrow.points[0][0],
         !startIsHorizontal ? start[1] : arrow.y + arrow.points[0][1]
       )
     );
     if (hoveredStartElement) {
       newPoints.unshift(
-        pointFrom7(
+        pointFrom(
           arrow.x + arrow.points[0][0],
           arrow.y + arrow.points[0][1]
         )
@@ -7605,14 +8090,14 @@ var handleSegmentMove = (arrow, fixedSegments, startHeading, endHeading, hovered
   if (lastSegmentIdx === -1 && endIdx === arrow.points.length - 1) {
     const endIsHorizontal = headingIsHorizontal(endHeading);
     newPoints.push(
-      pointFrom7(
+      pointFrom(
         endIsHorizontal ? end[0] : arrow.x + arrow.points[arrow.points.length - 1][0],
         !endIsHorizontal ? end[1] : arrow.y + arrow.points[arrow.points.length - 1][1]
       )
     );
     if (hoveredEndElement) {
       newPoints.push(
-        pointFrom7(
+        pointFrom(
           arrow.x + arrow.points[arrow.points.length - 1][0],
           arrow.y + arrow.points[arrow.points.length - 1][1]
         )
@@ -7623,11 +8108,11 @@ var handleSegmentMove = (arrow, fixedSegments, startHeading, endHeading, hovered
     newPoints,
     nextFixedSegments.map((segment) => ({
       ...segment,
-      start: pointFrom7(
+      start: pointFrom(
         segment.start[0] - arrow.x,
         segment.start[1] - arrow.y
       ),
-      end: pointFrom7(
+      end: pointFrom(
         segment.end[0] - arrow.x,
         segment.end[1] - arrow.y
       )
@@ -7642,18 +8127,18 @@ var handleEndpointDrag = (arrow, updatedPoints, fixedSegments, startHeading, end
   let startIsSpecial = arrow.startIsSpecial ?? null;
   let endIsSpecial = arrow.endIsSpecial ?? null;
   const globalUpdatedPoints = updatedPoints.map(
-    (p, i) => i === 0 ? pointFrom7(arrow.x + p[0], arrow.y + p[1]) : i === updatedPoints.length - 1 ? pointFrom7(arrow.x + p[0], arrow.y + p[1]) : pointFrom7(
+    (p, i) => i === 0 ? pointFrom(arrow.x + p[0], arrow.y + p[1]) : i === updatedPoints.length - 1 ? pointFrom(arrow.x + p[0], arrow.y + p[1]) : pointFrom(
       arrow.x + arrow.points[i][0],
       arrow.y + arrow.points[i][1]
     )
   );
   const nextFixedSegments = fixedSegments.map((segment) => ({
     ...segment,
-    start: pointFrom7(
+    start: pointFrom(
       arrow.x + (segment.start[0] - updatedPoints[0][0]),
       arrow.y + (segment.start[1] - updatedPoints[0][1])
     ),
-    end: pointFrom7(
+    end: pointFrom(
       arrow.x + (segment.end[0] - updatedPoints[0][0]),
       arrow.y + (segment.end[1] - updatedPoints[0][1])
     )
@@ -7674,18 +8159,18 @@ var handleEndpointDrag = (arrow, updatedPoints, fixedSegments, startHeading, end
     }
     const startIsHorizontal = headingIsHorizontal(startHeading);
     const secondIsHorizontal = headingIsHorizontal(
-      vectorToHeading(vectorFromPoint7(secondPoint, thirdPoint))
+      vectorToHeading(vectorFromPoint(secondPoint, thirdPoint))
     );
     if (hoveredStartElement && startIsHorizontal === secondIsHorizontal) {
       const positive = startIsHorizontal ? compareHeading(startHeading, HEADING_RIGHT) : compareHeading(startHeading, HEADING_DOWN);
       newPoints.unshift(
-        pointFrom7(
+        pointFrom(
           !secondIsHorizontal ? thirdPoint[0] : startGlobalPoint[0] + (positive ? BASE_PADDING : -BASE_PADDING),
           secondIsHorizontal ? thirdPoint[1] : startGlobalPoint[1] + (positive ? BASE_PADDING : -BASE_PADDING)
         )
       );
       newPoints.unshift(
-        pointFrom7(
+        pointFrom(
           startIsHorizontal ? startGlobalPoint[0] + (positive ? BASE_PADDING : -BASE_PADDING) : startGlobalPoint[0],
           !startIsHorizontal ? startGlobalPoint[1] + (positive ? BASE_PADDING : -BASE_PADDING) : startGlobalPoint[1]
         )
@@ -7700,7 +8185,7 @@ var handleEndpointDrag = (arrow, updatedPoints, fixedSegments, startHeading, end
       }
     } else {
       newPoints.unshift(
-        pointFrom7(
+        pointFrom(
           !secondIsHorizontal ? secondPoint[0] : startGlobalPoint[0],
           secondIsHorizontal ? secondPoint[1] : startGlobalPoint[1]
         )
@@ -7736,13 +8221,13 @@ var handleEndpointDrag = (arrow, updatedPoints, fixedSegments, startHeading, end
     if (hoveredEndElement && endIsHorizontal === secondIsHorizontal) {
       const positive = endIsHorizontal ? compareHeading(endHeading, HEADING_RIGHT) : compareHeading(endHeading, HEADING_DOWN);
       newPoints.push(
-        pointFrom7(
+        pointFrom(
           !secondIsHorizontal ? thirdToLastPoint[0] : endGlobalPoint[0] + (positive ? BASE_PADDING : -BASE_PADDING),
           secondIsHorizontal ? thirdToLastPoint[1] : endGlobalPoint[1] + (positive ? BASE_PADDING : -BASE_PADDING)
         )
       );
       newPoints.push(
-        pointFrom7(
+        pointFrom(
           endIsHorizontal ? endGlobalPoint[0] + (positive ? BASE_PADDING : -BASE_PADDING) : endGlobalPoint[0],
           !endIsHorizontal ? endGlobalPoint[1] + (positive ? BASE_PADDING : -BASE_PADDING) : endGlobalPoint[1]
         )
@@ -7752,7 +8237,7 @@ var handleEndpointDrag = (arrow, updatedPoints, fixedSegments, startHeading, end
       }
     } else {
       newPoints.push(
-        pointFrom7(
+        pointFrom(
           !secondIsHorizontal ? secondToLastPoint[0] : endGlobalPoint[0],
           secondIsHorizontal ? secondToLastPoint[1] : endGlobalPoint[1]
         )
@@ -7771,11 +8256,11 @@ var handleEndpointDrag = (arrow, updatedPoints, fixedSegments, startHeading, end
       end: newPoints[index]
     })).map((segment) => ({
       ...segment,
-      start: pointFrom7(
+      start: pointFrom(
         segment.start[0] - startGlobalPoint[0],
         segment.start[1] - startGlobalPoint[1]
       ),
-      end: pointFrom7(
+      end: pointFrom(
         segment.end[0] - startGlobalPoint[0],
         segment.end[1] - startGlobalPoint[1]
       )
@@ -7810,9 +8295,9 @@ var updateElbowArrowPoints = (arrow, elementsMap, updates, options) => {
     );
     invariant(
       updates.fixedSegments?.find(
-        (segment) => segment.index === 1 && pointsEqual5(segment.start, (updates.points ?? arrow.points)[0])
+        (segment) => segment.index === 1 && pointsEqual(segment.start, (updates.points ?? arrow.points)[0])
       ) == null && updates.fixedSegments?.find(
-        (segment) => segment.index === (updates.points ?? arrow.points).length - 1 && pointsEqual5(
+        (segment) => segment.index === (updates.points ?? arrow.points).length - 1 && pointsEqual(
           segment.end,
           (updates.points ?? arrow.points)[(updates.points ?? arrow.points).length - 1]
         )
@@ -7837,7 +8322,7 @@ var updateElbowArrowPoints = (arrow, elementsMap, updates, options) => {
   if (startBinding && !startElement && areUpdatedPointsValid || endBinding && !endElement && areUpdatedPointsValid || elementsMap.size === 0 && areUpdatedPointsValid || Object.keys(restOfTheUpdates).length === 0 && (startElement?.id !== startBinding?.elementId || endElement?.id !== endBinding?.elementId)) {
     return normalizeArrowElementUpdate(
       updatedPoints.map(
-        (p) => pointFrom7(arrow.x + p[0], arrow.y + p[1])
+        (p) => pointFrom(arrow.x + p[0], arrow.y + p[1])
       ),
       arrow.fixedSegments,
       arrow.startIsSpecial,
@@ -7869,7 +8354,7 @@ var updateElbowArrowPoints = (arrow, elementsMap, updates, options) => {
   if (elementsMap.size === 0 && areUpdatedPointsValid) {
     return normalizeArrowElementUpdate(
       updatedPoints.map(
-        (p) => pointFrom7(arrow.x + p[0], arrow.y + p[1])
+        (p) => pointFrom(arrow.x + p[0], arrow.y + p[1])
       ),
       arrow.fixedSegments,
       arrow.startIsSpecial,
@@ -7880,9 +8365,9 @@ var updateElbowArrowPoints = (arrow, elementsMap, updates, options) => {
     return handleSegmentRenormalization(arrow, elementsMap);
   }
   if (updates.startBinding === arrow.startBinding && updates.endBinding === arrow.endBinding && (updates.points ?? []).every(
-    (p, i) => pointsEqual5(
+    (p, i) => pointsEqual(
       p,
-      arrow.points[i] ?? pointFrom7(Infinity, Infinity)
+      arrow.points[i] ?? pointFrom(Infinity, Infinity)
     )
   ) && areUpdatedPointsValid) {
     return {};
@@ -7936,8 +8421,8 @@ var updateElbowArrowPoints = (arrow, elementsMap, updates, options) => {
   );
 };
 var getElbowArrowData = (arrow, elementsMap, nextPoints, options) => {
-  const origStartGlobalPoint = pointTranslate2(nextPoints[0], vector(arrow.x, arrow.y));
-  const origEndGlobalPoint = pointTranslate2(nextPoints[nextPoints.length - 1], vector(arrow.x, arrow.y));
+  const origStartGlobalPoint = pointTranslate(nextPoints[0], vector(arrow.x, arrow.y));
+  const origEndGlobalPoint = pointTranslate(nextPoints[nextPoints.length - 1], vector(arrow.x, arrow.y));
   let hoveredStartElement = null;
   let hoveredEndElement = null;
   if (options?.isDragging && options?.isBindingEnabled !== false) {
@@ -8188,7 +8673,7 @@ var astar = (start, end, grid, startHeading, endHeading, aabbs) => {
       if (!neighbor || neighbor.closed) {
         continue;
       }
-      const neighborHalfPoint = pointScaleFromOrigin2(
+      const neighborHalfPoint = pointScaleFromOrigin(
         neighbor.pos,
         current.pos,
         0.5
@@ -8199,7 +8684,7 @@ var astar = (start, end, grid, startHeading, endHeading, aabbs) => {
         continue;
       }
       const neighborHeading = neighborIndexToHeading(i);
-      const previousDirection = current.parent ? vectorToHeading(vectorFromPoint7(current.pos, current.parent.pos)) : startHeading;
+      const previousDirection = current.parent ? vectorToHeading(vectorFromPoint(current.pos, current.parent.pos)) : startHeading;
       const reverseHeading = flipHeading(previousDirection);
       const neighborIsReverseRoute = compareHeading(reverseHeading, neighborHeading) || gridAddressesEqual(start.addr, neighbor.addr) && compareHeading(neighborHeading, startHeading) || gridAddressesEqual(end.addr, neighbor.addr) && compareHeading(neighborHeading, endHeading);
       if (neighborIsReverseRoute) {
@@ -8272,7 +8757,7 @@ var generateDynamicAABBs = (a, b, common, startDifference, endDifference, disabl
     if (b[0] > a[2] && a[1] > b[3]) {
       const cX = first[2] + (second[0] - first[2]) / 2;
       const cY = second[3] + (first[1] - second[3]) / 2;
-      if (vectorCross3(
+      if (vectorCross(
         vector(a[2] - endCenterX, a[1] - endCenterY),
         vector(a[0] - endCenterX, a[3] - endCenterY)
       ) > 0) {
@@ -8288,7 +8773,7 @@ var generateDynamicAABBs = (a, b, common, startDifference, endDifference, disabl
     } else if (a[2] < b[0] && a[3] < b[1]) {
       const cX = first[2] + (second[0] - first[2]) / 2;
       const cY = first[3] + (second[1] - first[3]) / 2;
-      if (vectorCross3(
+      if (vectorCross(
         vector(a[0] - endCenterX, a[1] - endCenterY),
         vector(a[2] - endCenterX, a[3] - endCenterY)
       ) > 0) {
@@ -8304,7 +8789,7 @@ var generateDynamicAABBs = (a, b, common, startDifference, endDifference, disabl
     } else if (a[0] > b[2] && a[3] < b[1]) {
       const cX = second[2] + (first[0] - second[2]) / 2;
       const cY = first[3] + (second[1] - first[3]) / 2;
-      if (vectorCross3(
+      if (vectorCross(
         vector(a[2] - endCenterX, a[1] - endCenterY),
         vector(a[0] - endCenterX, a[3] - endCenterY)
       ) > 0) {
@@ -8320,7 +8805,7 @@ var generateDynamicAABBs = (a, b, common, startDifference, endDifference, disabl
     } else if (a[0] > b[2] && a[1] > b[3]) {
       const cX = second[2] + (first[0] - second[2]) / 2;
       const cY = second[3] + (first[1] - second[3]) / 2;
-      if (vectorCross3(
+      if (vectorCross(
         vector(a[0] - endCenterX, a[1] - endCenterY),
         vector(a[2] - endCenterX, a[3] - endCenterY)
       ) > 0) {
@@ -8384,13 +8869,13 @@ var calculateGrid = (aabbs, start, startHeading, end, endHeading, common) => {
 var getDonglePosition = (bounds, heading, p) => {
   switch (heading) {
     case HEADING_UP:
-      return pointFrom7(p[0], bounds[1]);
+      return pointFrom(p[0], bounds[1]);
     case HEADING_RIGHT:
-      return pointFrom7(bounds[2], p[1]);
+      return pointFrom(bounds[2], p[1]);
     case HEADING_DOWN:
-      return pointFrom7(p[0], bounds[3]);
+      return pointFrom(p[0], bounds[3]);
   }
-  return pointFrom7(bounds[0], p[1]);
+  return pointFrom(bounds[0], p[1]);
 };
 var estimateSegmentCount = (start, end, startHeading, endHeading) => {
   if (endHeading === HEADING_RIGHT) {
@@ -8541,9 +9026,9 @@ var normalizeArrowElementUpdate = (global, nextFixedSegments, startIsSpecial, en
   const offsetX = global[0][0];
   const offsetY = global[0][1];
   let points = global.map(
-    (p) => pointTranslate2(
+    (p) => pointTranslate(
       p,
-      vectorScale6(vectorFromPoint7(global[0]), -1)
+      vectorScale(vectorFromPoint(global[0]), -1)
     )
   );
   if (offsetX < -MAX_POS || offsetX > MAX_POS || offsetY < -MAX_POS || offsetY > MAX_POS || offsetX + points[points.length - 1][0] < -MAX_POS || offsetY + points[points.length - 1][0] > MAX_POS || offsetX + points[points.length - 1][1] < -MAX_POS || offsetY + points[points.length - 1][1] > MAX_POS) {
@@ -8558,12 +9043,12 @@ var normalizeArrowElementUpdate = (global, nextFixedSegments, startIsSpecial, en
     );
   }
   points = points.map(
-    ([x, y]) => pointFrom7(clamp4(x, -1e6, 1e6), clamp4(y, -1e6, 1e6))
+    ([x, y]) => pointFrom(clamp(x, -1e6, 1e6), clamp(y, -1e6, 1e6))
   );
   return {
     points,
-    x: clamp4(offsetX, -1e6, 1e6),
-    y: clamp4(offsetY, -1e6, 1e6),
+    x: clamp(offsetX, -1e6, 1e6),
+    y: clamp(offsetY, -1e6, 1e6),
     fixedSegments: (nextFixedSegments?.length ?? 0) > 0 ? nextFixedSegments : null,
     ...getSizeFromPoints(points),
     startIsSpecial,
@@ -8596,7 +9081,7 @@ var removeElbowArrowShortSegments = (points) => {
         return true;
       }
       const prev = points[idx - 1];
-      const prevDist = pointDistance3(prev, p);
+      const prevDist = pointDistance(prev, p);
       return prevDist > DEDUP_TRESHOLD;
     });
   }
@@ -8813,10 +9298,10 @@ var elementOverlapsWithFrame = (element, frame, elementsMap) => {
 };
 var isCursorInFrame = (cursorCoords, frame, elementsMap) => {
   const [fx1, fy1, fx2, fy2] = getElementAbsoluteCoords(frame, elementsMap);
-  return isPointWithinBounds2(
-    pointFrom8(fx1, fy1),
-    pointFrom8(cursorCoords.x, cursorCoords.y),
-    pointFrom8(fx2, fy2)
+  return isPointWithinBounds(
+    pointFrom(fx1, fy1),
+    pointFrom(cursorCoords.x, cursorCoords.y),
+    pointFrom(fx2, fy2)
   );
 };
 var groupByFrameLikes = (elements) => {
@@ -9905,7 +10390,7 @@ function getFreedrawOutlineAsSegments(element, points, elementsMap) {
     },
     elementsMap
   );
-  const center = pointFrom9(
+  const center = pointFrom(
     (bounds[0] + bounds[2]) / 2,
     (bounds[1] + bounds[3]) / 2
   );
@@ -9913,10 +10398,10 @@ function getFreedrawOutlineAsSegments(element, points, elementsMap) {
   return points.slice(2).reduce(
     (acc, curr) => {
       acc.push(
-        lineSegment4(
+        lineSegment(
           acc[acc.length - 1][1],
-          pointRotateRads8(
-            pointFrom9(curr[0] + element.x, curr[1] + element.y),
+          pointRotateRads(
+            pointFrom(curr[0] + element.x, curr[1] + element.y),
             center,
             element.angle
           )
@@ -9925,17 +10410,17 @@ function getFreedrawOutlineAsSegments(element, points, elementsMap) {
       return acc;
     },
     [
-      lineSegment4(
-        pointRotateRads8(
-          pointFrom9(
+      lineSegment(
+        pointRotateRads(
+          pointFrom(
             points[0][0] + element.x,
             points[0][1] + element.y
           ),
           center,
           element.angle
         ),
-        pointRotateRads8(
-          pointFrom9(
+        pointRotateRads(
+          pointFrom(
             points[1][0] + element.x,
             points[1][1] + element.y
           ),
@@ -10214,26 +10699,26 @@ var generateLinearCollisionShape = (element) => {
   switch (element.type) {
     case "line":
     case "arrow": {
-      const points = element.points.length ? element.points : [pointFrom10(0, 0)];
+      const points = element.points.length ? element.points : [pointFrom(0, 0)];
       if (isElbowArrow(element)) {
         return generator.path(generateElbowArrowShape(points, 16), options).sets[0].ops;
       } else if (!element.roundness) {
         return points.map((point, idx) => {
-          const p = pointRotateRads9(
-            pointFrom10(element.x + point[0], element.y + point[1]),
+          const p = pointRotateRads(
+            pointFrom(element.x + point[0], element.y + point[1]),
             center,
             element.angle
           );
           return {
             op: idx === 0 ? "move" : "lineTo",
-            data: pointFrom10(p[0] - element.x, p[1] - element.y)
+            data: pointFrom(p[0] - element.x, p[1] - element.y)
           };
         });
       }
       return generator.curve(points, options).sets[0].ops.slice(0, element.points.length).map((op, i) => {
         if (i === 0) {
-          const p = pointRotateRads9(
-            pointFrom10(
+          const p = pointRotateRads(
+            pointFrom(
               element.x + op.data[0],
               element.y + op.data[1]
             ),
@@ -10242,30 +10727,30 @@ var generateLinearCollisionShape = (element) => {
           );
           return {
             op: "move",
-            data: pointFrom10(p[0] - element.x, p[1] - element.y)
+            data: pointFrom(p[0] - element.x, p[1] - element.y)
           };
         }
         return {
           op: "bcurveTo",
           data: [
-            pointRotateRads9(
-              pointFrom10(
+            pointRotateRads(
+              pointFrom(
                 element.x + op.data[0],
                 element.y + op.data[1]
               ),
               center,
               element.angle
             ),
-            pointRotateRads9(
-              pointFrom10(
+            pointRotateRads(
+              pointFrom(
                 element.x + op.data[2],
                 element.y + op.data[3]
               ),
               center,
               element.angle
             ),
-            pointRotateRads9(
-              pointFrom10(
+            pointRotateRads(
+              pointFrom(
                 element.x + op.data[4],
                 element.y + op.data[5]
               ),
@@ -10273,7 +10758,7 @@ var generateLinearCollisionShape = (element) => {
               element.angle
             )
           ].map(
-            (p) => pointFrom10(p[0] - element.x, p[1] - element.y)
+            (p) => pointFrom(p[0] - element.x, p[1] - element.y)
           ).flat()
         };
       });
@@ -10288,8 +10773,8 @@ var generateLinearCollisionShape = (element) => {
       );
       return generator.curve(simplifiedPoints, options).sets[0].ops.slice(0, element.points.length).map((op, i) => {
         if (i === 0) {
-          const p = pointRotateRads9(
-            pointFrom10(
+          const p = pointRotateRads(
+            pointFrom(
               element.x + op.data[0],
               element.y + op.data[1]
             ),
@@ -10298,30 +10783,30 @@ var generateLinearCollisionShape = (element) => {
           );
           return {
             op: "move",
-            data: pointFrom10(p[0] - element.x, p[1] - element.y)
+            data: pointFrom(p[0] - element.x, p[1] - element.y)
           };
         }
         return {
           op: "bcurveTo",
           data: [
-            pointRotateRads9(
-              pointFrom10(
+            pointRotateRads(
+              pointFrom(
                 element.x + op.data[0],
                 element.y + op.data[1]
               ),
               center,
               element.angle
             ),
-            pointRotateRads9(
-              pointFrom10(
+            pointRotateRads(
+              pointFrom(
                 element.x + op.data[2],
                 element.y + op.data[3]
               ),
               center,
               element.angle
             ),
-            pointRotateRads9(
-              pointFrom10(
+            pointRotateRads(
+              pointFrom(
                 element.x + op.data[4],
                 element.y + op.data[5]
               ),
@@ -10329,7 +10814,7 @@ var generateLinearCollisionShape = (element) => {
               element.angle
             )
           ].map(
-            (p) => pointFrom10(p[0] - element.x, p[1] - element.y)
+            (p) => pointFrom(p[0] - element.x, p[1] - element.y)
           ).flat()
         };
       });
@@ -10430,7 +10915,7 @@ var _generateElementShape = (element, generator, {
     case "arrow": {
       let shape;
       const options = generateRoughOptions(element, false, isDarkMode);
-      const points = element.points.length ? element.points : [pointFrom10(0, 0)];
+      const points = element.points.length ? element.points : [pointFrom(0, 0)];
       if (isElbowArrow(element)) {
         if (!points.every(
           (point) => Math.abs(point[0]) <= 1e6 && Math.abs(point[1]) <= 1e6
@@ -10538,8 +11023,8 @@ var generateElbowArrowShape = (points, radius) => {
     const nextIsHorizontal = headingForPointIsHorizontal(next, point);
     const corner = Math.min(
       radius,
-      pointDistance4(points[i], next) / 2,
-      pointDistance4(points[i], prev) / 2
+      pointDistance(points[i], next) / 2,
+      pointDistance(points[i], prev) / 2
     );
     if (prevIsHorizontal) {
       if (prev[0] < point[0]) {
@@ -10594,14 +11079,14 @@ var getElementShape = (element, elementsMap) => {
       return shouldTestInside(element) ? getClosedCurveShape(
         element,
         roughShape,
-        pointFrom10(element.x, element.y),
+        pointFrom(element.x, element.y),
         element.angle,
-        pointFrom10(cx, cy)
+        pointFrom(cx, cy)
       ) : getCurveShape(
         roughShape,
-        pointFrom10(element.x, element.y),
+        pointFrom(element.x, element.y),
         element.angle,
-        pointFrom10(cx, cy)
+        pointFrom(cx, cy)
       );
     }
     case "ellipse":
@@ -10610,7 +11095,7 @@ var getElementShape = (element, elementsMap) => {
       const [, , , , cx, cy] = getElementAbsoluteCoords(element, elementsMap);
       return getFreedrawShape(
         element,
-        pointFrom10(cx, cy),
+        pointFrom(cx, cy),
         shouldTestInside(element)
       );
     }
@@ -10629,9 +11114,9 @@ var toggleLinePolygonState = (element, nextPolygonState) => {
       firstPoint[1] - lastPoint[1]
     );
     if (distance2 > LINE_POLYGON_POINT_MERGE_DISTANCE || updatedPoints.length < 4) {
-      updatedPoints.push(pointFrom10(firstPoint[0], firstPoint[1]));
+      updatedPoints.push(pointFrom(firstPoint[0], firstPoint[1]));
     } else {
-      updatedPoints[updatedPoints.length - 1] = pointFrom10(
+      updatedPoints[updatedPoints.length - 1] = pointFrom(
         firstPoint[0],
         firstPoint[1]
       );
@@ -10722,9 +11207,9 @@ var _ElementBounds = class _ElementBounds {
     if (isFreeDrawElement(element)) {
       const [minX, minY, maxX, maxY] = getBoundsFromPoints(
         element.points.map(
-          ([x, y]) => pointRotateRads10(
-            pointFrom11(x, y),
-            pointFrom11(cx - element.x, cy - element.y),
+          ([x, y]) => pointRotateRads(
+            pointFrom(x, y),
+            pointFrom(cx - element.x, cy - element.y),
             element.angle
           )
         )
@@ -10738,24 +11223,24 @@ var _ElementBounds = class _ElementBounds {
     } else if (isLinearElement(element)) {
       bounds = getLinearElementRotatedBounds(element, cx, cy, elementsMap);
     } else if (element.type === "diamond") {
-      const [x11, y11] = pointRotateRads10(
-        pointFrom11(cx, y1),
-        pointFrom11(cx, cy),
+      const [x11, y11] = pointRotateRads(
+        pointFrom(cx, y1),
+        pointFrom(cx, cy),
         element.angle
       );
-      const [x12, y12] = pointRotateRads10(
-        pointFrom11(cx, y2),
-        pointFrom11(cx, cy),
+      const [x12, y12] = pointRotateRads(
+        pointFrom(cx, y2),
+        pointFrom(cx, cy),
         element.angle
       );
-      const [x22, y22] = pointRotateRads10(
-        pointFrom11(x1, cy),
-        pointFrom11(cx, cy),
+      const [x22, y22] = pointRotateRads(
+        pointFrom(x1, cy),
+        pointFrom(cx, cy),
         element.angle
       );
-      const [x21, y21] = pointRotateRads10(
-        pointFrom11(x2, cy),
-        pointFrom11(cx, cy),
+      const [x21, y21] = pointRotateRads(
+        pointFrom(x2, cy),
+        pointFrom(cx, cy),
         element.angle
       );
       const minX = Math.min(x11, x12, x22, x21);
@@ -10772,24 +11257,24 @@ var _ElementBounds = class _ElementBounds {
       const hh = Math.hypot(h * cos, w * sin);
       bounds = [cx - ww, cy - hh, cx + ww, cy + hh];
     } else {
-      const [x11, y11] = pointRotateRads10(
-        pointFrom11(x1, y1),
-        pointFrom11(cx, cy),
+      const [x11, y11] = pointRotateRads(
+        pointFrom(x1, y1),
+        pointFrom(cx, cy),
         element.angle
       );
-      const [x12, y12] = pointRotateRads10(
-        pointFrom11(x1, y2),
-        pointFrom11(cx, cy),
+      const [x12, y12] = pointRotateRads(
+        pointFrom(x1, y2),
+        pointFrom(cx, cy),
         element.angle
       );
-      const [x22, y22] = pointRotateRads10(
-        pointFrom11(x2, y2),
-        pointFrom11(cx, cy),
+      const [x22, y22] = pointRotateRads(
+        pointFrom(x2, y2),
+        pointFrom(cx, cy),
         element.angle
       );
-      const [x21, y21] = pointRotateRads10(
-        pointFrom11(x2, y1),
-        pointFrom11(cx, cy),
+      const [x21, y21] = pointRotateRads(
+        pointFrom(x2, y1),
+        pointFrom(cx, cy),
         element.angle
       );
       const minX = Math.min(x11, x12, x22, x21);
@@ -10846,11 +11331,11 @@ var getElementLineSegments = (element, elementsMap) => {
     element,
     elementsMap
   );
-  const center = pointFrom11(cx, cy);
+  const center = pointFrom(cx, cy);
   if (shape.type === "polycurve") {
     const curves = shape.data;
     const pointsOnCurves = curves.map(
-      (curve3) => pointsOnBezierCurves(curve3, 10)
+      (curve2) => pointsOnBezierCurves(curve2, 10)
     );
     const segments = [];
     if (isLineElement(element) && !element.polygon || isArrowElement(element)) {
@@ -10858,9 +11343,9 @@ var getElementLineSegments = (element, elementsMap) => {
         let i = 0;
         while (i < points.length - 1) {
           segments.push(
-            lineSegment5(
-              pointFrom11(points[i][0], points[i][1]),
-              pointFrom11(points[i + 1][0], points[i + 1][1])
+            lineSegment(
+              pointFrom(points[i][0], points[i][1]),
+              pointFrom(points[i + 1][0], points[i + 1][1])
             )
           );
           i++;
@@ -10871,9 +11356,9 @@ var getElementLineSegments = (element, elementsMap) => {
       let i = 0;
       while (i < points.length - 1) {
         segments.push(
-          lineSegment5(
-            pointFrom11(points[i][0], points[i][1]),
-            pointFrom11(points[i + 1][0], points[i + 1][1])
+          lineSegment(
+            pointFrom(points[i][0], points[i][1]),
+            pointFrom(points[i + 1][0], points[i + 1][1])
           )
         );
         i++;
@@ -10897,10 +11382,10 @@ var getElementLineSegments = (element, elementsMap) => {
       const container = getContainerElement(element, elementsMap);
       if (container && isLinearElement(container)) {
         const segments2 = [
-          lineSegment5(pointFrom11(x1, y1), pointFrom11(x2, y1)),
-          lineSegment5(pointFrom11(x2, y1), pointFrom11(x2, y2)),
-          lineSegment5(pointFrom11(x2, y2), pointFrom11(x1, y2)),
-          lineSegment5(pointFrom11(x1, y2), pointFrom11(x1, y1))
+          lineSegment(pointFrom(x1, y1), pointFrom(x2, y1)),
+          lineSegment(pointFrom(x2, y1), pointFrom(x2, y2)),
+          lineSegment(pointFrom(x2, y2), pointFrom(x1, y2)),
+          lineSegment(pointFrom(x1, y2), pointFrom(x1, y1))
         ];
         return segments2;
       }
@@ -10908,7 +11393,7 @@ var getElementLineSegments = (element, elementsMap) => {
     const points = shape.data;
     const segments = [];
     for (let i = 0; i < points.length - 1; i++) {
-      segments.push(lineSegment5(points[i], points[i + 1]));
+      segments.push(lineSegment(points[i], points[i + 1]));
     }
     return segments;
   } else if (shape.type === "ellipse") {
@@ -10923,16 +11408,16 @@ var getElementLineSegments = (element, elementsMap) => {
     [cx, y2],
     [x1, cy],
     [x2, cy]
-  ].map((point) => pointRotateRads10(point, center, element.angle));
+  ].map((point) => pointRotateRads(point, center, element.angle));
   return [
-    lineSegment5(nw, ne),
-    lineSegment5(sw, se),
-    lineSegment5(nw, sw),
-    lineSegment5(ne, se),
-    lineSegment5(nw, e),
-    lineSegment5(sw, e),
-    lineSegment5(ne, w),
-    lineSegment5(se, w)
+    lineSegment(nw, ne),
+    lineSegment(sw, se),
+    lineSegment(nw, sw),
+    lineSegment(ne, se),
+    lineSegment(nw, e),
+    lineSegment(sw, e),
+    lineSegment(ne, w),
+    lineSegment(se, w)
   ];
 };
 var _isRectanguloidElement = (element) => {
@@ -10940,26 +11425,26 @@ var _isRectanguloidElement = (element) => {
 };
 var getRotatedSides = (sides, center, angle) => {
   return sides.map((side) => {
-    return lineSegment5(
-      pointRotateRads10(side[0], center, angle),
-      pointRotateRads10(side[1], center, angle)
+    return lineSegment(
+      pointRotateRads(side[0], center, angle),
+      pointRotateRads(side[1], center, angle)
     );
   });
 };
-var getSegmentsOnCurve = (curve3, center, angle) => {
-  const points = pointsOnBezierCurves(curve3, 10);
+var getSegmentsOnCurve = (curve2, center, angle) => {
+  const points = pointsOnBezierCurves(curve2, 10);
   let i = 0;
   const segments = [];
   while (i < points.length - 1) {
     segments.push(
-      lineSegment5(
-        pointRotateRads10(
-          pointFrom11(points[i][0], points[i][1]),
+      lineSegment(
+        pointRotateRads(
+          pointFrom(points[i][0], points[i][1]),
           center,
           angle
         ),
-        pointRotateRads10(
-          pointFrom11(points[i + 1][0], points[i + 1][1]),
+        pointRotateRads(
+          pointFrom(points[i + 1][0], points[i + 1][1]),
           center,
           angle
         )
@@ -10969,13 +11454,13 @@ var getSegmentsOnCurve = (curve3, center, angle) => {
   }
   return segments;
 };
-var getSegmentsOnEllipse = (ellipse3) => {
-  const center = pointFrom11(
-    ellipse3.x + ellipse3.width / 2,
-    ellipse3.y + ellipse3.height / 2
+var getSegmentsOnEllipse = (ellipse2) => {
+  const center = pointFrom(
+    ellipse2.x + ellipse2.width / 2,
+    ellipse2.y + ellipse2.height / 2
   );
-  const a = ellipse3.width / 2;
-  const b = ellipse3.height / 2;
+  const a = ellipse2.width / 2;
+  const b = ellipse2.height / 2;
   const segments = [];
   const points = [];
   const n = 90;
@@ -10984,12 +11469,12 @@ var getSegmentsOnEllipse = (ellipse3) => {
     const t = i * deltaT;
     const x = center[0] + a * Math.cos(t);
     const y = center[1] + b * Math.sin(t);
-    points.push(pointRotateRads10(pointFrom11(x, y), center, ellipse3.angle));
+    points.push(pointRotateRads(pointFrom(x, y), center, ellipse2.angle));
   }
   for (let i = 0; i < points.length - 1; i++) {
-    segments.push(lineSegment5(points[i], points[i + 1]));
+    segments.push(lineSegment(points[i], points[i + 1]));
   }
-  segments.push(lineSegment5(points[points.length - 1], points[0]));
+  segments.push(lineSegment(points[points.length - 1], points[0]));
   return segments;
 };
 var getDiamondPoints = (element) => {
@@ -11057,17 +11542,17 @@ var getCubicBezierCurveBound = (p0, p1, p2, p3) => {
   return [minX, minY, maxX, maxY];
 };
 var getMinMaxXYFromCurvePathOps = (ops, transformXY) => {
-  let currentP = pointFrom11(0, 0);
+  let currentP = pointFrom(0, 0);
   const { minX, minY, maxX, maxY } = ops.reduce(
     (limits, { op, data }) => {
       if (op === "move") {
-        const p = pointFromArray2(data);
+        const p = pointFromArray(data);
         invariant(p != null, "Op data is not a point");
         currentP = p;
       } else if (op === "bcurveTo") {
-        const _p1 = pointFrom11(data[0], data[1]);
-        const _p2 = pointFrom11(data[2], data[3]);
-        const _p3 = pointFrom11(data[4], data[5]);
+        const _p1 = pointFrom(data[0], data[1]);
+        const _p2 = pointFrom(data[2], data[3]);
+        const _p3 = pointFrom(data[4], data[5]);
         const p1 = transformXY ? transformXY(_p1) : _p1;
         const p2 = transformXY ? transformXY(_p2) : _p2;
         const p3 = transformXY ? transformXY(_p3) : _p3;
@@ -11149,17 +11634,17 @@ var getArrowheadPoints = (element, shape, position, arrowhead) => {
   const index = position === "start" ? 1 : ops.length - 1;
   const data = ops[index].data;
   invariant(data.length === 6, "Op data length is not 6");
-  const p3 = pointFrom11(data[4], data[5]);
-  const p2 = pointFrom11(data[2], data[3]);
-  const p1 = pointFrom11(data[0], data[1]);
+  const p3 = pointFrom(data[4], data[5]);
+  const p2 = pointFrom(data[2], data[3]);
+  const p1 = pointFrom(data[0], data[1]);
   const prevOp = ops[index - 1];
-  let p0 = pointFrom11(0, 0);
+  let p0 = pointFrom(0, 0);
   if (prevOp.op === "move") {
-    const p = pointFromArray2(prevOp.data);
+    const p = pointFromArray(prevOp.data);
     invariant(p != null, "Op data is not a point");
     p0 = p;
   } else if (prevOp.op === "bcurveTo") {
-    p0 = pointFrom11(prevOp.data[4], prevOp.data[5]);
+    p0 = pointFrom(prevOp.data[4], prevOp.data[5]);
   }
   const equation = (t, idx) => Math.pow(1 - t, 3) * p3[idx] + 3 * t * Math.pow(1 - t, 2) * p2[idx] + 3 * Math.pow(t, 2) * (1 - t) * p1[idx] + p0[idx] * Math.pow(t, 3);
   const [x2, y2] = position === "start" ? p0 : p3;
@@ -11184,43 +11669,43 @@ var getArrowheadPoints = (element, shape, position, arrowhead) => {
   }
   const angle = getArrowheadAngle(arrowhead);
   if (arrowhead === "crowfoot_many" || arrowhead === "crowfoot_one_or_many") {
-    const [x32, y32] = pointRotateRads10(
-      pointFrom11(x2, y2),
-      pointFrom11(xs, ys),
-      degreesToRadians2(-angle)
+    const [x32, y32] = pointRotateRads(
+      pointFrom(x2, y2),
+      pointFrom(xs, ys),
+      degreesToRadians(-angle)
     );
-    const [x42, y42] = pointRotateRads10(
-      pointFrom11(x2, y2),
-      pointFrom11(xs, ys),
-      degreesToRadians2(angle)
+    const [x42, y42] = pointRotateRads(
+      pointFrom(x2, y2),
+      pointFrom(xs, ys),
+      degreesToRadians(angle)
     );
     return [xs, ys, x32, y32, x42, y42];
   }
-  const [x3, y3] = pointRotateRads10(
-    pointFrom11(xs, ys),
-    pointFrom11(x2, y2),
+  const [x3, y3] = pointRotateRads(
+    pointFrom(xs, ys),
+    pointFrom(x2, y2),
     -angle * Math.PI / 180
   );
-  const [x4, y4] = pointRotateRads10(
-    pointFrom11(xs, ys),
-    pointFrom11(x2, y2),
-    degreesToRadians2(angle)
+  const [x4, y4] = pointRotateRads(
+    pointFrom(xs, ys),
+    pointFrom(x2, y2),
+    degreesToRadians(angle)
   );
   if (arrowhead === "diamond" || arrowhead === "diamond_outline") {
     let ox;
     let oy;
     if (position === "start") {
       const [px, py] = element.points.length > 1 ? element.points[1] : [0, 0];
-      [ox, oy] = pointRotateRads10(
-        pointFrom11(x2 + minSize * 2, y2),
-        pointFrom11(x2, y2),
+      [ox, oy] = pointRotateRads(
+        pointFrom(x2 + minSize * 2, y2),
+        pointFrom(x2, y2),
         Math.atan2(py - y2, px - x2)
       );
     } else {
       const [px, py] = element.points.length > 1 ? element.points[element.points.length - 2] : [0, 0];
-      [ox, oy] = pointRotateRads10(
-        pointFrom11(x2 - minSize * 2, y2),
-        pointFrom11(x2, y2),
+      [ox, oy] = pointRotateRads(
+        pointFrom(x2 - minSize * 2, y2),
+        pointFrom(x2, y2),
         Math.atan2(y2 - py, x2 - px)
       );
     }
@@ -11249,9 +11734,9 @@ var getLinearElementRotatedBounds = (element, cx, cy, elementsMap) => {
   const boundTextElement = getBoundTextElement(element, elementsMap);
   if (element.points.length < 2) {
     const [pointX, pointY] = element.points[0];
-    const [x, y] = pointRotateRads10(
-      pointFrom11(element.x + pointX, element.y + pointY),
-      pointFrom11(cx, cy),
+    const [x, y] = pointRotateRads(
+      pointFrom(element.x + pointX, element.y + pointY),
+      pointFrom(cx, cy),
       element.angle
     );
     let coords2 = [x, y, x, y];
@@ -11274,9 +11759,9 @@ var getLinearElementRotatedBounds = (element, cx, cy, elementsMap) => {
   const cachedShape = ShapeCache.get(element, null)?.[0];
   const shape = cachedShape ?? generateLinearElementShape(element);
   const ops = getCurvePathOps(shape);
-  const transformXY = ([x, y]) => pointRotateRads10(
-    pointFrom11(element.x + x, element.y + y),
-    pointFrom11(cx, cy),
+  const transformXY = ([x, y]) => pointRotateRads(
+    pointFrom(element.x + x, element.y + y),
+    pointFrom(cx, cy),
     element.angle
   );
   const res = getMinMaxXYFromCurvePathOps(ops, transformXY);
@@ -11347,11 +11832,11 @@ var getResizedElementAbsoluteCoords = (element, nextWidth, nextHeight, normalize
     bounds = getBoundsFromPoints(points);
   } else {
     const gen = rough2.generator();
-    const curve3 = !element.roundness ? gen.linearPath(
+    const curve2 = !element.roundness ? gen.linearPath(
       points,
       generateRoughOptions(element)
     ) : gen.curve(points, generateRoughOptions(element));
-    const ops = getCurvePathOps(curve3);
+    const ops = getCurvePathOps(curve2);
     bounds = getMinMaxXYFromCurvePathOps(ops);
   }
   const [minX, minY, maxX, maxY] = bounds;
@@ -11364,11 +11849,11 @@ var getResizedElementAbsoluteCoords = (element, nextWidth, nextHeight, normalize
 };
 var getElementPointsCoords = (element, points) => {
   const gen = rough2.generator();
-  const curve3 = element.roundness == null ? gen.linearPath(
+  const curve2 = element.roundness == null ? gen.linearPath(
     points,
     generateRoughOptions(element)
   ) : gen.curve(points, generateRoughOptions(element));
-  const ops = getCurvePathOps(curve3);
+  const ops = getCurvePathOps(curve2);
   const [minX, minY, maxX, maxY] = getMinMaxXYFromCurvePathOps(ops);
   return [
     minX + element.x,
@@ -11386,9 +11871,9 @@ var getClosestElementBounds = (elements, from) => {
   const elementsMap = arrayToMap(elements);
   elements.forEach((element) => {
     const [x1, y1, x2, y2] = getElementBounds(element, elementsMap);
-    const distance2 = pointDistance5(
-      pointFrom11((x1 + x2) / 2, (y1 + y2) / 2),
-      pointFrom11(from.x, from.y)
+    const distance2 = pointDistance(
+      pointFrom((x1 + x2) / 2, (y1 + y2) / 2),
+      pointFrom(from.x, from.y)
     );
     if (distance2 < minDistance) {
       minDistance = distance2;
@@ -11424,7 +11909,7 @@ var getVisibleSceneBounds = ({
     -scrollY + height / zoom.value
   ];
 };
-var getCenterForBounds = (bounds) => pointFrom11(
+var getCenterForBounds = (bounds) => pointFrom(
   bounds[0] + (bounds[2] - bounds[0]) / 2,
   bounds[1] + (bounds[3] - bounds[1]) / 2
 );
@@ -11438,23 +11923,23 @@ var aabbForElement = (element, elementsMap, offset) => {
     midY: element.y + element.height / 2
   };
   const center = elementCenterPoint(element, elementsMap);
-  const [topLeftX, topLeftY] = pointRotateRads10(
-    pointFrom11(bbox.minX, bbox.minY),
+  const [topLeftX, topLeftY] = pointRotateRads(
+    pointFrom(bbox.minX, bbox.minY),
     center,
     element.angle
   );
-  const [topRightX, topRightY] = pointRotateRads10(
-    pointFrom11(bbox.maxX, bbox.minY),
+  const [topRightX, topRightY] = pointRotateRads(
+    pointFrom(bbox.maxX, bbox.minY),
     center,
     element.angle
   );
-  const [bottomRightX, bottomRightY] = pointRotateRads10(
-    pointFrom11(bbox.maxX, bbox.maxY),
+  const [bottomRightX, bottomRightY] = pointRotateRads(
+    pointFrom(bbox.maxX, bbox.maxY),
     center,
     element.angle
   );
-  const [bottomLeftX, bottomLeftY] = pointRotateRads10(
-    pointFrom11(bbox.minX, bbox.maxY),
+  const [bottomLeftX, bottomLeftY] = pointRotateRads(
+    pointFrom(bbox.minX, bbox.maxY),
     center,
     element.angle
   );
@@ -11487,18 +11972,18 @@ var doBoundsIntersect = (bounds1, bounds2) => {
 var elementCenterPoint = (element, elementsMap, xOffset = 0, yOffset = 0) => {
   if (isLinearElement(element)) {
     const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
-    const [x3, y3] = pointFrom11((x1 + x2) / 2, (y1 + y2) / 2);
-    return pointFrom11(x3 + xOffset, y3 + yOffset);
+    const [x3, y3] = pointFrom((x1 + x2) / 2, (y1 + y2) / 2);
+    return pointFrom(x3 + xOffset, y3 + yOffset);
   }
   const [x, y] = getCenterForBounds(getElementBounds(element, elementsMap));
-  return pointFrom11(x + xOffset, y + yOffset);
+  return pointFrom(x + xOffset, y + yOffset);
 };
 
 // ../element/src/sizeHelpers.ts
 var INVISIBLY_SMALL_ELEMENT_SIZE = 0.1;
 var isInvisiblySmallElement = (element) => {
   if (isLinearElement(element) || isFreeDrawElement(element)) {
-    return element.points.length < 2 || element.points.length === 2 && isArrowElement(element) && pointsEqual6(
+    return element.points.length < 2 || element.points.length === 2 && isArrowElement(element) && pointsEqual(
       element.points[0],
       element.points[element.points.length - 1],
       INVISIBLY_SMALL_ELEMENT_SIZE
@@ -15033,9 +15518,9 @@ var Break = {
     }
   })
 };
-var parseTokens = (line) => {
+var parseTokens = (line2) => {
   const breakLineRegex = getLineBreakRegex();
-  return line.normalize("NFC").split(breakLineRegex).filter(Boolean);
+  return line2.normalize("NFC").split(breakLineRegex).filter(Boolean);
 };
 var wrapText = (text, font, maxWidth) => {
   if (!Number.isFinite(maxWidth) || maxWidth < 0) {
@@ -15054,9 +15539,9 @@ var wrapText = (text, font, maxWidth) => {
   }
   return lines.join("\n");
 };
-var wrapLine = (line, font, maxWidth) => {
+var wrapLine = (line2, font, maxWidth) => {
   const lines = [];
-  const tokens = parseTokens(line);
+  const tokens = parseTokens(line2);
   const tokenIterator = tokens[Symbol.iterator]();
   let currentLine = "";
   let currentLineWidth = 0;
@@ -15119,14 +15604,14 @@ var wrapWord = (word, font, maxWidth) => {
   }
   return lines;
 };
-var trimLine = (line, font, maxWidth) => {
-  const shouldTrimWhitespaces = getLineWidth(line, font) > maxWidth;
+var trimLine = (line2, font, maxWidth) => {
+  const shouldTrimWhitespaces = getLineWidth(line2, font) > maxWidth;
   if (!shouldTrimWhitespaces) {
-    return line;
+    return line2;
   }
-  let [, trimmedLine, whitespaces] = line.match(/^(.+?)(\s+)$/) ?? [
-    line,
-    line.trimEnd(),
+  let [, trimmedLine, whitespaces] = line2.match(/^(.+?)(\s+)$/) ?? [
+    line2,
+    line2.trimEnd(),
     ""
   ];
   let trimmedLineWidth = getLineWidth(trimmedLine, font);
@@ -15866,7 +16351,6 @@ var embeddableURLValidator = (url, validateEmbeddable) => {
 };
 
 // ../element/src/flowchart.ts
-import { pointFrom as pointFrom12 } from "@excalidraw/math";
 var VERTICAL_OFFSET = 100;
 var HORIZONTAL_OFFSET = 100;
 var getLinkDirectionFromKey = (key) => {
@@ -16146,7 +16630,7 @@ var createBindingArrow = (startBindingElement, endBindingElement, direction, app
     strokeWidth: startBindingElement.strokeWidth,
     opacity: startBindingElement.opacity,
     roughness: startBindingElement.roughness,
-    points: [pointFrom12(0, 0), pointFrom12(endX, endY)],
+    points: [pointFrom(0, 0), pointFrom(endX, endY)],
     elbowed: true
   });
   const elementsMap = scene.getNonDeletedElementsMap();
@@ -16327,9 +16811,6 @@ var FlowChartCreator = class {
     this.numberOfNodes = 0;
   }
 };
-
-// ../element/src/arrows/focus.ts
-import { pointDistance as pointDistance6, pointFrom as pointFrom13 } from "@excalidraw/math";
 
 // ../element/src/zindex.ts
 var isOfTargetFrame = (element, frameId) => {
@@ -16717,7 +17198,7 @@ var isFocusPointVisible = (focusPoint, arrow, bindableElement, elementsMap, appS
       associatedPointIdx,
       elementsMap
     );
-    if (pointDistance6(focusPoint, associatedArrowPoint) < FOCUS_POINT_SIZE * 1.5 / appState.zoom.value) {
+    if (pointDistance(focusPoint, associatedArrowPoint) < FOCUS_POINT_SIZE * 1.5 / appState.zoom.value) {
       return false;
     }
   }
@@ -16726,7 +17207,7 @@ var isFocusPointVisible = (focusPoint, arrow, bindableElement, elementsMap, appS
     startOrEnd === "end" ? arrow.points.length - 1 : 0,
     elementsMap
   );
-  return pointDistance6(focusPoint, arrowPoint) >= FOCUS_POINT_SIZE * 1.5 / appState.zoom.value && hitElementItself({
+  return pointDistance(focusPoint, arrowPoint) >= FOCUS_POINT_SIZE * 1.5 / appState.zoom.value && hitElementItself({
     element: bindableElement,
     elementsMap,
     point: focusPoint,
@@ -16816,7 +17297,7 @@ var handleFocusPointDrag = (linearElementEditor, elementsMap, pointerCoords, sce
   const isStartBinding = linearElementEditor.draggedFocusPointBinding === "start";
   const binding = isStartBinding ? arrow.startBinding : arrow.endBinding;
   const { x: offsetX, y: offsetY } = linearElementEditor.pointerOffset;
-  const point = pointFrom13(
+  const point = pointFrom(
     pointerCoords.x - offsetX,
     pointerCoords.y - offsetY
   );
@@ -16899,7 +17380,7 @@ var handleFocusPointDrag = (linearElementEditor, elementsMap, pointerCoords, sce
   }
 };
 var handleFocusPointPointerDown = (arrow, pointerDownState, elementsMap, appState) => {
-  const pointerPos = pointFrom13(
+  const pointerPos = pointFrom(
     pointerDownState.origin.x,
     pointerDownState.origin.y
   );
@@ -16919,7 +17400,7 @@ var handleFocusPointPointerDown = (arrow, pointerDownState, elementsMap, appStat
         elementsMap,
         appState,
         "start"
-      ) && pointDistance6(pointerPos, focusPoint) <= hitThreshold) {
+      ) && pointDistance(pointerPos, focusPoint) <= hitThreshold) {
         return {
           hitFocusPoint: "start",
           pointerOffset: {
@@ -16945,7 +17426,7 @@ var handleFocusPointPointerDown = (arrow, pointerDownState, elementsMap, appStat
         elementsMap,
         appState,
         "end"
-      ) && pointDistance6(pointerPos, focusPoint) <= hitThreshold) {
+      ) && pointDistance(pointerPos, focusPoint) <= hitThreshold) {
         return {
           hitFocusPoint: "end",
           pointerOffset: {
@@ -17002,7 +17483,7 @@ var handleFocusPointPointerUp = (linearElementEditor, scene) => {
 };
 var handleFocusPointHover = (arrow, scenePointerX, scenePointerY, scene, appState) => {
   const elementsMap = scene.getNonDeletedElementsMap();
-  const pointerPos = pointFrom13(scenePointerX, scenePointerY);
+  const pointerPos = pointFrom(scenePointerX, scenePointerY);
   const hitThreshold = FOCUS_POINT_SIZE * 1.5 / appState.zoom.value;
   if (arrow.startBinding?.elementId) {
     const bindableElement = elementsMap.get(arrow.startBinding.elementId);
@@ -17019,7 +17500,7 @@ var handleFocusPointHover = (arrow, scenePointerX, scenePointerY, scene, appStat
         elementsMap,
         appState,
         "start"
-      ) && pointDistance6(pointerPos, focusPoint) <= hitThreshold) {
+      ) && pointDistance(pointerPos, focusPoint) <= hitThreshold) {
         return "start";
       }
     }
@@ -17039,7 +17520,7 @@ var handleFocusPointHover = (arrow, scenePointerX, scenePointerY, scene, appStat
         elementsMap,
         appState,
         "end"
-      ) && pointDistance6(pointerPos, focusPoint) <= hitThreshold) {
+      ) && pointDistance(pointerPos, focusPoint) <= hitThreshold) {
         return "end";
       }
     }
@@ -17216,12 +17697,6 @@ var positionElementsOnGrid = (elements, centerX, centerY, padding = 50) => {
 };
 
 // ../element/src/resizeElements.ts
-import {
-  pointCenter as pointCenter2,
-  normalizeRadians as normalizeRadians2,
-  pointFrom as pointFrom14,
-  pointRotateRads as pointRotateRads11
-} from "@excalidraw/math";
 var transformElements = (originalElements, transformHandleType, selectedElements, scene, shouldRotateWithDiscreteAngle2, shouldResizeFromCenter2, shouldMaintainAspectRatio2, pointerX, pointerY, centerX, centerY) => {
   const elementsMap = scene.getNonDeletedElementsMap();
   if (selectedElements.length === 1) {
@@ -17335,7 +17810,7 @@ var rotateSingleElement = (element, scene, pointerX, pointerY, shouldRotateWithD
       angle = angle + SHIFT_LOCKING_ANGLE / 2;
       angle = angle - angle % SHIFT_LOCKING_ANGLE;
     }
-    angle = normalizeRadians2(angle);
+    angle = normalizeRadians(angle);
   }
   const boundTextElementId = getBoundTextElementId(element);
   let update = {
@@ -17402,7 +17877,7 @@ var resizeSingleTextElement = (origElement, element, scene, transformHandleType,
     return;
   }
   if (transformHandleType.includes("n") || transformHandleType.includes("s")) {
-    const previousOrigin = pointFrom14(origElement.x, origElement.y);
+    const previousOrigin = pointFrom(origElement.x, origElement.y);
     const newOrigin = getResizedOrigin(
       previousOrigin,
       origElement.width,
@@ -17443,7 +17918,7 @@ var resizeSingleTextElement = (origElement, element, scene, transformHandleType,
       element.lineHeight
     );
     const newHeight = metrics2.height;
-    const previousOrigin = pointFrom14(origElement.x, origElement.y);
+    const previousOrigin = pointFrom(origElement.x, origElement.y);
     const newOrigin = getResizedOrigin(
       previousOrigin,
       origElement.width,
@@ -17480,9 +17955,9 @@ var rotateMultipleElements = (originalElements, elements, scene, pointerX, point
       const cx = (x1 + x2) / 2;
       const cy = (y1 + y2) / 2;
       const origAngle = originalElements.get(element.id)?.angle ?? element.angle;
-      const [rotatedCX, rotatedCY] = pointRotateRads11(
-        pointFrom14(cx, cy),
-        pointFrom14(centerX, centerY),
+      const [rotatedCX, rotatedCY] = pointRotateRads(
+        pointFrom(cx, cy),
+        pointFrom(centerX, centerY),
         centerAngle + origAngle - element.angle
       );
       const updates = isElbowArrow(element) ? {
@@ -17491,7 +17966,7 @@ var rotateMultipleElements = (originalElements, elements, scene, pointerX, point
       } : {
         x: element.x + (rotatedCX - cx),
         y: element.y + (rotatedCY - cy),
-        angle: normalizeRadians2(centerAngle + origAngle)
+        angle: normalizeRadians(centerAngle + origAngle)
       };
       scene.mutateElement(element, updates);
       updateBoundElements(element, scene, {
@@ -17519,7 +17994,7 @@ var rotateMultipleElements = (originalElements, elements, scene, pointerX, point
         scene.mutateElement(boundText, {
           x,
           y,
-          angle: normalizeRadians2(centerAngle + origAngle)
+          angle: normalizeRadians(centerAngle + origAngle)
         });
       }
     }
@@ -17531,44 +18006,44 @@ var getResizeOffsetXY = (transformHandleType, selectedElements, elementsMap, x, 
   const cx = (x1 + x2) / 2;
   const cy = (y1 + y2) / 2;
   const angle = selectedElements.length === 1 ? selectedElements[0].angle : 0;
-  [x, y] = pointRotateRads11(
-    pointFrom14(x, y),
-    pointFrom14(cx, cy),
+  [x, y] = pointRotateRads(
+    pointFrom(x, y),
+    pointFrom(cx, cy),
     -angle
   );
   switch (transformHandleType) {
     case "n":
-      return pointRotateRads11(
-        pointFrom14(x - (x1 + x2) / 2, y - y1),
-        pointFrom14(0, 0),
+      return pointRotateRads(
+        pointFrom(x - (x1 + x2) / 2, y - y1),
+        pointFrom(0, 0),
         angle
       );
     case "s":
-      return pointRotateRads11(
-        pointFrom14(x - (x1 + x2) / 2, y - y2),
-        pointFrom14(0, 0),
+      return pointRotateRads(
+        pointFrom(x - (x1 + x2) / 2, y - y2),
+        pointFrom(0, 0),
         angle
       );
     case "w":
-      return pointRotateRads11(
-        pointFrom14(x - x1, y - (y1 + y2) / 2),
-        pointFrom14(0, 0),
+      return pointRotateRads(
+        pointFrom(x - x1, y - (y1 + y2) / 2),
+        pointFrom(0, 0),
         angle
       );
     case "e":
-      return pointRotateRads11(
-        pointFrom14(x - x2, y - (y1 + y2) / 2),
-        pointFrom14(0, 0),
+      return pointRotateRads(
+        pointFrom(x - x2, y - (y1 + y2) / 2),
+        pointFrom(0, 0),
         angle
       );
     case "nw":
-      return pointRotateRads11(pointFrom14(x - x1, y - y1), pointFrom14(0, 0), angle);
+      return pointRotateRads(pointFrom(x - x1, y - y1), pointFrom(0, 0), angle);
     case "ne":
-      return pointRotateRads11(pointFrom14(x - x2, y - y1), pointFrom14(0, 0), angle);
+      return pointRotateRads(pointFrom(x - x2, y - y1), pointFrom(0, 0), angle);
     case "sw":
-      return pointRotateRads11(pointFrom14(x - x1, y - y2), pointFrom14(0, 0), angle);
+      return pointRotateRads(pointFrom(x - x1, y - y2), pointFrom(0, 0), angle);
     case "se":
-      return pointRotateRads11(pointFrom14(x - x2, y - y2), pointFrom14(0, 0), angle);
+      return pointRotateRads(pointFrom(x - x2, y - y2), pointFrom(0, 0), angle);
     default:
       return [0, 0];
   }
@@ -17731,10 +18206,10 @@ var resizeSingleElement = (nextWidth, nextHeight, latestElement, origElement, or
     nextHeight,
     true
   );
-  let previousOrigin = pointFrom14(origElement.x, origElement.y);
+  let previousOrigin = pointFrom(origElement.x, origElement.y);
   if (isLinearElement(origElement)) {
     const [x1, y1] = getElementBounds(origElement, originalElementsMap);
-    previousOrigin = pointFrom14(x1, y1);
+    previousOrigin = pointFrom(x1, y1);
   }
   const newOrigin = getResizedOrigin(
     previousOrigin,
@@ -17757,7 +18232,7 @@ var resizeSingleElement = (nextWidth, nextHeight, latestElement, origElement, or
     newOrigin.x += scaledX;
     newOrigin.y += scaledY;
     rescaledPoints.points = rescaledPoints.points.map(
-      (p) => pointFrom14(p[0] - scaledX, p[1] - scaledY)
+      (p) => pointFrom(p[0] - scaledX, p[1] - scaledY)
     );
   }
   if (nextWidth < 0) {
@@ -17833,11 +18308,11 @@ var getNextSingleWidthAndHeightFromPointer = (latestElement, origElement, handle
     origElement.height,
     true
   );
-  const startTopLeft = pointFrom14(x1, y1);
-  const startBottomRight = pointFrom14(x2, y2);
-  const startCenter = pointCenter2(startTopLeft, startBottomRight);
-  const rotatedPointer = pointRotateRads11(
-    pointFrom14(pointerX, pointerY),
+  const startTopLeft = pointFrom(x1, y1);
+  const startBottomRight = pointFrom(x2, y2);
+  const startCenter = pointCenter(startTopLeft, startBottomRight);
+  const rotatedPointer = pointRotateRads(
+    pointFrom(pointerX, pointerY),
     startCenter,
     -origElement.angle
   );
@@ -18085,7 +18560,7 @@ var resizeMultipleElements = (selectedElements, elementsMap, handleDirection, sc
       }
       const width2 = orig.width * scaleX;
       const height2 = orig.height * scaleY;
-      const angle = normalizeRadians2(
+      const angle = normalizeRadians(
         orig.angle * flipFactorX * flipFactorY
       );
       const isLinearOrFreeDraw = isLinearElement(orig) || isFreeDrawElement(orig);
@@ -18204,15 +18679,7 @@ var resizeMultipleElements = (selectedElements, elementsMap, handleDirection, sc
   }
 };
 
-// ../element/src/resizeTest.ts
-import {
-  pointFrom as pointFrom16,
-  pointOnLineSegment,
-  pointRotateRads as pointRotateRads13
-} from "@excalidraw/math";
-
 // ../element/src/transformHandles.ts
-import { pointFrom as pointFrom15, pointRotateRads as pointRotateRads12 } from "@excalidraw/math";
 var transformHandleSizes = {
   mouse: 8,
   pen: 16,
@@ -18240,9 +18707,9 @@ var OMIT_SIDES_FOR_LINE_BACKSLASH = {
   w: true
 };
 var generateTransformHandle = (x, y, width, height, cx, cy, angle) => {
-  const [xx, yy] = pointRotateRads12(
-    pointFrom15(x + width / 2, y + height / 2),
-    pointFrom15(cx, cy),
+  const [xx, yy] = pointRotateRads(
+    pointFrom(x + width / 2, y + height / 2),
+    pointFrom(cx, cy),
     angle
   );
   return [xx - width / 2, yy - height / 2, width, height];
@@ -18456,14 +18923,14 @@ var resizeTest = (element, elementsMap, appState, x, y, zoom, pointerType, edito
       const SPACING = isImageElement(element) ? 0 : SIDE_RESIZING_THRESHOLD / zoom.value;
       const ZOOMED_SIDE_RESIZING_THRESHOLD = SIDE_RESIZING_THRESHOLD / zoom.value;
       const sides = getSelectionBorders(
-        pointFrom16(x1 - SPACING, y1 - SPACING),
-        pointFrom16(x2 + SPACING, y2 + SPACING),
-        pointFrom16(cx, cy),
+        pointFrom(x1 - SPACING, y1 - SPACING),
+        pointFrom(x2 + SPACING, y2 + SPACING),
+        pointFrom(cx, cy),
         element.angle
       );
       for (const [dir, side] of Object.entries(sides)) {
         if (pointOnLineSegment(
-          pointFrom16(x, y),
+          pointFrom(x, y),
           side,
           ZOOMED_SIDE_RESIZING_THRESHOLD
         )) {
@@ -18512,14 +18979,14 @@ var getTransformHandleTypeFromCoords = ([x1, y1, x2, y2], scenePointerX, scenePo
     const cy = (y1 + y2) / 2;
     const SPACING = SIDE_RESIZING_THRESHOLD / zoom.value;
     const sides = getSelectionBorders(
-      pointFrom16(x1 - SPACING, y1 - SPACING),
-      pointFrom16(x2 + SPACING, y2 + SPACING),
-      pointFrom16(cx, cy),
+      pointFrom(x1 - SPACING, y1 - SPACING),
+      pointFrom(x2 + SPACING, y2 + SPACING),
+      pointFrom(cx, cy),
       0
     );
     for (const [dir, side] of Object.entries(sides)) {
       if (pointOnLineSegment(
-        pointFrom16(scenePointerX, scenePointerY),
+        pointFrom(scenePointerX, scenePointerY),
         side,
         SPACING
       )) {
@@ -18576,10 +19043,10 @@ var getCursorForResizingElement = (resizingElement) => {
   return cursor ? `${cursor}-resize` : "";
 };
 var getSelectionBorders = ([x1, y1], [x2, y2], center, angle) => {
-  const topLeft = pointRotateRads13(pointFrom16(x1, y1), center, angle);
-  const topRight = pointRotateRads13(pointFrom16(x2, y1), center, angle);
-  const bottomLeft = pointRotateRads13(pointFrom16(x1, y2), center, angle);
-  const bottomRight = pointRotateRads13(pointFrom16(x2, y2), center, angle);
+  const topLeft = pointRotateRads(pointFrom(x1, y1), center, angle);
+  const topRight = pointRotateRads(pointFrom(x2, y1), center, angle);
+  const bottomLeft = pointRotateRads(pointFrom(x1, y2), center, angle);
+  const bottomRight = pointRotateRads(pointFrom(x2, y2), center, angle);
   return {
     n: [topLeft, topRight],
     e: [topRight, bottomRight],
@@ -18589,7 +19056,6 @@ var getSelectionBorders = ([x1, y1], [x2, y2], center, angle) => {
 };
 
 // ../element/src/transform.ts
-import { pointFrom as pointFrom17 } from "@excalidraw/math";
 var DEFAULT_LINEAR_ELEMENT_PROPS = {
   width: 100,
   height: 0
@@ -18858,7 +19324,7 @@ var convertToExcalidrawElements = (elementsSkeleton, opts) => {
         excalidrawElement = newLinearElement({
           width,
           height,
-          points: [pointFrom17(0, 0), pointFrom17(width, height)],
+          points: [pointFrom(0, 0), pointFrom(width, height)],
           ...element
         });
         break;
@@ -18870,7 +19336,7 @@ var convertToExcalidrawElements = (elementsSkeleton, opts) => {
           width,
           height,
           endArrowhead: "arrow",
-          points: [pointFrom17(0, 0), pointFrom17(width, height)],
+          points: [pointFrom(0, 0), pointFrom(width, height)],
           ...element,
           type: "arrow"
         });
@@ -19140,21 +19606,21 @@ var getPolygonShape = (element) => {
   const { angle, width, height, x, y } = element;
   const cx = x + width / 2;
   const cy = y + height / 2;
-  const center = pointFrom18(cx, cy);
+  const center = pointFrom(cx, cy);
   let data;
   if (element.type === "diamond") {
     data = polygon(
-      pointRotateRads14(pointFrom18(cx, y), center, angle),
-      pointRotateRads14(pointFrom18(x + width, cy), center, angle),
-      pointRotateRads14(pointFrom18(cx, y + height), center, angle),
-      pointRotateRads14(pointFrom18(x, cy), center, angle)
+      pointRotateRads(pointFrom(cx, y), center, angle),
+      pointRotateRads(pointFrom(x + width, cy), center, angle),
+      pointRotateRads(pointFrom(cx, y + height), center, angle),
+      pointRotateRads(pointFrom(x, cy), center, angle)
     );
   } else {
     data = polygon(
-      pointRotateRads14(pointFrom18(x, y), center, angle),
-      pointRotateRads14(pointFrom18(x + width, y), center, angle),
-      pointRotateRads14(pointFrom18(x + width, y + height), center, angle),
-      pointRotateRads14(pointFrom18(x, y + height), center, angle)
+      pointRotateRads(pointFrom(x, y), center, angle),
+      pointRotateRads(pointFrom(x + width, y), center, angle),
+      pointRotateRads(pointFrom(x + width, y + height), center, angle),
+      pointRotateRads(pointFrom(x, y + height), center, angle)
     );
   }
   return {
@@ -19167,7 +19633,7 @@ var getEllipseShape = (element) => {
   return {
     type: "ellipse",
     data: {
-      center: pointFrom18(x + width / 2, y + height / 2),
+      center: pointFrom(x + width / 2, y + height / 2),
       angle,
       halfWidth: width / 2,
       halfHeight: height / 2
@@ -19185,26 +19651,26 @@ var getCurvePathOps = (shape) => {
   }
   return shape.sets[0].ops;
 };
-var getCurveShape = (roughShape, startingPoint = pointFrom18(0, 0), angleInRadian, center) => {
-  const transform = (p) => pointRotateRads14(
-    pointFrom18(p[0] + startingPoint[0], p[1] + startingPoint[1]),
+var getCurveShape = (roughShape, startingPoint = pointFrom(0, 0), angleInRadian, center) => {
+  const transform = (p) => pointRotateRads(
+    pointFrom(p[0] + startingPoint[0], p[1] + startingPoint[1]),
     center,
     angleInRadian
   );
   const ops = getCurvePathOps(roughShape);
   const polycurve = [];
-  let p0 = pointFrom18(0, 0);
+  let p0 = pointFrom(0, 0);
   for (const op of ops) {
     if (op.op === "move") {
-      const p = pointFromArray3(op.data);
+      const p = pointFromArray(op.data);
       invariant(p != null, "Ops data is not a point");
       p0 = transform(p);
     }
     if (op.op === "bcurveTo") {
-      const p1 = transform(pointFrom18(op.data[0], op.data[1]));
-      const p2 = transform(pointFrom18(op.data[2], op.data[3]));
-      const p3 = transform(pointFrom18(op.data[4], op.data[5]));
-      polycurve.push(curve2(p0, p1, p2, p3));
+      const p1 = transform(pointFrom(op.data[0], op.data[1]));
+      const p2 = transform(pointFrom(op.data[2], op.data[3]));
+      const p3 = transform(pointFrom(op.data[4], op.data[5]));
+      polycurve.push(curve(p0, p1, p2, p3));
       p0 = p3;
     }
   }
@@ -19218,15 +19684,15 @@ var polylineFromPoints = (points) => {
   const polyline = [];
   for (let i = 1; i < points.length; i++) {
     const nextPoint = points[i];
-    polyline.push(lineSegment6(previousPoint, nextPoint));
+    polyline.push(lineSegment(previousPoint, nextPoint));
     previousPoint = nextPoint;
   }
   return polyline;
 };
 var getFreedrawShape = (element, center, isClosed = false) => {
-  const transform = (p) => pointRotateRads14(
-    pointFromVector6(
-      vectorAdd2(vectorFromPoint8(p), vector2(element.x, element.y))
+  const transform = (p) => pointRotateRads(
+    pointFromVector(
+      vectorAdd(vectorFromPoint(p), vector(element.x, element.y))
     ),
     center,
     element.angle
@@ -19242,9 +19708,9 @@ var getFreedrawShape = (element, center, isClosed = false) => {
     data: polyline
   };
 };
-var getClosedCurveShape = (element, roughShape, startingPoint = pointFrom18(0, 0), angleInRadian, center) => {
-  const transform = (p) => pointRotateRads14(
-    pointFrom18(p[0] + startingPoint[0], p[1] + startingPoint[1]),
+var getClosedCurveShape = (element, roughShape, startingPoint = pointFrom(0, 0), angleInRadian, center) => {
+  const transform = (p) => pointRotateRads(
+    pointFrom(p[0] + startingPoint[0], p[1] + startingPoint[1]),
     center,
     angleInRadian
   );
@@ -19263,17 +19729,17 @@ var getClosedCurveShape = (element, roughShape, startingPoint = pointFrom18(0, 0
     if (operation.op === "move") {
       odd = !odd;
       if (odd) {
-        points.push(pointFrom18(operation.data[0], operation.data[1]));
+        points.push(pointFrom(operation.data[0], operation.data[1]));
       }
     } else if (operation.op === "bcurveTo") {
       if (odd) {
-        points.push(pointFrom18(operation.data[0], operation.data[1]));
-        points.push(pointFrom18(operation.data[2], operation.data[3]));
-        points.push(pointFrom18(operation.data[4], operation.data[5]));
+        points.push(pointFrom(operation.data[0], operation.data[1]));
+        points.push(pointFrom(operation.data[2], operation.data[3]));
+        points.push(pointFrom(operation.data[4], operation.data[5]));
       }
     } else if (operation.op === "lineTo") {
       if (odd) {
-        points.push(pointFrom18(operation.data[0], operation.data[1]));
+        points.push(pointFrom(operation.data[0], operation.data[1]));
       }
     }
   }
@@ -19294,7 +19760,7 @@ var getNormalizedPoints = ({
   const offsetY = points[0][1];
   return {
     points: points.map((p) => {
-      return pointFrom19(p[0] - offsetX, p[1] - offsetY);
+      return pointFrom(p[0] - offsetX, p[1] - offsetY);
     }),
     offsetX,
     offsetY
@@ -19323,7 +19789,7 @@ var _LinearElementEditor = class _LinearElementEditor {
     // @ts-ignore
     __publicField(this, "pointerDownState");
     this.elementId = element.id;
-    if (!pointsEqual7(element.points[0], pointFrom19(0, 0))) {
+    if (!pointsEqual(element.points[0], pointFrom(0, 0))) {
       console.error("Linear element is not normalized", Error().stack);
       mutateElement(
         element,
@@ -19418,11 +19884,11 @@ var _LinearElementEditor = class _LinearElementEditor {
         element,
         elementsMap,
         pivotPoint,
-        pointFrom19(scenePointerX, scenePointerY),
+        pointFrom(scenePointerX, scenePointerY),
         event[KEYS.CTRL_OR_CMD] ? null : app.getEffectiveGridSize(),
         customLineAngle
       );
-      const target = pointFrom19(
+      const target = pointFrom(
         width + pivotPoint[0],
         height + pivotPoint[1]
       );
@@ -19499,7 +19965,7 @@ var _LinearElementEditor = class _LinearElementEditor {
         ...linearElementEditor.initialState,
         altFocusPoint: !linearElementEditor.initialState.altFocusPoint && startBindingElement && updates?.suggestedBinding?.element.id !== startBindingElement.id ? projectFixedPointOntoDiagonal(
           element,
-          pointFrom19(element.x, element.y),
+          pointFrom(element.x, element.y),
           startBindingElement,
           "start",
           elementsMap,
@@ -19559,11 +20025,11 @@ var _LinearElementEditor = class _LinearElementEditor {
         element,
         elementsMap,
         pivotPoint,
-        pointFrom19(scenePointerX, scenePointerY),
+        pointFrom(scenePointerX, scenePointerY),
         event[KEYS.CTRL_OR_CMD] ? null : app.getEffectiveGridSize(),
         customLineAngle
       );
-      const target = pointFrom19(
+      const target = pointFrom(
         width + pivotPoint[0],
         height + pivotPoint[1]
       );
@@ -19657,7 +20123,7 @@ var _LinearElementEditor = class _LinearElementEditor {
         altFocusPoint: !linearElementEditor.initialState.altFocusPoint && // We only set it once per arrow drag
         isBindingElement(element) && altFocusPointBindableElement ? projectFixedPointOntoDiagonal(
           element,
-          pointFrom19(element.x, element.y),
+          pointFrom(element.x, element.y),
           altFocusPointBindableElement,
           "start",
           elementsMap,
@@ -19743,11 +20209,11 @@ var _LinearElementEditor = class _LinearElementEditor {
   static isSegmentTooShort(element, startPoint, endPoint, index, zoom) {
     if (isElbowArrow(element)) {
       if (index >= 0 && index < element.points.length) {
-        return pointDistance8(startPoint, endPoint) * zoom.value < _LinearElementEditor.POINT_HANDLE_SIZE / 2;
+        return pointDistance(startPoint, endPoint) * zoom.value < _LinearElementEditor.POINT_HANDLE_SIZE / 2;
       }
       return false;
     }
-    let distance2 = pointDistance8(startPoint, endPoint);
+    let distance2 = pointDistance(startPoint, endPoint);
     if (element.points.length > 2 && element.roundness) {
       const [lines, curves] = deconstructLinearOrFreeDrawElement(element);
       invariant(
@@ -19768,8 +20234,8 @@ var _LinearElementEditor = class _LinearElementEditor {
         element.points.length >= index,
         "Invalid segment index while calculating elbow arrow mid point"
       );
-      const p = pointCenter3(element.points[index - 1], element.points[index]);
-      return pointFrom19(element.x + p[0], element.y + p[1]);
+      const p = pointCenter(element.points[index - 1], element.points[index]);
+      return pointFrom(element.x + p[0], element.y + p[1]);
     }
     const [lines, curves] = deconstructLinearOrFreeDrawElement(element);
     invariant(
@@ -19782,7 +20248,7 @@ var _LinearElementEditor = class _LinearElementEditor {
     );
     if (lines.length) {
       const segment = lines[index - 1];
-      return pointCenter3(segment[0], segment[1]);
+      return pointCenter(segment[0], segment[1]);
     }
     if (curves.length) {
       const segment = curves[index - 1];
@@ -19834,7 +20300,7 @@ var _LinearElementEditor = class _LinearElementEditor {
       appState,
       elementsMap
     );
-    const point = pointFrom19(scenePointer.x, scenePointer.y);
+    const point = pointFrom(scenePointer.x, scenePointer.y);
     let segmentMidpointIndex = null;
     if (segmentMidpoint) {
       segmentMidpointIndex = _LinearElementEditor.getSegmentMidPointIndex(
@@ -19893,12 +20359,12 @@ var _LinearElementEditor = class _LinearElementEditor {
     const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
     const cx = (x1 + x2) / 2;
     const cy = (y1 + y2) / 2;
-    const targetPoint = clickedPointIndex > -1 && pointRotateRads15(
-      pointFrom19(
+    const targetPoint = clickedPointIndex > -1 && pointRotateRads(
+      pointFrom(
         element.x + element.points[clickedPointIndex][0],
         element.y + element.points[clickedPointIndex][1]
       ),
-      pointFrom19(cx, cy),
+      pointFrom(cx, cy),
       element.angle
     );
     const nextSelectedPointsIndices = clickedPointIndex > -1 || event.shiftKey ? event.shiftKey || linearElementEditor.selectedPointsIndices?.includes(clickedPointIndex) ? normalizeSelectedPoints([
@@ -19934,7 +20400,7 @@ var _LinearElementEditor = class _LinearElementEditor {
     if (!point1 || !point2) {
       return false;
     }
-    return pointsEqual7(point1, point2);
+    return pointsEqual(point1, point2);
   }
   static handlePointerMoveInEditMode(event, scenePointerX, scenePointerY, app) {
     const appState = app.state;
@@ -19965,10 +20431,10 @@ var _LinearElementEditor = class _LinearElementEditor {
         element,
         elementsMap,
         anchor,
-        pointFrom19(scenePointerX, scenePointerY),
+        pointFrom(scenePointerX, scenePointerY),
         event[KEYS.CTRL_OR_CMD] ? null : app.getEffectiveGridSize()
       );
-      newPoint = pointFrom19(width + anchor[0], height + anchor[1]);
+      newPoint = pointFrom(width + anchor[0], height + anchor[1]);
     } else {
       newPoint = _LinearElementEditor.createPointAt(
         element,
@@ -20005,9 +20471,9 @@ var _LinearElementEditor = class _LinearElementEditor {
     const cx = (x1 + x2) / 2;
     const cy = (y1 + y2) / 2;
     const { x, y } = element;
-    return pointRotateRads15(
-      pointFrom19(x + p[0], y + p[1]),
-      pointFrom19(cx, cy),
+    return pointRotateRads(
+      pointFrom(x + p[0], y + p[1]),
+      pointFrom(cx, cy),
       element.angle
     );
   }
@@ -20018,9 +20484,9 @@ var _LinearElementEditor = class _LinearElementEditor {
     const cy = (y1 + y2) / 2;
     return element.points.map((p) => {
       const { x, y } = element;
-      return pointRotateRads15(
-        pointFrom19(x + p[0], y + p[1]),
-        pointFrom19(cx, cy),
+      return pointRotateRads(
+        pointFrom(x + p[0], y + p[1]),
+        pointFrom(cx, cy),
         element.angle
       );
     });
@@ -20028,18 +20494,18 @@ var _LinearElementEditor = class _LinearElementEditor {
   static getPointAtIndexGlobalCoordinates(element, indexMaybeFromEnd, elementsMap) {
     const index = indexMaybeFromEnd < 0 ? element.points.length + indexMaybeFromEnd : indexMaybeFromEnd;
     const [, , , , cx, cy] = getElementAbsoluteCoords(element, elementsMap);
-    const center = pointFrom19(cx, cy);
+    const center = pointFrom(cx, cy);
     const p = element.points[index];
     const { x, y } = element;
-    return p ? pointRotateRads15(
-      pointFrom19(x + p[0], y + p[1]),
+    return p ? pointRotateRads(
+      pointFrom(x + p[0], y + p[1]),
       center,
       element.angle
-    ) : pointRotateRads15(pointFrom19(x, y), center, element.angle);
+    ) : pointRotateRads(pointFrom(x, y), center, element.angle);
   }
   static pointFromAbsoluteCoords(element, absoluteCoords, elementsMap) {
     if (isElbowArrow(element)) {
-      return pointFrom19(
+      return pointFrom(
         absoluteCoords[0] - element.x,
         absoluteCoords[1] - element.y
       );
@@ -20047,12 +20513,12 @@ var _LinearElementEditor = class _LinearElementEditor {
     const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
     const cx = (x1 + x2) / 2;
     const cy = (y1 + y2) / 2;
-    const [x, y] = pointRotateRads15(
-      pointFrom19(absoluteCoords[0], absoluteCoords[1]),
-      pointFrom19(cx, cy),
+    const [x, y] = pointRotateRads(
+      pointFrom(absoluteCoords[0], absoluteCoords[1]),
+      pointFrom(cx, cy),
       -element.angle
     );
-    return pointFrom19(x - element.x, y - element.y);
+    return pointFrom(x - element.x, y - element.y);
   }
   static getPointIndexUnderCursor(element, elementsMap, zoom, x, y) {
     const pointHandles = _LinearElementEditor.getPointsGlobalCoordinates(
@@ -20062,7 +20528,7 @@ var _LinearElementEditor = class _LinearElementEditor {
     let idx = pointHandles.length;
     while (--idx > -1) {
       const p = pointHandles[idx];
-      if (pointDistance8(pointFrom19(x, y), pointFrom19(p[0], p[1])) * zoom.value < // +1px to account for outline stroke
+      if (pointDistance(pointFrom(x, y), pointFrom(p[0], p[1])) * zoom.value < // +1px to account for outline stroke
       _LinearElementEditor.POINT_HANDLE_SIZE + 1) {
         return idx;
       }
@@ -20074,12 +20540,12 @@ var _LinearElementEditor = class _LinearElementEditor {
     const [x1, y1, x2, y2] = getElementAbsoluteCoords(element, elementsMap);
     const cx = (x1 + x2) / 2;
     const cy = (y1 + y2) / 2;
-    const [rotatedX, rotatedY] = pointRotateRads15(
-      pointFrom19(pointerOnGrid[0], pointerOnGrid[1]),
-      pointFrom19(cx, cy),
+    const [rotatedX, rotatedY] = pointRotateRads(
+      pointFrom(pointerOnGrid[0], pointerOnGrid[1]),
+      pointFrom(cx, cy),
       -element.angle
     );
-    return pointFrom19(rotatedX - element.x, rotatedY - element.y);
+    return pointFrom(rotatedX - element.x, rotatedY - element.y);
   }
   /**
    * Normalizes line points so that the start point is at [0,0]. This is
@@ -20128,7 +20594,7 @@ var _LinearElementEditor = class _LinearElementEditor {
           pointAddedToEnd = true;
         }
         acc.push(
-          nextPoint ? pointFrom19((p[0] + nextPoint[0]) / 2, (p[1] + nextPoint[1]) / 2) : pointFrom19(p[0], p[1])
+          nextPoint ? pointFrom((p[0] + nextPoint[0]) / 2, (p[1] + nextPoint[1]) / 2) : pointFrom(p[0], p[1])
         );
         nextSelectedIndices.push(indexCursor + 1);
         ++indexCursor;
@@ -20144,7 +20610,7 @@ var _LinearElementEditor = class _LinearElementEditor {
         /* @__PURE__ */ new Map([
           [
             element.points.length - 1,
-            { point: pointFrom19(lastPoint[0] + 30, lastPoint[1] + 30) }
+            { point: pointFrom(lastPoint[0] + 30, lastPoint[1] + 30) }
           ]
         ])
       );
@@ -20164,7 +20630,7 @@ var _LinearElementEditor = class _LinearElementEditor {
     });
     const isPolygon = isLineElement(element) && element.polygon;
     if (isPolygon && (isUncommittedPoint || pointIndices.includes(0) || pointIndices.includes(element.points.length - 1))) {
-      nextPoints[0] = pointFrom19(
+      nextPoints[0] = pointFrom(
         nextPoints[nextPoints.length - 1][0],
         nextPoints[nextPoints.length - 1][1]
       );
@@ -20185,7 +20651,7 @@ var _LinearElementEditor = class _LinearElementEditor {
   static addPoints(element, scene, addedPoints) {
     const nextPoints = [...element.points, ...addedPoints];
     if (isLineElement(element) && element.polygon) {
-      nextPoints[0] = pointFrom19(
+      nextPoints[0] = pointFrom(
         nextPoints[nextPoints.length - 1][0],
         nextPoints[nextPoints.length - 1][1]
       );
@@ -20210,7 +20676,7 @@ var _LinearElementEditor = class _LinearElementEditor {
       const lastPointUpdate = pointUpdates.get(points.length - 1);
       if (firstPointUpdate) {
         pointUpdates.set(points.length - 1, {
-          point: pointFrom19(
+          point: pointFrom(
             firstPointUpdate.point[0],
             firstPointUpdate.point[1]
           ),
@@ -20218,12 +20684,12 @@ var _LinearElementEditor = class _LinearElementEditor {
         });
       } else if (lastPointUpdate) {
         pointUpdates.set(0, {
-          point: pointFrom19(lastPointUpdate.point[0], lastPointUpdate.point[1]),
+          point: pointFrom(lastPointUpdate.point[0], lastPointUpdate.point[1]),
           isDragging: lastPointUpdate.isDragging
         });
       }
     }
-    const updatedOriginPoint = pointUpdates.get(0)?.point ?? pointFrom19(0, 0);
+    const updatedOriginPoint = pointUpdates.get(0)?.point ?? pointFrom(0, 0);
     const [offsetX, offsetY] = updatedOriginPoint;
     const nextPoints = isElbowArrow(element) ? [
       pointUpdates.get(0)?.point ?? points[0],
@@ -20233,7 +20699,7 @@ var _LinearElementEditor = class _LinearElementEditor {
       if (otherUpdates?.moveMidPointsWithElement && idx !== 0 && idx !== points.length - 1 && !pointUpdates.has(idx)) {
         return current;
       }
-      return pointFrom19(
+      return pointFrom(
         current[0] - offsetX,
         current[1] - offsetY
       );
@@ -20268,9 +20734,9 @@ var _LinearElementEditor = class _LinearElementEditor {
       return false;
     }
     const origin = linearElementEditor.initialState.origin;
-    const dist = pointDistance8(
+    const dist = pointDistance(
       origin,
-      pointFrom19(pointerCoords.x, pointerCoords.y)
+      pointFrom(pointerCoords.x, pointerCoords.y)
     );
     if (!appState.selectedLinearElement?.isEditing && dist < DRAGGING_THRESHOLD / appState.zoom.value) {
       return false;
@@ -20340,9 +20806,9 @@ var _LinearElementEditor = class _LinearElementEditor {
       const prevCenterY = (prevCoords[1] + prevCoords[3]) / 2;
       const dX = prevCenterX - nextCenterX;
       const dY = prevCenterY - nextCenterY;
-      const rotatedOffset = pointRotateRads15(
-        pointFrom19(offsetX, offsetY),
-        pointFrom19(dX, dY),
+      const rotatedOffset = pointRotateRads(
+        pointFrom(offsetX, offsetY),
+        pointFrom(dX, dY),
         element.angle
       );
       scene.mutateElement(element, {
@@ -20377,9 +20843,9 @@ var _LinearElementEditor = class _LinearElementEditor {
       gridY,
       customLineAngle
     );
-    return pointRotateRads15(
-      pointFrom19(width, height),
-      pointFrom19(0, 0),
+    return pointRotateRads(
+      pointFrom(width, height),
+      pointFrom(0, 0),
       -element.angle
     );
   }
@@ -20395,7 +20861,7 @@ var _LinearElementEditor = class _LinearElementEditor {
     if (index && index > 0 && index < element.points.length) {
       const isHorizontal = headingIsHorizontal(
         vectorToHeading(
-          vectorFromPoint9(element.points[index], element.points[index - 1])
+          vectorFromPoint(element.points[index], element.points[index - 1])
         )
       );
       const fixedSegments = (element.fixedSegments ?? []).reduce(
@@ -20407,11 +20873,11 @@ var _LinearElementEditor = class _LinearElementEditor {
       );
       fixedSegments[index] = {
         index,
-        start: pointFrom19(
+        start: pointFrom(
           !isHorizontal ? x - element.x : element.points[index - 1][0],
           isHorizontal ? y - element.y : element.points[index - 1][1]
         ),
-        end: pointFrom19(
+        end: pointFrom(
           !isHorizontal ? x - element.x : element.points[index][0],
           isHorizontal ? y - element.y : element.points[index][1]
         )
@@ -20423,7 +20889,7 @@ var _LinearElementEditor = class _LinearElementEditor {
       scene.mutateElement(element, {
         fixedSegments: nextFixedSegments
       });
-      const point = pointFrom19(
+      const point = pointFrom(
         element.x + (element.fixedSegments[offset].start[0] + element.fixedSegments[offset].end[0]) / 2,
         element.y + (element.fixedSegments[offset].start[1] + element.fixedSegments[offset].end[1]) / 2
       );
@@ -20512,12 +20978,12 @@ __publicField(_LinearElementEditor, "getSegmentMidpointHitCoords", (linearElemen
   const threshold = (_LinearElementEditor.POINT_HANDLE_SIZE + 1) / appState.zoom.value;
   const existingSegmentMidpointHitCoords = linearElementEditor.segmentMidPointHoveredCoords;
   if (existingSegmentMidpointHitCoords) {
-    const distance2 = pointDistance8(
-      pointFrom19(
+    const distance2 = pointDistance(
+      pointFrom(
         existingSegmentMidpointHitCoords[0],
         existingSegmentMidpointHitCoords[1]
       ),
-      pointFrom19(scenePointer.x, scenePointer.y)
+      pointFrom(scenePointer.x, scenePointer.y)
     );
     if (distance2 <= threshold) {
       return existingSegmentMidpointHitCoords;
@@ -20531,9 +20997,9 @@ __publicField(_LinearElementEditor, "getSegmentMidpointHitCoords", (linearElemen
   );
   while (index < midPoints.length) {
     if (midPoints[index] !== null) {
-      const distance2 = pointDistance8(
+      const distance2 = pointDistance(
         midPoints[index],
-        pointFrom19(scenePointer.x, scenePointer.y)
+        pointFrom(scenePointer.x, scenePointer.y)
       );
       if (distance2 <= threshold) {
         return midPoints[index];
@@ -20584,34 +21050,34 @@ __publicField(_LinearElementEditor, "getMinMaxXYWithBoundText", (element, elemen
   );
   const boundTextX2 = boundTextX1 + boundTextElement.width;
   const boundTextY2 = boundTextY1 + boundTextElement.height;
-  const centerPoint = pointFrom19(cx, cy);
-  const topLeftRotatedPoint = pointRotateRads15(
-    pointFrom19(x1, y1),
+  const centerPoint = pointFrom(cx, cy);
+  const topLeftRotatedPoint = pointRotateRads(
+    pointFrom(x1, y1),
     centerPoint,
     element.angle
   );
-  const topRightRotatedPoint = pointRotateRads15(
-    pointFrom19(x2, y1),
+  const topRightRotatedPoint = pointRotateRads(
+    pointFrom(x2, y1),
     centerPoint,
     element.angle
   );
-  const counterRotateBoundTextTopLeft = pointRotateRads15(
-    pointFrom19(boundTextX1, boundTextY1),
+  const counterRotateBoundTextTopLeft = pointRotateRads(
+    pointFrom(boundTextX1, boundTextY1),
     centerPoint,
     -element.angle
   );
-  const counterRotateBoundTextTopRight = pointRotateRads15(
-    pointFrom19(boundTextX2, boundTextY1),
+  const counterRotateBoundTextTopRight = pointRotateRads(
+    pointFrom(boundTextX2, boundTextY1),
     centerPoint,
     -element.angle
   );
-  const counterRotateBoundTextBottomLeft = pointRotateRads15(
-    pointFrom19(boundTextX1, boundTextY2),
+  const counterRotateBoundTextBottomLeft = pointRotateRads(
+    pointFrom(boundTextX1, boundTextY2),
     centerPoint,
     -element.angle
   );
-  const counterRotateBoundTextBottomRight = pointRotateRads15(
-    pointFrom19(boundTextX2, boundTextY2),
+  const counterRotateBoundTextBottomRight = pointRotateRads(
+    pointFrom(boundTextX2, boundTextY2),
     centerPoint,
     -element.angle
   );
@@ -20691,7 +21157,7 @@ var pointDraggingUpdates = (selectedPointsIndices, deltaX, deltaY, scenePointerX
       return [
         pointIndex,
         {
-          point: pointFrom19(
+          point: pointFrom(
             element.points[pointIndex][0] + deltaX,
             element.points[pointIndex][1] + deltaY
           ),
@@ -20733,7 +21199,7 @@ var pointDraggingUpdates = (selectedPointsIndices, deltaX, deltaY, scenePointerX
           midPoint: app.state.isMidpointSnappingEnabled ? snapToMid(
             suggestedBindingElement,
             elementsMap,
-            pointFrom19(
+            pointFrom(
               scenePointerX - linearElementEditor.pointerOffset.x,
               scenePointerY - linearElementEditor.pointerOffset.y
             )
@@ -20813,7 +21279,7 @@ var pointDraggingUpdates = (selectedPointsIndices, deltaX, deltaY, scenePointerX
       updates.suggestedBinding = start.element ? {
         element: start.element,
         midPoint: getSnapOutlineMidPoint(
-          pointFrom19(
+          pointFrom(
             scenePointerX - linearElementEditor.pointerOffset.x,
             scenePointerY - linearElementEditor.pointerOffset.y
           ),
@@ -20844,7 +21310,7 @@ var pointDraggingUpdates = (selectedPointsIndices, deltaX, deltaY, scenePointerX
       updates.suggestedBinding = end.element ? {
         element: end.element,
         midPoint: getSnapOutlineMidPoint(
-          pointFrom19(
+          pointFrom(
             scenePointerX - linearElementEditor.pointerOffset.x,
             scenePointerY - linearElementEditor.pointerOffset.y
           ),
@@ -20857,11 +21323,11 @@ var pointDraggingUpdates = (selectedPointsIndices, deltaX, deltaY, scenePointerX
   } else if (endIsDragged) {
     updates.suggestedBinding = app.state.suggestedBinding;
   }
-  const offsetStartLocalPoint = startIsDragged ? pointFrom19(
+  const offsetStartLocalPoint = startIsDragged ? pointFrom(
     element.points[0][0] + deltaX,
     element.points[0][1] + deltaY
   ) : element.points[0];
-  const offsetEndLocalPoint = endIsDragged ? pointFrom19(
+  const offsetEndLocalPoint = endIsDragged ? pointFrom(
     element.points[element.points.length - 1][0] + deltaX,
     element.points[element.points.length - 1][1] + deltaY
   ) : element.points[element.points.length - 1];
@@ -20901,7 +21367,7 @@ var pointDraggingUpdates = (selectedPointsIndices, deltaX, deltaY, scenePointerX
     startIsDragged
   ) || nextArrow.points[0] : nextArrow.points[0];
   const endChanged = !startIsDraggingOverEndElement && !(endIsDraggingOverStartElement && app.state.bindMode !== "inside" && getFeatureFlag("COMPLEX_BINDINGS")) && !!endBindable;
-  const startChanged = pointDistance8(startLocalPoint, nextArrow.points[0]) !== 0;
+  const startChanged = pointDistance(startLocalPoint, nextArrow.points[0]) !== 0;
   const indicesSet = new Set(selectedPointsIndices);
   if (startBindable && startChanged) {
     indicesSet.add(0);
@@ -21089,15 +21555,15 @@ var computeBoundTextPosition = (container, boundTextElement, elementsMap) => {
   }
   const angle = container.angle ?? 0;
   if (angle !== 0) {
-    const contentCenter = pointFrom20(
+    const contentCenter = pointFrom(
       containerCoords.x + maxContainerWidth / 2,
       containerCoords.y + maxContainerHeight / 2
     );
-    const textCenter = pointFrom20(
+    const textCenter = pointFrom(
       x + boundTextElement.width / 2,
       y + boundTextElement.height / 2
     );
-    const [rx, ry] = pointRotateRads16(textCenter, contentCenter, angle);
+    const [rx, ry] = pointRotateRads(textCenter, contentCenter, angle);
     return {
       x: rx - boundTextElement.width / 2,
       y: ry - boundTextElement.height / 2
@@ -21599,15 +22065,14 @@ var calculateScrollCenter = (elements, appState) => {
 };
 
 // scene/normalize.ts
-import { clamp as clamp5, round } from "@excalidraw/math";
 var getNormalizedZoom = (zoom) => {
-  return clamp5(round(zoom, 6), MIN_ZOOM, MAX_ZOOM);
+  return clamp(round(zoom, 6), MIN_ZOOM, MAX_ZOOM);
 };
 var getNormalizedGridSize = (gridStep) => {
-  return clamp5(Math.round(gridStep), 1, 100);
+  return clamp(Math.round(gridStep), 1, 100);
 };
 var getNormalizedGridStep = (gridStep) => {
-  return clamp5(Math.round(gridStep), 1, 100);
+  return clamp(Math.round(gridStep), 1, 100);
 };
 
 // scene/export.ts
@@ -24121,7 +24586,6 @@ __publicField(_Fonts, "loadElementsFonts", async (elements) => {
 var Fonts = _Fonts;
 
 // components/hyperlink/helpers.ts
-import { pointFrom as pointFrom21, pointRotateRads as pointRotateRads17 } from "@excalidraw/math";
 var DEFAULT_LINK_SIZE = 12;
 var EXTERNAL_LINK_IMG = document.createElement("img");
 EXTERNAL_LINK_IMG.src = `data:${MIME_TYPES.svg}, ${encodeURIComponent(
@@ -24143,9 +24607,9 @@ var getLinkHandleFromCoords = ([x1, y1, x2, y2], angle, appState) => {
   const dashedLineMargin = 4 / zoom;
   const x = x2 + dashedLineMargin - centeringOffset;
   const y = y1 - dashedLineMargin - linkMarginY + centeringOffset;
-  const [rotatedX, rotatedY] = pointRotateRads17(
-    pointFrom21(x + linkWidth / 2, y + linkHeight / 2),
-    pointFrom21(centerX, centerY),
+  const [rotatedX, rotatedY] = pointRotateRads(
+    pointFrom(x + linkWidth / 2, y + linkHeight / 2),
+    pointFrom(centerX, centerY),
     angle
   );
   return [
@@ -24170,14 +24634,14 @@ var isPointHittingLink = (element, elementsMap, appState, [x, y], isMobile) => {
   if (!element.link || appState.selectedElementIds[element.id]) {
     return false;
   }
-  if (!isMobile && appState.viewModeEnabled && hitElementBoundingBox(pointFrom21(x, y), element, elementsMap)) {
+  if (!isMobile && appState.viewModeEnabled && hitElementBoundingBox(pointFrom(x, y), element, elementsMap)) {
     return true;
   }
   return isPointHittingLinkIcon(
     element,
     elementsMap,
     appState,
-    pointFrom21(x, y)
+    pointFrom(x, y)
   );
 };
 
@@ -25462,7 +25926,6 @@ var getExportSize = (elements, exportPadding, scale) => {
 };
 
 // data/restore.ts
-import { isFiniteNumber, pointFrom as pointFrom22 } from "@excalidraw/math";
 var AllowedExcalidrawActiveTools = {
   selection: true,
   lasso: true,
@@ -25670,7 +26133,7 @@ var restoreElement = (element, targetElementsMap, existingElementsMap, opts) => 
       let y = element.y;
       let points = (
         // migrate old arrow model to new one
-        !Array.isArray(element.points) || element.points.length < 2 ? [pointFrom22(0, 0), pointFrom22(element.width, element.height)] : element.points
+        !Array.isArray(element.points) || element.points.length < 2 ? [pointFrom(0, 0), pointFrom(element.width, element.height)] : element.points
       );
       if (points[0][0] !== 0 || points[0][1] !== 0) {
         ({ points, x, y } = LinearElementEditor.getNormalizeElementPointsAndCoords(element));
@@ -25695,7 +26158,7 @@ var restoreElement = (element, targetElementsMap, existingElementsMap, opts) => 
       const y2 = element.y;
       const points2 = (
         // migrate old arrow model to new one
-        !Array.isArray(element.points) || element.points.length < 2 ? [pointFrom22(0, 0), pointFrom22(element.width, element.height)] : element.points
+        !Array.isArray(element.points) || element.points.length < 2 ? [pointFrom(0, 0), pointFrom(element.width, element.height)] : element.points
       );
       const base = {
         type: element.type,
@@ -25880,7 +26343,7 @@ var restoreElements = (targetElements, existingElements, opts) => {
           restoredElementsMap,
           {
             points: [
-              pointFrom22(0, 0),
+              pointFrom(0, 0),
               element.points[element.points.length - 1]
             ]
           }
@@ -25909,10 +26372,10 @@ var restoreElements = (targetElements, existingElements, opts) => {
         width: boundElement.width,
         height: boundElement.height,
         points: [
-          pointFrom22(0, 0),
-          pointFrom22(0, -10),
-          pointFrom22(boundElement.width / 2 + 5, -10),
-          pointFrom22(
+          pointFrom(0, 0),
+          pointFrom(0, -10),
+          pointFrom(boundElement.width / 2 + 5, -10),
+          pointFrom(
             boundElement.width / 2 + 5,
             boundElement.height / 2 + 5
           )
@@ -26031,7 +26494,7 @@ var parseFileContents = async (blob) => {
   let contents;
   if (blob.type === MIME_TYPES.png) {
     try {
-      return await (await import("./image-XNPNN2K6.js")).decodePngMetadata(blob);
+      return await (await import("./image-TXF46BVZ.js")).decodePngMetadata(blob);
     } catch (error) {
       if (error.message === "INVALID") {
         throw new ImageSceneDataError(
@@ -26412,6 +26875,30 @@ var decode = (data) => {
 };
 
 export {
+  clamp,
+  round,
+  roundToStep,
+  isFiniteNumber,
+  degreesToRadians,
+  radiansToDegrees,
+  vector,
+  vectorFromPoint,
+  vectorDot,
+  vectorSubtract,
+  vectorNormalize,
+  pointFrom,
+  pointsEqual,
+  pointRotateRads,
+  pointDistance,
+  bezierEquation,
+  lineSegment,
+  lineSegmentsDistance,
+  polygon,
+  polygonFromPoints,
+  polygonIncludesPointNonZero,
+  rangeInclusive,
+  rangesOverlap,
+  rangeIntersection,
   applyDarkModeFilter,
   MAX_CUSTOM_COLORS_USED_IN_CANVAS,
   COLORS_PER_ROW,
@@ -26880,4 +27367,4 @@ export {
   normalizeFile,
   blobToArrayBuffer
 };
-//# sourceMappingURL=chunk-KMWHXRKO.js.map
+//# sourceMappingURL=chunk-P7I2FJC5.js.map
