@@ -4,7 +4,7 @@ import {
   blobToArrayBuffer,
   decode,
   encode
-} from "./chunk-KMWHXRKO.js";
+} from "./chunk-P7I2FJC5.js";
 import "./chunk-MNNOHETD.js";
 import "./chunk-7AOJXSRG.js";
 
@@ -61,4 +61,4 @@ export {
   encodePngMetadata,
   getTEXtChunk
 };
-//# sourceMappingURL=image-XNPNN2K6.js.map
+//# sourceMappingURL=image-TXF46BVZ.js.map

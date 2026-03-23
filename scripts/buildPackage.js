@@ -62,7 +62,6 @@ const EXTERNAL_PACKAGES = [
   "react",
   "react-dom",
   "@excalidraw/laser-pointer",
-  "@excalidraw/math",
   "@excalidraw/mermaid-to-excalidraw",
   "@excalidraw/random-username",
   "jotai",
@@ -96,6 +95,7 @@ const PKG_SRC = {
   "@excalidraw/common": `${ROOT}/packages/common/src`,
   "@excalidraw/element": `${ROOT}/packages/element/src`,
   "@excalidraw/utils": `${ROOT}/packages/utils/src`,
+  "@excalidraw/math": `${ROOT}/packages/math/src`,
 };
 
 // Plugin that resolves @excalidraw/element, /common, /utils from source.
@@ -107,10 +107,10 @@ const bundleSrcPlugin = {
   name: "bundle-workspace-src",
   setup(b) {
     b.onResolve(
-      { filter: /^@excalidraw\/(common|element|utils)(\/.*)?$/ },
+      { filter: /^@excalidraw\/(common|element|utils|math)(\/.*)?$/ },
       (args) => {
         const match = args.path.match(
-          /^@excalidraw\/(common|element|utils)(\/(.+))?$/,
+          /^@excalidraw\/(common|element|utils|math)(\/(.+))?$/,
         );
         if (!match) return null;
 
