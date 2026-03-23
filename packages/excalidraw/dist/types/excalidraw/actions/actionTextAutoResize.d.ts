@@ -6,11 +6,11 @@ export declare const actionTextAutoResize: {
     trackEvent: {
         category: "element";
     };
-    predicate: (elements: readonly ExcalidrawElement[], appState: import("../types").AppState, _: unknown, app: AppClassProperties) => any;
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, _: unknown, app: AppClassProperties) => {
+    predicate: (elements: readonly import("@excalidraw/element/types").ExcalidrawElement[], appState: import("../types").AppState, _: unknown, app: AppClassProperties) => boolean;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<import("../types").AppState>;
-        elements: any[];
-        captureUpdate: any;
+        elements: import("@excalidraw/element/types").OrderedExcalidrawElement[];
+        captureUpdate: "IMMEDIATELY";
     };
 } & {
     keyTest?: undefined;

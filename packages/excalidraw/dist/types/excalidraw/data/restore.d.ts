@@ -35,7 +35,7 @@ existingElements: Readonly<ElementsMapOrArray> | null | undefined, opts?: {
  * it does not apply universally (e.g. we don't want to do this for collab
  * updates).
  */
-export declare const bumpElementVersions: <T extends ExcalidrawElement>(targetElements: readonly T[], localElements: Readonly<ElementsMapOrArray> | null | undefined) => any[];
+export declare const bumpElementVersions: <T extends ExcalidrawElement>(targetElements: readonly T[], localElements: Readonly<ElementsMapOrArray> | null | undefined) => T[];
 export declare const restoreAppState: (appState: ImportedDataState["appState"], localAppState: Partial<AppState> | null | undefined) => RestoredAppState;
 export declare const restoreLibraryItems: (libraryItems: ImportedDataState["libraryItems"], defaultStatus: LibraryItem["status"]) => LibraryItem[];
 export {};

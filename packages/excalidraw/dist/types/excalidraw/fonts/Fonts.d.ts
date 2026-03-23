@@ -19,7 +19,7 @@ export declare class Fonts {
     /**
      * Get all the font families for the given scene.
      */
-    getSceneFamilies: () => ExcalidrawTextElement[];
+    getSceneFamilies: () => number[];
     /**
      * if we load a (new) font, it's likely that text elements using it have
      * already been rendered using a fallback font. Thus, we want invalidate

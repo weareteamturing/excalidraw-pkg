@@ -8,7 +8,7 @@ export type ExportedElements = readonly NonDeletedExcalidrawElement[] & {
     _brand: "exportedElements";
 };
 export declare const prepareElementsForExport: (elements: readonly ExcalidrawElement[], { selectedElementIds }: Pick<AppState, "selectedElementIds">, exportSelectionOnly: boolean) => {
-    exportingFrame: any;
+    exportingFrame: ExcalidrawFrameLikeElement | null;
     exportedElements: ExportedElements;
 };
 export declare const exportCanvas: (type: Omit<ExportType, "backend">, elements: ExportedElements, appState: AppState, files: BinaryFiles, { exportBackground, exportPadding, viewBackgroundColor, name, fileHandle, exportingFrame, }: {

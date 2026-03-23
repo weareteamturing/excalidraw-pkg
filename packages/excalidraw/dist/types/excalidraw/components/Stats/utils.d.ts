@@ -16,4 +16,4 @@ export declare const newOrigin: (x1: number, y1: number, w1: number, h1: number,
     y: number;
 };
 export declare const moveElement: (newTopLeftX: number, newTopLeftY: number, originalElement: ExcalidrawElement, scene: Scene, appState: AppState, originalElementsMap: ElementsMap, shouldInformMutation?: boolean) => void;
-export declare const getAtomicUnits: (targetElements: readonly ExcalidrawElement[], appState: AppState) => any;
+export declare const getAtomicUnits: (targetElements: readonly ExcalidrawElement[], appState: AppState) => AtomicUnit[];

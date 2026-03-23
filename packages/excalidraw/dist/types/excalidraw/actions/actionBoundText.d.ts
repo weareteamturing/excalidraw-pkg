@@ -1,5 +1,5 @@
-import { getOriginalContainerHeightFromCache } from "@excalidraw/element";
 import type { ExcalidrawElement, ExcalidrawLinearElement } from "@excalidraw/element/types";
+import type { Mutable } from "@excalidraw/common/utility-types";
 import type { AppState } from "../types";
 export declare const actionUnbindText: {
     name: "unbindText";
@@ -7,11 +7,11 @@ export declare const actionUnbindText: {
     trackEvent: {
         category: "element";
     };
-    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => any;
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
-        elements: readonly OrderedExcalidrawElement[];
+    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+        elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[];
         appState: Readonly<AppState>;
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
 } & {
     keyTest?: undefined;
@@ -23,11 +23,11 @@ export declare const actionBindText: {
         category: "element";
     };
     predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         elements: ExcalidrawElement[];
         appState: {
             selectedElementIds: {
-                [x: number]: true;
+                [x: string]: true;
             };
             contextMenu: {
                 items: import("../components/ContextMenu").ContextMenuItems;
@@ -38,22 +38,22 @@ export declare const actionBindText: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getOriginalContainerHeightFromCache;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
-            resizingElement: getOriginalContainerHeightFromCache | null;
-            multiElement: getOriginalContainerHeightFromCache<ExcalidrawLinearElement> | null;
-            selectionElement: getOriginalContainerHeightFromCache | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -61,8 +61,8 @@ export declare const actionBindText: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getOriginalContainerHeightFromCache<ExcalidrawElement>[] | null;
-            editingTextElement: getOriginalContainerHeightFromCache | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -85,13 +85,13 @@ export declare const actionBindText: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getOriginalContainerHeightFromCache;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getOriginalContainerHeightFromCache;
-            currentItemStartArrowhead: getOriginalContainerHeightFromCache | null;
-            currentItemEndArrowhead: getOriginalContainerHeightFromCache | null;
-            currentHoveredFontFamily: getOriginalContainerHeightFromCache | null;
-            currentItemRoundness: getOriginalContainerHeightFromCache;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -126,7 +126,7 @@ export declare const actionBindText: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getOriginalContainerHeightFromCache;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -141,7 +141,7 @@ export declare const actionBindText: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getOriginalContainerHeightFromCache;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -149,7 +149,7 @@ export declare const actionBindText: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getOriginalContainerHeightFromCache | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -161,7 +161,7 @@ export declare const actionBindText: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getOriginalContainerHeightFromCache | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -180,9 +180,9 @@ export declare const actionBindText: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getOriginalContainerHeightFromCache;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
 } & {
     keyTest?: undefined;
@@ -193,8 +193,8 @@ export declare const actionWrapTextInContainer: {
     trackEvent: {
         category: "element";
     };
-    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => any;
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
+    predicate: (elements: readonly ExcalidrawElement[], appState: AppState, _: import("../types").ExcalidrawProps, app: import("../types").AppClassProperties) => boolean;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         elements: readonly ExcalidrawElement[];
         appState: {
             selectedElementIds: Mutable<Readonly<{
@@ -209,22 +209,22 @@ export declare const actionWrapTextInContainer: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: getOriginalContainerHeightFromCache;
+                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
-            resizingElement: getOriginalContainerHeightFromCache | null;
-            multiElement: getOriginalContainerHeightFromCache<ExcalidrawLinearElement> | null;
-            selectionElement: getOriginalContainerHeightFromCache | null;
+            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("@excalidraw/element/types").NonDeleted<ExcalidrawLinearElement> | null;
+            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
+            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache>;
+                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
                 midPoint?: import("@excalidraw/math").GlobalPoint;
             } | null;
-            frameToHighlight: getOriginalContainerHeightFromCache<getOriginalContainerHeightFromCache> | null;
+            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -232,8 +232,8 @@ export declare const actionWrapTextInContainer: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: getOriginalContainerHeightFromCache<ExcalidrawElement>[] | null;
-            editingTextElement: getOriginalContainerHeightFromCache | null;
+            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -256,13 +256,13 @@ export declare const actionWrapTextInContainer: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: getOriginalContainerHeightFromCache;
+            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: getOriginalContainerHeightFromCache;
-            currentItemStartArrowhead: getOriginalContainerHeightFromCache | null;
-            currentItemEndArrowhead: getOriginalContainerHeightFromCache | null;
-            currentHoveredFontFamily: getOriginalContainerHeightFromCache | null;
-            currentItemRoundness: getOriginalContainerHeightFromCache;
+            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
+            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
+            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
+            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -297,7 +297,7 @@ export declare const actionWrapTextInContainer: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: getOriginalContainerHeightFromCache;
+            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -312,7 +312,7 @@ export declare const actionWrapTextInContainer: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: getOriginalContainerHeightFromCache;
+            theme: import("@excalidraw/element/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -320,7 +320,7 @@ export declare const actionWrapTextInContainer: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: getOriginalContainerHeightFromCache | null;
+            editingGroupId: import("@excalidraw/element/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -332,7 +332,7 @@ export declare const actionWrapTextInContainer: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: getOriginalContainerHeightFromCache | null;
+            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -351,9 +351,9 @@ export declare const actionWrapTextInContainer: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: getOriginalContainerHeightFromCache;
+            bindMode: import("@excalidraw/element/types").BindMode;
         };
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
 } & {
     keyTest?: undefined;

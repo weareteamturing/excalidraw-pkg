@@ -6,16 +6,16 @@ export declare const actionSendBackward: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
-        elements: any;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
+        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
     keyPriority: number;
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
     PanelComponent: ({ updateData, appState }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionBringForward: {
     name: "bringForward";
@@ -25,16 +25,16 @@ export declare const actionBringForward: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
-        elements: any;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
+        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
     keyPriority: number;
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
     PanelComponent: ({ updateData, appState }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionSendToBack: {
     name: "sendToBack";
@@ -44,15 +44,15 @@ export declare const actionSendToBack: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
-        elements: any;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
+        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[] | import("@excalidraw/element/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
     PanelComponent: ({ updateData, appState }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };
 export declare const actionBringToFront: {
     name: "bringToFront";
@@ -62,13 +62,13 @@ export declare const actionBringToFront: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
-        elements: any;
+    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
+        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[] | import("@excalidraw/element/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
-        captureUpdate: any;
+        captureUpdate: "IMMEDIATELY";
     };
-    keyTest: (event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean;
+    keyTest: (event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean;
     PanelComponent: ({ updateData, appState }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
 } & {
-    keyTest?: ((event: import("react").KeyboardEvent<Element> | KeyboardEvent) => boolean) | undefined;
+    keyTest?: ((event: KeyboardEvent | import("react").KeyboardEvent<Element>) => boolean) | undefined;
 };

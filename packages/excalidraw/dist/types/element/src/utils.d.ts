@@ -31,6 +31,6 @@ export declare function deconstructDiamondElement(element: ExcalidrawDiamondElem
 export declare const isPathALoop: (points: ExcalidrawLinearElement["points"], 
 /** supply if you want the loop detection to account for current zoom */
 zoomValue?: Zoom["value"]) => boolean;
-export declare const getCornerRadius: (x: number, element: ExcalidrawElement) => any;
-export declare const getSnapOutlineMidPoint: (point: GlobalPoint, element: ExcalidrawBindableElement, elementsMap: ElementsMap, zoom: AppState["zoom"]) => any;
+export declare const getCornerRadius: (x: number, element: ExcalidrawElement) => number;
+export declare const getSnapOutlineMidPoint: (point: GlobalPoint, element: ExcalidrawBindableElement, elementsMap: ElementsMap, zoom: AppState["zoom"]) => GlobalPoint | undefined;
 export declare const projectFixedPointOntoDiagonal: (arrow: ExcalidrawArrowElement, point: GlobalPoint, element: ExcalidrawBindableElement, startOrEnd: "start" | "end", elementsMap: ElementsMap, zoom: AppState["zoom"], isMidpointSnappingEnabled?: boolean) => GlobalPoint | null;

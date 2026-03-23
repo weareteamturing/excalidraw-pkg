@@ -1,5 +1,5 @@
 import { type ElementUpdate } from "@excalidraw/element";
-import type { ExcalidrawElement, NonDeleted, ExcalidrawFrameLikeElement, ElementsMapOrArray } from "@excalidraw/element/types";
+import type { ExcalidrawElement, NonDeletedExcalidrawElement, NonDeleted, ExcalidrawFrameLikeElement, ElementsMapOrArray, SceneElementsMap, NonDeletedSceneElementsMap, OrderedExcalidrawElement, Ordered } from "@excalidraw/element/types";
 import type { Mutable } from "@excalidraw/common/utility-types";
 import type { AppState } from "../../excalidraw/types";
 type SceneStateCallback = () => void;
@@ -22,9 +22,9 @@ export declare class Scene {
      */
     private sceneNonce;
     getSceneNonce(): number | undefined;
-    getNonDeletedElementsMap(): any;
+    getNonDeletedElementsMap(): NonDeletedSceneElementsMap;
     getElementsIncludingDeleted(): readonly OrderedExcalidrawElement[];
-    getElementsMapIncludingDeleted(): any;
+    getElementsMapIncludingDeleted(): SceneElementsMap;
     getNonDeletedElements(): readonly Ordered<NonDeletedExcalidrawElement>[];
     getFramesIncludingDeleted(): readonly ExcalidrawFrameLikeElement[];
     constructor(elements?: ElementsMapOrArray | null, options?: {
@@ -70,7 +70,7 @@ export declare class Scene {
     getElementIndex(elementId: string): number;
     getContainerElement: (element: (ExcalidrawElement & {
         containerId: ExcalidrawElement["id"] | null;
-    }) | null) => any;
+    }) | null) => import("@excalidraw/element/types").ExcalidrawLinearElement | import("@excalidraw/element/types").ExcalidrawSelectionElement | import("@excalidraw/element/types").ExcalidrawRectangleElement | import("@excalidraw/element/types").ExcalidrawDiamondElement | import("@excalidraw/element/types").ExcalidrawEllipseElement | import("@excalidraw/element/types").ExcalidrawEmbeddableElement | import("@excalidraw/element/types").ExcalidrawIframeElement | import("@excalidraw/element/types").ExcalidrawImageElement | import("@excalidraw/element/types").ExcalidrawFrameElement | import("@excalidraw/element/types").ExcalidrawMagicFrameElement | import("@excalidraw/element/types").ExcalidrawTextElement | import("@excalidraw/element/types").ExcalidrawFreeDrawElement | null;
     getElementsFromId: (id: string) => ExcalidrawElement[];
     mutateElement<TElement extends Mutable<ExcalidrawElement>>(element: TElement, updates: ElementUpdate<TElement>, options?: {
         informMutation: boolean;
