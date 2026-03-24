@@ -4447,6 +4447,23 @@ class App extends React.Component<AppProps, AppState> {
 
       if (elements) {
         this.scene.replaceAllElements(elements);
+
+        // Recompute text bounding boxes after element replacement so that
+        // fontSize changes are reflected correctly in both autoResize modes.
+        for (const element of elements) {
+          if (isTextElement(element) && !element.isDeleted) {
+            const sceneElement = this.scene.getElement(
+              element.id,
+            ) as ExcalidrawTextElement | undefined;
+            if (sceneElement) {
+              redrawTextBoundingBox(
+                sceneElement,
+                this.scene.getContainerElement(sceneElement),
+                this.scene,
+              );
+            }
+          }
+        }
       }
 
       if (collaborators) {
