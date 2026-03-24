@@ -1094,6 +1094,8 @@ export declare const actionWrapSelectionInFrame: {
             verticalAlign: import("@excalidraw/element/types").VerticalAlign;
             containerId: import("@excalidraw/element/types").ExcalidrawGenericElement["id"] | null;
             originalText: string;
+            bold?: boolean;
+            italic?: boolean;
             autoResize: boolean;
             lineHeight: number & {
                 _brand: "unitlessLineHeight";

@@ -242,6 +242,8 @@ export type ExcalidrawTextElement = _ExcalidrawElementBase &
     verticalAlign: VerticalAlign;
     containerId: ExcalidrawGenericElement["id"] | null;
     originalText: string;
+    bold?: boolean;
+    italic?: boolean;
     /**
      * If `true` the width will fit the text. If `false`, the text will
      * wrap to fit the width.
