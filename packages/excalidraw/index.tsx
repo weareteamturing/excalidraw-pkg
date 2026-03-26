@@ -65,6 +65,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     onPostRender,
     onElementPostRender,
     renderAnimationNonce,
+    overscrollBehaviorX,
   } = props;
 
   const canvasActions = props.UIOptions?.canvasActions;
@@ -167,6 +168,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           onPostRender={onPostRender}
           onElementPostRender={onElementPostRender}
           renderAnimationNonce={renderAnimationNonce}
+          overscrollBehaviorX={overscrollBehaviorX}
         >
           {children}
         </App>
