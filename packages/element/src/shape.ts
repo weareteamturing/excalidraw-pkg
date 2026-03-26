@@ -480,7 +480,8 @@ export const generateLinearCollisionShape = (
         : [pointFrom<LocalPoint>(0, 0)];
 
       if (isElbowArrow(element)) {
-        return generator.path(generateElbowArrowShape(points, 16), options)
+        // TODO: extract corner radius as config (currently 0 = sharp corners)
+        return generator.path(generateElbowArrowShape(points, 0), options)
           .sets[0].ops;
       } else if (!element.roundness) {
         return points.map((point, idx) => {
@@ -774,7 +775,8 @@ const _generateElementShape = (
         } else {
           shape = [
             generator.path(
-              generateElbowArrowShape(points, 16),
+              // TODO: extract corner radius as config (currently 0 = sharp corners)
+              generateElbowArrowShape(points, 0),
               generateRoughOptions(element, true, isDarkMode),
             ),
           ];
