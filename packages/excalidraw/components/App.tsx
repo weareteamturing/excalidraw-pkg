@@ -11388,6 +11388,65 @@ class App extends React.Component<AppProps, AppState> {
     ),
     files: BinaryFiles = this.files,
   ) => {
+    // Handle src-based image elements (CDN URL images without BinaryFiles entry)
+    const srcImageElements = this.scene
+      .getNonDeletedElements()
+      .filter(
+        (el) =>
+          isImageElement(el) &&
+          !!(el as ExcalidrawImageElement).src &&
+          !this.imageCache.has((el as ExcalidrawImageElement).src as FileId),
+      ) as (ExcalidrawImageElement & { src: string })[];
+
+    if (srcImageElements.length) {
+      let srcCacheUpdated = false;
+      await Promise.all(
+        srcImageElements.map((element) => {
+          const ext = element.src
+            .split("?")[0]
+            .split(".")
+            .pop()
+            ?.toLowerCase();
+          const mimeType =
+            ext === "svg"
+              ? IMAGE_MIME_TYPES.svg
+              : ext === "jpg" || ext === "jpeg"
+              ? IMAGE_MIME_TYPES.jpg
+              : IMAGE_MIME_TYPES.png;
+          return new Promise<void>((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+              this.imageCache.set(element.src as FileId, {
+                image: img,
+                mimeType,
+              });
+              const currentEl = this.scene.getElement(element.id);
+              if (currentEl) {
+                ShapeCache.delete(currentEl);
+              }
+              srcCacheUpdated = true;
+              resolve();
+            };
+            img.onerror = () => {
+              console.error(
+                "[Excalidraw] Failed to load src image:",
+                element.src,
+              );
+              this.imageCache.set(element.src as FileId, {
+                image: new Image(),
+                mimeType,
+              });
+              resolve();
+            };
+            img.src = element.src!;
+          });
+        }),
+      );
+      if (srcCacheUpdated) {
+        this.scene.triggerUpdate();
+      }
+    }
+
     const uncachedImageElements = imageElements.filter(
       (element) => !element.isDeleted && !this.imageCache.has(element.fileId),
     );

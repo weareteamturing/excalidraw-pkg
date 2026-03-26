@@ -7,6 +7,7 @@ import {
   SVG_NS,
   THEME,
   MIME_TYPES,
+  IMAGE_MIME_TYPES,
   EXPORT_DATA_TYPES,
   arrayToMap,
   distance,
@@ -44,7 +45,9 @@ import type { Bounds } from "@excalidraw/common";
 import type {
   ExcalidrawElement,
   ExcalidrawFrameLikeElement,
+  ExcalidrawImageElement,
   ExcalidrawTextElement,
+  FileId,
   NonDeletedExcalidrawElement,
   NonDeletedSceneElementsMap,
 } from "@excalidraw/element/types";
@@ -237,6 +240,37 @@ export const exportToCanvas = async (
     ),
     files,
   });
+
+  const srcImageElements = elementsForRender.filter(
+    (el): el is NonDeletedExcalidrawElement & { src: string } =>
+      el.type === "image" && !!(el as ExcalidrawImageElement).src,
+  );
+  if (srcImageElements.length) {
+    await Promise.all(
+      srcImageElements.map((element) => {
+        const ext = element.src
+          .split("?")[0]
+          .split(".")
+          .pop()
+          ?.toLowerCase();
+        const mimeType =
+          ext === "svg"
+            ? IMAGE_MIME_TYPES.svg
+            : ext === "jpg" || ext === "jpeg"
+            ? IMAGE_MIME_TYPES.jpg
+            : IMAGE_MIME_TYPES.png;
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            imageCache.set(element.src as FileId, { image: img, mimeType });
+            resolve();
+          };
+          img.onerror = () => resolve();
+          img.src = element.src;
+        });
+      }),
+    );
+  }
 
   renderStaticScene({
     canvas,

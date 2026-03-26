@@ -39,11 +39,12 @@ import { getElementAbsoluteCoords } from "@excalidraw/element";
 import type {
   ExcalidrawElement,
   ExcalidrawTextElementWithContainer,
+  FileId,
   NonDeletedExcalidrawElement,
 } from "@excalidraw/element/types";
 
 import type { RenderableElementsMap, SVGRenderConfig } from "../scene/types";
-import type { AppState, BinaryFiles } from "../types";
+import type { AppState, BinaryFileData, BinaryFiles, DataURL } from "../types";
 import type { Drawable } from "roughjs/bin/core";
 import type { RoughSVG } from "roughjs/bin/svg";
 
@@ -437,8 +438,32 @@ const renderElementToSvg = (
     case "image": {
       const width = Math.round(element.width);
       const height = Math.round(element.height);
-      const fileData =
-        isInitializedImageElement(element) && files[element.fileId];
+      const srcMimeType: BinaryFileData["mimeType"] = element.src
+        ? (() => {
+            const ext = element.src
+              .split("?")[0]
+              .split(".")
+              .pop()
+              ?.toLowerCase();
+            if (ext === "svg") {
+              return MIME_TYPES.svg as BinaryFileData["mimeType"];
+            }
+            if (ext === "jpg" || ext === "jpeg") {
+              return MIME_TYPES.jpg as BinaryFileData["mimeType"];
+            }
+            return MIME_TYPES.png as BinaryFileData["mimeType"];
+          })()
+        : (MIME_TYPES.png as BinaryFileData["mimeType"]);
+      const fileData: BinaryFileData | null | false =
+        (isInitializedImageElement(element) && files[element.fileId]) ||
+        (element.src
+          ? ({
+              id: element.id as FileId,
+              dataURL: element.src as DataURL,
+              mimeType: srcMimeType,
+              created: 0,
+            } satisfies BinaryFileData)
+          : null);
       if (fileData) {
         const { reuseImages = true } = renderConfig;
 
