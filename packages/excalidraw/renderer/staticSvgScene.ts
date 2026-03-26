@@ -458,7 +458,7 @@ const renderElementToSvg = (
         (isInitializedImageElement(element) && files[element.fileId]) ||
         (element.src
           ? ({
-              id: element.id as FileId,
+              id: (element.fileId ?? element.src) as FileId,
               dataURL: element.src as DataURL,
               mimeType: srcMimeType,
               created: 0,
