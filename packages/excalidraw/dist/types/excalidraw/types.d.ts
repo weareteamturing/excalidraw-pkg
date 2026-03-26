@@ -477,6 +477,14 @@ export interface ExcalidrawProps {
     name?: string;
     renderCustomStats?: (elements: readonly NonDeletedExcalidrawElement[], appState: UIAppState) => JSX.Element;
     UIOptions?: Partial<UIOptions>;
+    /**
+     * Overrides the value applied to `document.documentElement.style.overscrollBehaviorX`
+     * when the pointer leaves the Excalidraw canvas. Defaults to "auto".
+     * Set to "none" if you want to prevent the browser from restoring overscroll
+     * behavior (e.g. when Excalidraw is embedded inside a host that manages
+     * overscroll itself).
+     */
+    overscrollBehaviorX?: CSSStyleDeclaration["overscrollBehaviorX"];
     detectScroll?: boolean;
     handleKeyboardGlobally?: boolean;
     onLibraryChange?: (libraryItems: LibraryItems) => void | Promise<any>;

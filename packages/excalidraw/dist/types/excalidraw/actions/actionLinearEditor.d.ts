@@ -497,6 +497,7 @@ export declare const actionTogglePolygon: {
             status: "pending" | "saved" | "error";
             scale: [number, number];
             crop: import("@excalidraw/element/types").ImageCrop | null;
+            src?: string;
         }> & {
             index: import("@excalidraw/element/types").FractionalIndex;
         }) | (Readonly<{
