@@ -153,12 +153,6 @@ export type ExcalidrawImageElement = _ExcalidrawElementBase &
     scale: [number, number];
     /** whether an element is cropped */
     crop: ImageCrop | null;
-    /**
-     * Optional CDN/remote URL for the image. When set, the image is rendered
-     * directly from this URL without requiring a BinaryFiles entry.
-     * Takes precedence over fileId for rendering when present.
-     */
-    src?: string;
   }>;
 
 export type InitializedExcalidrawImageElement = MarkNonNullable<

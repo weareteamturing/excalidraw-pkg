@@ -18,7 +18,7 @@ import type {
   InitializedExcalidrawImageElement,
 } from "./types";
 
-export const loadHTMLImageElement = (dataURL: DataURL) => {
+export const loadHTMLImageElement = (dataURL: DataURL | string) => {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
     image.onload = () => {
@@ -27,6 +27,10 @@ export const loadHTMLImageElement = (dataURL: DataURL) => {
     image.onerror = (error) => {
       reject(error);
     };
+    // Set crossOrigin for non-data URLs to avoid tainted canvas on export
+    if (!dataURL.startsWith("data:")) {
+      image.crossOrigin = "anonymous";
+    }
     image.src = dataURL;
   });
 };
@@ -57,7 +61,11 @@ export const updateImageCache = async ({
                 throw new Error("Only images can be added to ImageCache");
               }
 
-              const imagePromise = loadHTMLImageElement(fileData.dataURL);
+              const imageSrc = fileData.cdnUrl ?? fileData.dataURL;
+              if (!imageSrc) {
+                throw new Error("No image source available (dataURL or cdnUrl)");
+              }
+              const imagePromise = loadHTMLImageElement(imageSrc);
               const data = {
                 image: imagePromise,
                 mimeType: fileData.mimeType,

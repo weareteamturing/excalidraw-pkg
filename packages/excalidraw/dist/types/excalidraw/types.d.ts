@@ -64,7 +64,13 @@ export type DataURL = string & {
 export type BinaryFileData = {
     mimeType: ValueOf<typeof IMAGE_MIME_TYPES> | typeof MIME_TYPES.binary;
     id: FileId;
-    dataURL: DataURL;
+    dataURL?: DataURL;
+    /**
+     * Optional CDN/remote URL for the file. When set, the image is loaded
+     * from this URL instead of dataURL. Takes precedence over dataURL when
+     * both are present.
+     */
+    cdnUrl?: string;
     /**
      * Epoch timestamp in milliseconds
      */

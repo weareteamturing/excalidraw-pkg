@@ -1,6 +1,6 @@
 import type { AppClassProperties, DataURL, BinaryFiles } from "@excalidraw/excalidraw/types";
 import type { ExcalidrawElement, FileId, InitializedExcalidrawImageElement } from "./types";
-export declare const loadHTMLImageElement: (dataURL: DataURL) => Promise<HTMLImageElement>;
+export declare const loadHTMLImageElement: (dataURL: DataURL | string) => Promise<HTMLImageElement>;
 /** NOTE: updates cache even if already populated with given image. Thus,
  * you should filter out the images upstream if you want to optimize this. */
 export declare const updateImageCache: ({ fileIds, files, imageCache, }: {

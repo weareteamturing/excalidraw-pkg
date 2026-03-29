@@ -4386,7 +4386,7 @@ class App extends React.Component<AppProps, AppState> {
       addedFiles[fileData.id] = fileData;
       nextFiles[fileData.id] = fileData;
 
-      if (fileData.mimeType === MIME_TYPES.svg) {
+      if (fileData.mimeType === MIME_TYPES.svg && fileData.dataURL) {
         try {
           const restoredDataURL = getDataURL_sync(
             normalizeSVG(dataURLToString(fileData.dataURL)),
@@ -9549,10 +9549,9 @@ class App extends React.Component<AppProps, AppState> {
               pointerDownState.hit.element === croppingElement
             ) {
               const crop = croppingElement.crop;
-              const cacheKey = (croppingElement.src ?? croppingElement.fileId) as FileId | null;
               const image =
-                (isInitializedImageElement(croppingElement) || !!croppingElement.src) &&
-                cacheKey && this.imageCache.get(cacheKey)?.image;
+                isInitializedImageElement(croppingElement) &&
+                this.imageCache.get(croppingElement.fileId)?.image;
 
               if (image && !(image instanceof Promise)) {
                 const uncroppedSize =
@@ -11180,7 +11179,7 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     const existingFileData = this.files[fileId];
-    if (!existingFileData?.dataURL) {
+    if (!existingFileData?.dataURL && !existingFileData?.cdnUrl) {
       try {
         imageFile = await resizeImageFile(imageFile, {
           maxWidthOrHeight: DEFAULT_MAX_IMAGE_WIDTH_OR_HEIGHT,
@@ -11389,67 +11388,8 @@ class App extends React.Component<AppProps, AppState> {
     ),
     files: BinaryFiles = this.files,
   ) => {
-    // Handle src-based image elements (CDN URL images without BinaryFiles entry)
-    const srcImageElements = this.scene
-      .getNonDeletedElements()
-      .filter(
-        (el) =>
-          isImageElement(el) &&
-          !!(el as ExcalidrawImageElement).src &&
-          !this.imageCache.has((el as ExcalidrawImageElement).src as FileId),
-      ) as (ExcalidrawImageElement & { src: string })[];
-
-    if (srcImageElements.length) {
-      let srcCacheUpdated = false;
-      await Promise.all(
-        srcImageElements.map((element) => {
-          const ext = element.src
-            .split("?")[0]
-            .split(".")
-            .pop()
-            ?.toLowerCase();
-          const mimeType =
-            ext === "svg"
-              ? IMAGE_MIME_TYPES.svg
-              : ext === "jpg" || ext === "jpeg"
-              ? IMAGE_MIME_TYPES.jpg
-              : IMAGE_MIME_TYPES.png;
-          return new Promise<void>((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-              this.imageCache.set(element.src as FileId, {
-                image: img,
-                mimeType,
-              });
-              const currentEl = this.scene.getElement(element.id);
-              if (currentEl) {
-                ShapeCache.delete(currentEl);
-              }
-              srcCacheUpdated = true;
-              resolve();
-            };
-            img.onerror = () => {
-              console.error(
-                "[Excalidraw] Failed to load src image:",
-                element.src,
-              );
-              this.imageCache.set(element.src as FileId, {
-                image: new Image(),
-                mimeType,
-              });
-              resolve();
-            };
-            img.src = element.src!;
-          });
-        }),
-      );
-      if (srcCacheUpdated) {
-        this.scene.triggerUpdate();
-      }
-    }
-
     const uncachedImageElements = imageElements.filter(
-      (element) => !element.isDeleted && !this.imageCache.has((element.src ?? element.fileId) as FileId),
+      (element) => !element.isDeleted && !this.imageCache.has(element.fileId),
     );
 
     if (uncachedImageElements.length) {
@@ -11907,13 +11847,9 @@ class App extends React.Component<AppProps, AppState> {
       event[KEYS.CTRL_OR_CMD] ? null : this.getEffectiveGridSize(),
     );
 
-    const newElementCacheKey = isImageElement(newElement)
-      ? (newElement.src ?? newElement.fileId) as FileId | null
-      : null;
     const image =
-      isImageElement(newElement) &&
-      (isInitializedImageElement(newElement) || !!newElement.src) &&
-      newElementCacheKey && this.imageCache.get(newElementCacheKey)?.image;
+      isInitializedImageElement(newElement) &&
+      this.imageCache.get(newElement.fileId)?.image;
     const aspectRatio =
       image && !(image instanceof Promise) ? image.width / image.height : null;
 
@@ -12017,10 +11953,9 @@ class App extends React.Component<AppProps, AppState> {
         croppingElement.id,
       );
 
-      const cropCacheKey = (croppingElement.src ?? croppingElement.fileId) as FileId | null;
       const image =
-        (isInitializedImageElement(croppingElement) || !!croppingElement.src) &&
-        cropCacheKey && this.imageCache.get(cropCacheKey)?.image;
+        isInitializedImageElement(croppingElement) &&
+        this.imageCache.get(croppingElement.fileId)?.image;
 
       if (
         croppingAtStateStart &&

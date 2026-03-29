@@ -78,7 +78,6 @@ import type {
   ExcalidrawFrameLikeElement,
   NonDeletedSceneElementsMap,
   ElementsMap,
-  FileId,
 } from "./types";
 
 import type { RoughCanvas } from "roughjs/bin/canvas";
@@ -86,18 +85,9 @@ import type { RoughCanvas } from "roughjs/bin/canvas";
 const isPendingImageElement = (
   element: ExcalidrawElement,
   renderConfig: StaticCanvasRenderConfig,
-) => {
-  if (!isImageElement(element)) {
-    return false;
-  }
-  if (element.src) {
-    return !renderConfig.imageCache.has(element.src as FileId);
-  }
-  return (
-    isInitializedImageElement(element) &&
-    !renderConfig.imageCache.has(element.fileId)
-  );
-};
+) =>
+  isInitializedImageElement(element) &&
+  !renderConfig.imageCache.has(element.fileId);
 
 const getCanvasPadding = (element: ExcalidrawElement) => {
   switch (element.type) {
@@ -447,13 +437,11 @@ const drawElementOnCanvas = (
     }
     case "image": {
       context.save();
-      const cacheKey: FileId | null = element.src
-        ? (element.src as FileId)
-        : element.fileId;
-      const cacheEntry = cacheKey !== null
-        ? renderConfig.imageCache.get(cacheKey)
-        : null;
-      const img = (isInitializedImageElement(element) || !!element.src)
+      const cacheEntry =
+        element.fileId !== null
+          ? renderConfig.imageCache.get(element.fileId)
+          : null;
+      const img = isInitializedImageElement(element)
         ? cacheEntry?.image
         : undefined;
 
