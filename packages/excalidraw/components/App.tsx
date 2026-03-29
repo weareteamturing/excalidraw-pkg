@@ -9549,9 +9549,10 @@ class App extends React.Component<AppProps, AppState> {
               pointerDownState.hit.element === croppingElement
             ) {
               const crop = croppingElement.crop;
+              const cacheKey = (croppingElement.src ?? croppingElement.fileId) as FileId | null;
               const image =
-                isInitializedImageElement(croppingElement) &&
-                this.imageCache.get(croppingElement.fileId)?.image;
+                (isInitializedImageElement(croppingElement) || !!croppingElement.src) &&
+                cacheKey && this.imageCache.get(cacheKey)?.image;
 
               if (image && !(image instanceof Promise)) {
                 const uncroppedSize =
@@ -11448,7 +11449,7 @@ class App extends React.Component<AppProps, AppState> {
     }
 
     const uncachedImageElements = imageElements.filter(
-      (element) => !element.isDeleted && !this.imageCache.has(element.fileId),
+      (element) => !element.isDeleted && !this.imageCache.has((element.src ?? element.fileId) as FileId),
     );
 
     if (uncachedImageElements.length) {
@@ -11906,9 +11907,13 @@ class App extends React.Component<AppProps, AppState> {
       event[KEYS.CTRL_OR_CMD] ? null : this.getEffectiveGridSize(),
     );
 
+    const newElementCacheKey = isImageElement(newElement)
+      ? (newElement.src ?? newElement.fileId) as FileId | null
+      : null;
     const image =
-      isInitializedImageElement(newElement) &&
-      this.imageCache.get(newElement.fileId)?.image;
+      isImageElement(newElement) &&
+      (isInitializedImageElement(newElement) || !!newElement.src) &&
+      newElementCacheKey && this.imageCache.get(newElementCacheKey)?.image;
     const aspectRatio =
       image && !(image instanceof Promise) ? image.width / image.height : null;
 
@@ -12012,9 +12017,10 @@ class App extends React.Component<AppProps, AppState> {
         croppingElement.id,
       );
 
+      const cropCacheKey = (croppingElement.src ?? croppingElement.fileId) as FileId | null;
       const image =
-        isInitializedImageElement(croppingElement) &&
-        this.imageCache.get(croppingElement.fileId)?.image;
+        (isInitializedImageElement(croppingElement) || !!croppingElement.src) &&
+        cropCacheKey && this.imageCache.get(cropCacheKey)?.image;
 
       if (
         croppingAtStateStart &&
