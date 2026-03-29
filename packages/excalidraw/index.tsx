@@ -63,6 +63,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     contextMenuConfig,
     onLassoComplete,
     onPostRender,
+    onElementPreRender,
     onElementPostRender,
     renderAnimationNonce,
     overscrollBehaviorX,
@@ -166,6 +167,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           contextMenuConfig={contextMenuConfig}
           onLassoComplete={onLassoComplete}
           onPostRender={onPostRender}
+          onElementPreRender={onElementPreRender}
           onElementPostRender={onElementPostRender}
           renderAnimationNonce={renderAnimationNonce}
           overscrollBehaviorX={overscrollBehaviorX}

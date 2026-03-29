@@ -39,6 +39,13 @@ export type StaticCanvasRenderConfig = {
   theme: AppState["theme"];
   /** Called after all elements are drawn on the static canvas context */
   postRender?: (ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
+  /** Called before each element is drawn. Return false to skip default rendering.
+   *  Use with elementPostRender to fully replace element rendering (e.g., math formulas). */
+  elementPreRender?: (
+    element: NonDeletedExcalidrawElement,
+    ctx: CanvasRenderingContext2D,
+    appState: StaticCanvasAppState
+  ) => boolean;
   /** Called after each element is drawn, in rendering z-order.
    *  Use for per-element canvas overlays (e.g., loading shimmer). */
   elementPostRender?: (

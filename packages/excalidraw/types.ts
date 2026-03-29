@@ -674,6 +674,8 @@ export interface ExcalidrawProps {
   onLassoComplete?: (path: [number, number][]) => void;
   /** Called after all elements are drawn on the static canvas. Use for canvas-native overlays. */
   onPostRender?: (ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
+  /** Called before each element is drawn. Return false to skip default rendering. */
+  onElementPreRender?: (element: NonDeletedExcalidrawElement, ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => boolean;
   /** Called after each element is drawn, in rendering z-order. Use for per-element canvas overlays. */
   onElementPostRender?: (element: NonDeletedExcalidrawElement, ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
   /** Increment each animation frame to force a StaticCanvas re-render for animation. */

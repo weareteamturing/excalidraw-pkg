@@ -315,56 +315,60 @@ const _renderStaticScene = ({
 
         context.save();
 
-        if (
-          frameId &&
-          appState.frameRendering.enabled &&
-          appState.frameRendering.clip
-        ) {
-          const frame = getTargetFrame(element, elementsMap, appState);
-          if (
-            frame &&
-            shouldApplyFrameClip(
-              element,
-              frame,
-              appState,
-              elementsMap,
-              inFrameGroupsMap,
-            )
-          ) {
-            frameClip(frame, context, renderConfig, appState);
-          }
-          renderElement(
-            element,
-            elementsMap,
-            allElementsMap,
-            rc,
-            context,
-            renderConfig,
-            appState,
-          );
-        } else {
-          renderElement(
-            element,
-            elementsMap,
-            allElementsMap,
-            rc,
-            context,
-            renderConfig,
-            appState,
-          );
-        }
+        const shouldRender = renderConfig.elementPreRender?.(element, context, appState) ?? true;
 
-        const boundTextElement = getBoundTextElement(element, elementsMap);
-        if (boundTextElement) {
-          renderElement(
-            boundTextElement,
-            elementsMap,
-            allElementsMap,
-            rc,
-            context,
-            renderConfig,
-            appState,
-          );
+        if (shouldRender) {
+          if (
+            frameId &&
+            appState.frameRendering.enabled &&
+            appState.frameRendering.clip
+          ) {
+            const frame = getTargetFrame(element, elementsMap, appState);
+            if (
+              frame &&
+              shouldApplyFrameClip(
+                element,
+                frame,
+                appState,
+                elementsMap,
+                inFrameGroupsMap,
+              )
+            ) {
+              frameClip(frame, context, renderConfig, appState);
+            }
+            renderElement(
+              element,
+              elementsMap,
+              allElementsMap,
+              rc,
+              context,
+              renderConfig,
+              appState,
+            );
+          } else {
+            renderElement(
+              element,
+              elementsMap,
+              allElementsMap,
+              rc,
+              context,
+              renderConfig,
+              appState,
+            );
+          }
+
+          const boundTextElement = getBoundTextElement(element, elementsMap);
+          if (boundTextElement) {
+            renderElement(
+              boundTextElement,
+              elementsMap,
+              allElementsMap,
+              rc,
+              context,
+              renderConfig,
+              appState,
+            );
+          }
         }
 
         context.restore();

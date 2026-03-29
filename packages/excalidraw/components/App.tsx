@@ -2218,6 +2218,7 @@ class App extends React.Component<AppProps, AppState> {
                               this.flowChartCreator.pendingNodes,
                             theme: this.state.theme,
                             postRender: this.props.onPostRender,
+                            elementPreRender: this.props.onElementPreRender,
                             elementPostRender: this.props.onElementPostRender,
                             animationNonce: this.props.renderAnimationNonce,
                           }}
