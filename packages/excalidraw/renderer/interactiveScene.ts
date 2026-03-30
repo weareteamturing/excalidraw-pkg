@@ -1219,17 +1219,26 @@ const renderLinearPointHandles = (
 };
 
 const applyAlpha = (color: string, alpha: number): string => {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1;
-  canvas.height = 1;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) {
-    return color;
+  // hex (#RGB, #RRGGBB, #RRGGBBAA)
+  const hexMatch = color.match(
+    /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i,
+  );
+  if (hexMatch) {
+    const r = parseInt(hexMatch[1], 16);
+    const g = parseInt(hexMatch[2], 16);
+    const b = parseInt(hexMatch[3], 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
-  ctx.fillStyle = color;
-  ctx.fillRect(0, 0, 1, 1);
-  const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+
+  // rgb(r, g, b) / rgba(r, g, b, a)
+  const rgbMatch = color.match(
+    /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/,
+  );
+  if (rgbMatch) {
+    return `rgba(${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}, ${alpha})`;
+  }
+
+  return color;
 };
 
 const renderFocusPointConnectionLine = (
