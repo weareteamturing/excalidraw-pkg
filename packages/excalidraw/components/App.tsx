@@ -450,6 +450,11 @@ import { isPointHittingLink } from "./hyperlink/helpers";
 import { MagicIcon, copyIcon, fullscreenIcon } from "./icons";
 import { Toast } from "./Toast";
 
+import {
+  AppStateObserver,
+  type OnStateChange,
+} from "./AppStateObserver";
+
 import { findShapeByKey } from "./shapes";
 
 import UnlockPopup from "./UnlockPopup";
@@ -562,6 +567,15 @@ export const useExcalidrawSetAppState = () =>
 export const useExcalidrawActionManager = () =>
   useContext(ExcalidrawActionManagerContext);
 
+export const ExcalidrawAPIContext =
+  React.createContext<ExcalidrawImperativeAPI | null>(null);
+ExcalidrawAPIContext.displayName = "ExcalidrawAPIContext";
+
+/**
+ * Requires wrapping your component in <ExcalidrawAPIContext.Provider>
+ */
+export const useExcalidrawAPI = () => useContext(ExcalidrawAPIContext);
+
 let didTapTwice: boolean = false;
 let tappedTwiceTimer = 0;
 let firstTapPosition: { x: number; y: number } | null = null;
@@ -616,6 +630,9 @@ class App extends React.Component<AppProps, AppState> {
   public id: string;
   private store: Store;
   private history: History;
+  private appStateObserver: AppStateObserver;
+  public onStateChange: OnStateChange;
+  public api!: ExcalidrawImperativeAPI;
   public excalidrawContainerValue: {
     container: HTMLDivElement | null;
     id: string;
@@ -743,9 +760,10 @@ class App extends React.Component<AppProps, AppState> {
 
     this.store = new Store(this);
     this.history = new History(this.store);
+    this.appStateObserver = new AppStateObserver(() => this.state);
+    this.onStateChange = this.appStateObserver.onStateChange;
 
-    if (excalidrawAPI) {
-      const api: ExcalidrawImperativeAPI = {
+    this.api = {
         updateScene: this.updateScene,
         applyDeltas: this.applyDeltas,
         mutateElement: this.mutateElement,
@@ -796,9 +814,12 @@ class App extends React.Component<AppProps, AppState> {
         clearLassoTrail: this.clearLassoTrail,
         actionManager: this.actionManager,
         exitTextEditing: this.exitTextEditing,
-      } as const;
+        onStateChange: this.onStateChange,
+    } as const;
+
+    if (excalidrawAPI) {
       if (typeof excalidrawAPI === "function") {
-        excalidrawAPI(api);
+        excalidrawAPI(this.api);
       } else {
         console.error("excalidrawAPI should be a function!");
       }
@@ -2059,6 +2080,7 @@ class App extends React.Component<AppProps, AppState> {
         onPointerEnter={this.toggleOverscrollBehavior}
         onPointerLeave={this.toggleOverscrollBehavior}
       >
+        <ExcalidrawAPIContext.Provider value={this.api}>
         <AppContext.Provider value={this}>
           <AppPropsContext.Provider value={this.props}>
             <ExcalidrawContainerContext.Provider
@@ -2311,6 +2333,7 @@ class App extends React.Component<AppProps, AppState> {
             </ExcalidrawContainerContext.Provider>
           </AppPropsContext.Provider>
         </AppContext.Provider>
+        </ExcalidrawAPIContext.Provider>
       </div>
     );
   }
@@ -3250,6 +3273,8 @@ class App extends React.Component<AppProps, AppState> {
   }
 
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
+    this.appStateObserver.flush(prevState);
+
     if (this.props.bindingGap !== prevProps.bindingGap && this.props.bindingGap !== undefined) {
       setBaseBindingGap(this.props.bindingGap);
     }
