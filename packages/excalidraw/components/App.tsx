@@ -595,6 +595,7 @@ const gesture: Gesture = {
 class App extends React.Component<AppProps, AppState> {
   canvas: AppClassProperties["canvas"];
   interactiveCanvas: AppClassProperties["interactiveCanvas"] = null;
+  public sessionExportThemeOverride: AppState["theme"] | undefined;
   rc: RoughCanvas;
   unmounted: boolean = false;
   actionManager: ActionManager;
@@ -710,6 +711,7 @@ class App extends React.Component<AppProps, AppState> {
     this.state = {
       ...defaultAppState,
       theme,
+      exportWithDarkMode: theme === THEME.DARK,
       isLoading: true,
       ...this.getCanvasOffsets(),
       viewModeEnabled,
@@ -3254,6 +3256,13 @@ class App extends React.Component<AppProps, AppState> {
     this.updateEmbeddables();
     const elements = this.scene.getElementsIncludingDeleted();
     const elementsMap = this.scene.getElementsMapIncludingDeleted();
+
+    const shouldExportWithDarkMode =
+      (this.sessionExportThemeOverride ?? this.state.theme) === THEME.DARK;
+
+    if (this.state.exportWithDarkMode !== shouldExportWithDarkMode) {
+      this.setState({ exportWithDarkMode: shouldExportWithDarkMode });
+    }
 
     if (!this.state.showWelcomeScreen && !elements.length) {
       this.setState({ showWelcomeScreen: true });
@@ -6725,27 +6734,23 @@ class App extends React.Component<AppProps, AppState> {
           },
           { informMutation: false, isDragging: false },
         );
+        const newLastIdx = multiElement.points.length - 1;
         this.setState({
           selectedLinearElement: {
             ...selectedLinearElement,
-            selectedPointsIndices:
-              selectedLinearElement.selectedPointsIndices?.includes(
-                multiElement.points.length,
-              )
-                ? [
-                    ...selectedLinearElement.selectedPointsIndices.filter(
-                      (idx) =>
-                        idx !== multiElement.points.length &&
-                        idx !== multiElement.points.length - 1,
+            selectedPointsIndices: selectedLinearElement.selectedPointsIndices
+              ? [
+                  ...new Set(
+                    selectedLinearElement.selectedPointsIndices.map((idx) =>
+                      Math.min(idx, newLastIdx),
                     ),
-                    multiElement.points.length - 1,
-                  ]
-                : selectedLinearElement.selectedPointsIndices,
-            lastCommittedPoint:
-              multiElement.points[multiElement.points.length - 1],
+                  ),
+                ]
+              : selectedLinearElement.selectedPointsIndices,
+            lastCommittedPoint: multiElement.points[newLastIdx],
             initialState: {
               ...selectedLinearElement.initialState,
-              lastClickedPoint: multiElement.points.length - 1,
+              lastClickedPoint: newLastIdx,
             },
           },
         });
