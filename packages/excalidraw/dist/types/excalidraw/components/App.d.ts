@@ -13,6 +13,7 @@ import { LaserTrails } from "../laser-trails";
 import { isOverScrollBars } from "../scene/scrollbars";
 import { LassoTrail } from "../lasso";
 import { EraserTrail } from "../eraser";
+import { type OnStateChange } from "./AppStateObserver";
 import type { ExportedElements } from "../data";
 import type { FileSystemHandle } from "../data/filesystem";
 import type { AppClassProperties, AppProps, AppState, ExcalidrawImperativeAPI, BinaryFiles, LibraryItems, SceneData, FrameNameBoundsCache, SidebarName, SidebarTabName, ToolType, OnUserFollowedPayload, GenerateDiagramToCode, NullableGridSize, Offsets } from "../types";
@@ -44,6 +45,11 @@ export declare const useExcalidrawElements: () => readonly NonDeletedExcalidrawE
 export declare const useExcalidrawAppState: () => AppState;
 export declare const useExcalidrawSetAppState: () => <K extends keyof AppState>(state: AppState | ((prevState: Readonly<AppState>, props: Readonly<any>) => AppState | Pick<AppState, K> | null) | Pick<AppState, K> | null, callback?: (() => void) | undefined) => void;
 export declare const useExcalidrawActionManager: () => ActionManager;
+export declare const ExcalidrawAPIContext: React.Context<ExcalidrawImperativeAPI | null>;
+/**
+ * Requires wrapping your component in <ExcalidrawAPIContext.Provider>
+ */
+export declare const useExcalidrawAPI: () => ExcalidrawImperativeAPI | null;
 declare class App extends React.Component<AppProps, AppState> {
     canvas: AppClassProperties["canvas"];
     interactiveCanvas: AppClassProperties["interactiveCanvas"];
@@ -64,6 +70,9 @@ declare class App extends React.Component<AppProps, AppState> {
     id: string;
     private store;
     private history;
+    private appStateObserver;
+    onStateChange: OnStateChange;
+    api: ExcalidrawImperativeAPI;
     excalidrawContainerValue: {
         container: HTMLDivElement | null;
         id: string;

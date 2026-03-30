@@ -741,6 +741,7 @@ export interface ExcalidrawImperativeAPI {
     clearLassoTrail: InstanceType<typeof App>["clearLassoTrail"];
     actionManager: InstanceType<typeof App>["actionManager"];
     exitTextEditing: InstanceType<typeof App>["exitTextEditing"];
+    onStateChange: InstanceType<typeof App>["onStateChange"];
 }
 export type FrameNameBounds = {
     x: number;
