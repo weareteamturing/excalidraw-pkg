@@ -9,6 +9,7 @@ type InteractiveCanvasProps = {
     selectionColor?: string;
     handleFillColor?: string;
     bindingHighlightColor?: string;
+    focusPointColor?: string;
     canvas: HTMLCanvasElement | null;
     elementsMap: RenderableElementsMap;
     visibleElements: readonly NonDeletedExcalidrawElement[];

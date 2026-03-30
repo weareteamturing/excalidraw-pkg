@@ -519,6 +519,8 @@ export interface ExcalidrawProps {
         handleFill?: string;
         /** Binding / frame highlight color. Default: rgb(0,118,255) */
         bindingHighlight?: string;
+        /** Focus point guide line & circle color (arrow binding indicator). Default: rgba(134,131,226,1) */
+        focusPoint?: string;
     };
     bindingGap?: number;
     keepLassoTrailOnComplete?: boolean;

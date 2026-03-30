@@ -1218,16 +1218,31 @@ const renderLinearPointHandles = (
   context.restore();
 };
 
+const applyAlpha = (color: string, alpha: number): string => {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1;
+  canvas.height = 1;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return color;
+  }
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, 1, 1);
+  const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 const renderFocusPointConnectionLine = (
   context: CanvasRenderingContext2D,
   appState: InteractiveCanvasAppState,
   fromPoint: GlobalPoint,
   toPoint: GlobalPoint,
+  focusPointColor: string,
 ) => {
   context.save();
   context.translate(appState.scrollX, appState.scrollY);
 
-  context.strokeStyle = "rgba(134, 131, 226, 0.6)";
+  context.strokeStyle = applyAlpha(focusPointColor, 0.6);
   context.lineWidth = 1 / appState.zoom.value;
   context.setLineDash([4 / appState.zoom.value, 4 / appState.zoom.value]);
 
@@ -1245,14 +1260,15 @@ const renderFocusPointCicle = (
   point: GlobalPoint,
   radius: number,
   isHovered: boolean,
+  focusPointColor: string,
 ) => {
   context.save();
   context.translate(appState.scrollX, appState.scrollY);
-  context.strokeStyle = "rgba(134, 131, 226, 0.6)";
+  context.strokeStyle = applyAlpha(focusPointColor, 0.6);
   context.lineWidth = 1 / appState.zoom.value;
   context.setLineDash([]);
   context.fillStyle = isHovered
-    ? "rgba(134, 131, 226, 0.9)"
+    ? applyAlpha(focusPointColor, 0.9)
     : "rgba(255, 255, 255, 0.9)";
 
   fillCircle(
@@ -1273,6 +1289,7 @@ const renderFocusPointIndicator = ({
   context,
   elementsMap,
   selectionColor,
+  focusPointColor,
 }: {
   arrow: NonDeleted<ExcalidrawArrowElement>;
   appState: InteractiveCanvasAppState;
@@ -1280,6 +1297,7 @@ const renderFocusPointIndicator = ({
   elementsMap: NonDeletedSceneElementsMap;
   type: "start" | "end";
   selectionColor: string;
+  focusPointColor: string;
 }) => {
   const binding = type === "start" ? arrow.startBinding : arrow.endBinding;
   const bindableElement =
@@ -1348,7 +1366,7 @@ const renderFocusPointIndicator = ({
       elementsMap,
     );
 
-    renderFocusPointConnectionLine(context, appState, arrowPoint, focusPoint);
+    renderFocusPointConnectionLine(context, appState, arrowPoint, focusPoint, focusPointColor);
 
     renderFocusPointCicle(
       context,
@@ -1356,6 +1374,7 @@ const renderFocusPointIndicator = ({
       focusPoint,
       FOCUS_POINT_SIZE / 1.5,
       isHovered,
+      focusPointColor,
     );
   }
 };
@@ -1732,6 +1751,7 @@ const _renderInteractiveScene = ({
         context,
         type: "start",
         selectionColor: renderConfig.selectionColor,
+        focusPointColor: renderConfig.focusPointColor,
       });
 
       renderFocusPointIndicator({
@@ -1741,6 +1761,7 @@ const _renderInteractiveScene = ({
         context,
         type: "end",
         selectionColor: renderConfig.selectionColor,
+        focusPointColor: renderConfig.focusPointColor,
       });
     }
   }

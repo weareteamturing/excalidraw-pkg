@@ -2268,6 +2268,7 @@ class App extends React.Component<AppProps, AppState> {
                           selectionColor={this.resolveColor(this.props.colors?.selection) ?? "#6965db"}
                           handleFillColor={this.resolveColor(this.props.colors?.handleFill) ?? "#ffffff"}
                           bindingHighlightColor={this.resolveColor(this.props.colors?.bindingHighlight) ?? "rgb(0,118,255)"}
+                          focusPointColor={this.resolveColor(this.props.colors?.focusPoint) ?? "rgba(134,131,226,1)"}
                           editorInterface={this.editorInterface}
                           renderInteractiveSceneCallback={
                             this.renderInteractiveSceneCallback

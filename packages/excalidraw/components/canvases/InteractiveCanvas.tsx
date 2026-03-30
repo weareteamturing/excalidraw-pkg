@@ -36,6 +36,7 @@ type InteractiveCanvasProps = {
   selectionColor?: string;
   handleFillColor?: string;
   bindingHighlightColor?: string;
+  focusPointColor?: string;
   canvas: HTMLCanvasElement | null;
   elementsMap: RenderableElementsMap;
   visibleElements: readonly NonDeletedExcalidrawElement[];
@@ -140,6 +141,7 @@ const InteractiveCanvas = (props: InteractiveCanvasProps) => {
     const selectionColor = props.selectionColor ?? "#6965db";
     const handleFillColor = props.handleFillColor ?? "#ffffff";
     const bindingHighlightColor = props.bindingHighlightColor ?? "rgb(0,118,255)";
+    const focusPointColor = props.focusPointColor ?? "rgba(134,131,226,1)";
 
     rendererParams.current = {
       app: props.app,
@@ -159,6 +161,7 @@ const InteractiveCanvas = (props: InteractiveCanvasProps) => {
         selectionColor,
         handleFillColor,
         bindingHighlightColor,
+        focusPointColor,
         renderScrollbars: props.renderScrollbars,
         showRotationHandle: props.showRotationHandle,
         // NOTE not memoized on so we don't rerender on cursor move

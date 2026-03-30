@@ -57,6 +57,7 @@ export type InteractiveCanvasRenderConfig = {
     selectionColor: string;
     handleFillColor: string;
     bindingHighlightColor: string;
+    focusPointColor: string;
     lastViewportPosition: {
         x: number;
         y: number;
