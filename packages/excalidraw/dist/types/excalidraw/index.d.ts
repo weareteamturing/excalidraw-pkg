@@ -19,7 +19,7 @@ export { serializeAsJSON, serializeLibraryAsJSON } from "./data/json";
 export { loadFromBlob, loadSceneOrLibraryFromBlob, loadLibraryFromBlob, } from "./data/blob";
 export { mergeLibraryItems, getLibraryItemsHash } from "./data/library";
 export { isLinearElement } from "@excalidraw/element";
-export { FONT_FAMILY, THEME, MIME_TYPES, ROUNDNESS, DEFAULT_LASER_COLOR, UserIdleState, normalizeLink, sceneCoordsToViewportCoords, viewportCoordsToSceneCoords, getFormFactor, } from "@excalidraw/common";
+export { FONT_FAMILY, THEME, MIME_TYPES, ROUNDNESS, DEFAULT_LASER_COLOR, UserIdleState, normalizeLink, sceneCoordsToViewportCoords, viewportCoordsToSceneCoords, getFormFactor, throttleRAF, } from "@excalidraw/common";
 export { mutateElement, newElementWith, bumpVersion, } from "@excalidraw/element";
 export { CaptureUpdateAction } from "@excalidraw/element";
 export { parseLibraryTokensFromUrl, useHandleLibrary } from "./data/library";

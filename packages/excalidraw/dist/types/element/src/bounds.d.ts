@@ -43,7 +43,7 @@ export declare const getBoundsFromPoints: (points: ExcalidrawFreeDrawElement["po
 export declare const getArrowheadSize: (arrowhead: Arrowhead) => number;
 /** @returns number in degrees */
 export declare const getArrowheadAngle: (arrowhead: Arrowhead) => Degrees;
-export declare const getArrowheadPoints: (element: ExcalidrawLinearElement, shape: Drawable[], position: "start" | "end", arrowhead: Arrowhead) => number[] | null;
+export declare const getArrowheadPoints: (element: ExcalidrawLinearElement, shape: Drawable[], position: "start" | "end", arrowhead: Arrowhead, offsetMultiplier?: number) => number[] | null;
 export declare const getElementBounds: (element: ExcalidrawElement, elementsMap: ElementsMap, nonRotated?: boolean) => Bounds;
 export declare const getCommonBounds: (elements: ElementsMapOrArray, elementsMap?: ElementsMap) => Bounds;
 export declare const getDraggedElementsBounds: (elements: ExcalidrawElement[], dragOffset: {

@@ -201,6 +201,7 @@ export declare const actionSaveFileToDisk: {
             fileHandle: import("browser-fs-access").FileSystemHandle | null;
             toast: {
                 message: string;
+                duration: number;
             };
             contextMenu: {
                 items: import("../components/ContextMenu").ContextMenuItems;

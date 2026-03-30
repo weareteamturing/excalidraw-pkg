@@ -27,7 +27,7 @@ export declare class ShapeCache {
     } | null) => ((T["type"] extends keyof ElementShapes ? ElementShapes[T["type"]] | undefined : ElementShape | undefined) & {}) | (T["type"] extends keyof ElementShapes ? ElementShapes[T["type"]] : Drawable | null);
 }
 export declare const generateRoughOptions: (element: ExcalidrawElement, continuousPath?: boolean, isDarkMode?: boolean) => Options;
-export declare const generateLinearCollisionShape: (element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement) => {
+export declare const generateLinearCollisionShape: (element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement, elementsMap: ElementsMap) => {
     op: string;
     data: number[];
 }[];

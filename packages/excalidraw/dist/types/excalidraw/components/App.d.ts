@@ -47,6 +47,7 @@ export declare const useExcalidrawActionManager: () => ActionManager;
 declare class App extends React.Component<AppProps, AppState> {
     canvas: AppClassProperties["canvas"];
     interactiveCanvas: AppClassProperties["interactiveCanvas"];
+    sessionExportThemeOverride: AppState["theme"] | undefined;
     rc: RoughCanvas;
     unmounted: boolean;
     actionManager: ActionManager;

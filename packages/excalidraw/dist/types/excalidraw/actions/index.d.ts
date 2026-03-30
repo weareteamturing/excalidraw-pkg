@@ -6,6 +6,7 @@ export { actionChangeStrokeColor, actionChangeBackgroundColor, actionChangeStrok
 export { actionChangeViewBackgroundColor, actionClearCanvas, actionZoomIn, actionZoomOut, actionResetZoom, actionZoomToFit, actionToggleTheme, } from "./actionCanvas";
 export { actionSetEmbeddableAsActiveTool } from "./actionEmbeddable";
 export { actionFinalize } from "./actionFinalize";
+export { actionDeselect } from "./actionDeselect";
 export { actionChangeProjectName, actionChangeExportBackground, actionSaveToActiveFile, actionSaveFileToDisk, actionLoadScene, } from "./actionExport";
 export { actionCopyStyles, actionPasteStyles } from "./actionStyles";
 export { actionShortcuts } from "./actionMenu";

@@ -210,7 +210,10 @@ export type PointsPositionUpdates = Map<Index, {
     point: LocalPoint;
     isDragging?: boolean;
 }>;
-export type Arrowhead = "arrow" | "bar" | "dot" | "circle" | "circle_outline" | "triangle" | "triangle_outline" | "diamond" | "diamond_outline" | "crowfoot_one" | "crowfoot_many" | "crowfoot_one_or_many";
+export type CardinalityArrowhead = "cardinality_one" | "cardinality_many" | "cardinality_one_or_many" | "cardinality_exactly_one" | "cardinality_zero_or_one" | "cardinality_zero_or_many";
+export type ArrowheadLegacy = "dot" | "crowfoot_one" | "crowfoot_many" | "crowfoot_one_or_many";
+export type Arrowhead = "arrow" | "bar" | "circle" | "circle_outline" | "triangle" | "triangle_outline" | "diamond" | "diamond_outline" | CardinalityArrowhead;
+export type AnyArrowhead = Arrowhead | ArrowheadLegacy;
 export type ExcalidrawLinearElement = _ExcalidrawElementBase & Readonly<{
     type: "line" | "arrow";
     points: readonly LocalPoint[];

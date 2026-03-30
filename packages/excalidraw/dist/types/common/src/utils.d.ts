@@ -27,9 +27,7 @@ export declare const debounce: <T extends any[]>(fn: (...args: T) => void, timeo
     flush(): void;
     cancel(): void;
 };
-export declare const throttleRAF: <T extends any[]>(fn: (...args: T) => void, opts?: {
-    trailing?: boolean;
-}) => {
+export declare const throttleRAF: <T extends any[]>(fn: (...args: T) => void) => {
     (...args: T): void;
     flush(): void;
     cancel(): void;

@@ -122,19 +122,16 @@ export declare const ArrowheadNoneIcon: React.MemoExoticComponent<({ flip }: {
 export declare const ArrowheadArrowIcon: React.MemoExoticComponent<({ flip }: {
     flip?: boolean;
 }) => import("react/jsx-runtime").JSX.Element>;
-export declare const ArrowheadCircleIcon: React.MemoExoticComponent<({ flip }: {
-    flip?: boolean;
-}) => import("react/jsx-runtime").JSX.Element>;
-export declare const ArrowheadCircleOutlineIcon: React.MemoExoticComponent<({ flip }: {
-    flip?: boolean;
-}) => import("react/jsx-runtime").JSX.Element>;
-export declare const ArrowheadBarIcon: React.MemoExoticComponent<({ flip }: {
-    flip?: boolean;
-}) => import("react/jsx-runtime").JSX.Element>;
 export declare const ArrowheadTriangleIcon: React.MemoExoticComponent<({ flip }: {
     flip?: boolean;
 }) => import("react/jsx-runtime").JSX.Element>;
 export declare const ArrowheadTriangleOutlineIcon: React.MemoExoticComponent<({ flip }: {
+    flip?: boolean;
+}) => import("react/jsx-runtime").JSX.Element>;
+export declare const ArrowheadCircleIcon: React.MemoExoticComponent<({ flip }: {
+    flip?: boolean;
+}) => import("react/jsx-runtime").JSX.Element>;
+export declare const ArrowheadCircleOutlineIcon: React.MemoExoticComponent<({ flip }: {
     flip?: boolean;
 }) => import("react/jsx-runtime").JSX.Element>;
 export declare const ArrowheadDiamondIcon: React.MemoExoticComponent<({ flip }: {
@@ -143,13 +140,25 @@ export declare const ArrowheadDiamondIcon: React.MemoExoticComponent<({ flip }: 
 export declare const ArrowheadDiamondOutlineIcon: React.MemoExoticComponent<({ flip }: {
     flip?: boolean;
 }) => import("react/jsx-runtime").JSX.Element>;
-export declare const ArrowheadCrowfootIcon: React.MemoExoticComponent<({ flip }: {
+export declare const ArrowheadBarIcon: React.MemoExoticComponent<({ flip }: {
     flip?: boolean;
 }) => import("react/jsx-runtime").JSX.Element>;
-export declare const ArrowheadCrowfootOneIcon: React.MemoExoticComponent<({ flip }: {
+export declare const ArrowheadCardinalityOneIcon: React.MemoExoticComponent<({ flip }: {
     flip?: boolean;
 }) => import("react/jsx-runtime").JSX.Element>;
-export declare const ArrowheadCrowfootOneOrManyIcon: React.MemoExoticComponent<({ flip }: {
+export declare const ArrowheadCardinalityManyIcon: React.MemoExoticComponent<({ flip }: {
+    flip?: boolean;
+}) => import("react/jsx-runtime").JSX.Element>;
+export declare const ArrowheadCardinalityOneOrManyIcon: React.MemoExoticComponent<({ flip }: {
+    flip?: boolean;
+}) => import("react/jsx-runtime").JSX.Element>;
+export declare const ArrowheadCardinalityExactlyOneIcon: React.MemoExoticComponent<({ flip }: {
+    flip?: boolean;
+}) => import("react/jsx-runtime").JSX.Element>;
+export declare const ArrowheadCardinalityZeroOrOneIcon: React.MemoExoticComponent<({ flip }: {
+    flip?: boolean;
+}) => import("react/jsx-runtime").JSX.Element>;
+export declare const ArrowheadCardinalityZeroOrManyIcon: React.MemoExoticComponent<({ flip }: {
     flip?: boolean;
 }) => import("react/jsx-runtime").JSX.Element>;
 export declare const FontSizeSmallIcon: import("react/jsx-runtime").JSX.Element;

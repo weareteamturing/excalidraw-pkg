@@ -55,8 +55,8 @@ export declare class LinearElementEditor {
         x: number;
         y: number;
     }, appState: AppState, elementsMap: ElementsMap) => GlobalPoint | null;
-    static isSegmentTooShort<P extends GlobalPoint | LocalPoint>(element: NonDeleted<ExcalidrawLinearElement>, startPoint: P, endPoint: P, index: number, zoom: Zoom): boolean;
-    static getSegmentMidPoint(element: NonDeleted<ExcalidrawLinearElement>, index: number): GlobalPoint;
+    static isSegmentTooShort<P extends GlobalPoint | LocalPoint>(element: NonDeleted<ExcalidrawLinearElement>, startPoint: P, endPoint: P, index: number, zoom: Zoom, elementsMap: ElementsMap): boolean;
+    static getSegmentMidPoint(element: NonDeleted<ExcalidrawLinearElement>, index: number, elementsMap: ElementsMap): GlobalPoint;
     static getSegmentMidPointIndex(linearElementEditor: LinearElementEditor, appState: AppState, midPoint: GlobalPoint, elementsMap: ElementsMap): number;
     static handlePointerDown(event: React.PointerEvent<HTMLElement>, app: AppClassProperties, store: Store, scenePointer: {
         x: number;

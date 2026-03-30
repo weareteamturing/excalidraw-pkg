@@ -8,7 +8,7 @@ import type { ElementsMap, ExcalidrawArrowElement, ExcalidrawBindableElement, Ex
  * @param element The linear element to deconstruct
  * @returns The rotated in components.
  */
-export declare function deconstructLinearOrFreeDrawElement(element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement): [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]];
+export declare function deconstructLinearOrFreeDrawElement(element: ExcalidrawLinearElement | ExcalidrawFreeDrawElement, elementsMap: ElementsMap): [LineSegment<GlobalPoint>[], Curve<GlobalPoint>[]];
 /**
  * Get the building components of a rectanguloid element in the form of
  * line segments and curves **unrotated**.
