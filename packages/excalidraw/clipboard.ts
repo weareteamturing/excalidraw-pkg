@@ -200,11 +200,12 @@ export const copyToClipboard = async (
   clipboardEvent?: ClipboardEvent | null,
 ) => {
   const json = serializeAsClipboardJSON({ elements, files });
+  const html = `<span data-excalidraw="${btoa(encodeURIComponent(json))}"></span>`;
 
   await copyTextToSystemClipboard(
     {
-      [MIME_TYPES.excalidrawClipboard]: json,
-      [MIME_TYPES.text]: json,
+      [MIME_TYPES.html]: html,
+      [MIME_TYPES.text]: "",
     },
     clipboardEvent,
   );
@@ -335,6 +336,21 @@ const parseClipboardEventTextData = async (
 ): Promise<ParsedClipboardEventTextData> => {
   try {
     const htmlItem = dataList.findByType(MIME_TYPES.html);
+
+    // Check for Excalidraw clipboard data encoded in HTML data attribute
+    if (htmlItem && !isPlainPaste) {
+      try {
+        const doc = new DOMParser().parseFromString(htmlItem.value, MIME_TYPES.html);
+        const excalidrawEl = doc.querySelector("[data-excalidraw]");
+        if (excalidrawEl) {
+          const encoded = excalidrawEl.getAttribute("data-excalidraw")!;
+          return {
+            type: "text",
+            value: decodeURIComponent(atob(encoded)),
+          };
+        }
+      } catch {}
+    }
 
     const mixedContent =
       !isPlainPaste && htmlItem && maybeParseHTMLDataItem(htmlItem);
@@ -603,8 +619,11 @@ export const copyTextToSystemClipboard = async <
     if (clipboardEvent) {
       for (const [mimeType, value] of entries) {
         clipboardEvent.clipboardData?.setData(mimeType, value);
-        if (clipboardEvent.clipboardData?.getData(mimeType) !== value) {
-          throw new Error("Failed to setData on clipboardEvent");
+        // Skip strict verification for text/html as browsers may sanitize HTML
+        if (mimeType !== MIME_TYPES.html) {
+          if (clipboardEvent.clipboardData?.getData(mimeType) !== value) {
+            throw new Error("Failed to setData on clipboardEvent");
+          }
         }
       }
       return;
@@ -613,17 +632,31 @@ export const copyTextToSystemClipboard = async <
     console.error(error);
   }
 
+  // (2) if we don't have access to clipboardEvent, or that fails,
+  // try navigator.clipboard.write with supported MIME types (text/html, text/plain)
+  const htmlEntry = entries.find(([mimeType]) => mimeType === MIME_TYPES.html);
+  if (probablySupportsClipboardBlob && htmlEntry) {
+    try {
+      const items: Record<string, Blob> = {};
+      for (const [mimeType, value] of entries) {
+        if (mimeType === MIME_TYPES.html || mimeType === MIME_TYPES.text) {
+          items[mimeType] = new Blob([value], { type: mimeType });
+        }
+      }
+      await navigator.clipboard.write([new ClipboardItem(items)]);
+      return;
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
+
   const plainTextEntry = entries.find(
     ([mimeType]) => mimeType === MIME_TYPES.text,
   );
 
-  // (2) if we don't have access to clipboardEvent, or that fails,
-  // at least try setting text/plain via navigator.clipboard.writeText
-  // (navigator.clipboard.write doesn't work with non-standard mime types)
+  // (3) fallback to writeText
   if (probablySupportsClipboardWriteText && plainTextEntry) {
     try {
-      // NOTE: doesn't work on FF on non-HTTPS domains, or when document
-      // not focused
       await navigator.clipboard.writeText(plainTextEntry[1]);
       return;
     } catch (error: any) {
