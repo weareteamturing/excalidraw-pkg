@@ -211,10 +211,14 @@ export const actionCopyAsPng = register({
       appState,
       true,
     );
+    const isSingleImage =
+      selectedElements.length === 1 && selectedElements[0].type === "image";
+
     try {
       await exportCanvas("clipboard", exportedElements, appState, app.files, {
         ...appState,
         exportingFrame,
+        exportPadding: isSingleImage ? 0 : undefined,
         name: app.getName(),
       });
       return {
