@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "react";
+import { createPortal } from "react-dom";
 
 import { getShortcutFromShortcutName } from "../actions/shortcuts";
 import { t } from "../i18n";
@@ -52,83 +53,87 @@ export const ContextMenu = React.memo(
       return acc;
     }, []);
 
-    return (
-      <Popover
-        onCloseRequest={() => {
-          onClose();
-        }}
-        top={top}
-        left={left}
-        fitInViewport={true}
-        offsetLeft={appState.offsetLeft}
-        offsetTop={appState.offsetTop}
-        viewportWidth={appState.width}
-        viewportHeight={appState.height}
-        className="context-menu-popover"
+    return createPortal(
+      <div
+        className={clsx("excalidraw", {
+          "theme--dark": appState.theme === "dark",
+        })}
       >
-        <ul
-          className="context-menu"
-          onContextMenu={(event) => event.preventDefault()}
+        <Popover
+          onCloseRequest={() => {
+            onClose();
+          }}
+          top={top}
+          left={left}
+          fitInViewport={true}
+          offsetLeft={0}
+          offsetTop={0}
+          viewportWidth={window.innerWidth}
+          viewportHeight={window.innerHeight}
+          className="context-menu-popover"
         >
-          {filteredItems.map((item, idx) => {
-            if (item === CONTEXT_MENU_SEPARATOR) {
-              if (
-                !filteredItems[idx - 1] ||
-                filteredItems[idx - 1] === CONTEXT_MENU_SEPARATOR
-              ) {
-                return null;
+          <ul
+            className="context-menu"
+            onContextMenu={(event) => event.preventDefault()}
+          >
+            {filteredItems.map((item, idx) => {
+              if (item === CONTEXT_MENU_SEPARATOR) {
+                if (
+                  !filteredItems[idx - 1] ||
+                  filteredItems[idx - 1] === CONTEXT_MENU_SEPARATOR
+                ) {
+                  return null;
+                }
+                return <hr key={idx} className="context-menu-item-separator" />;
               }
-              return <hr key={idx} className="context-menu-item-separator" />;
-            }
 
-            const actionName = item.name;
-            let label = "";
-            if (item.label) {
-              if (typeof item.label === "function") {
-                label = t(
-                  item.label(
-                    elements,
-                    appState,
-                    actionManager.app,
-                  ) as unknown as TranslationKeys,
-                );
-              } else {
-                label = t(item.label as unknown as TranslationKeys);
+              const actionName = item.name;
+              let label = "";
+              if (item.label) {
+                if (typeof item.label === "function") {
+                  label = t(
+                    item.label(
+                      elements,
+                      appState,
+                      actionManager.app,
+                    ) as unknown as TranslationKeys,
+                  );
+                } else {
+                  label = t(item.label as unknown as TranslationKeys);
+                }
               }
-            }
 
-            return (
-              <li
-                key={idx}
-                data-testid={actionName}
-                onClick={() => {
-                  // we need update state before executing the action in case
-                  // the action uses the appState it's being passed (that still
-                  // contains a defined contextMenu) to return the next state.
-                  onClose(() => {
-                    actionManager.executeAction(item, "contextMenu");
-                  });
-                }}
-              >
-                <button
-                  type="button"
-                  className={clsx("context-menu-item", {
-                    dangerous: actionName === "deleteSelectedElements",
-                    checkmark: item.checked?.(appState),
-                  })}
+              return (
+                <li
+                  key={idx}
+                  data-testid={actionName}
+                  onClick={() => {
+                    onClose(() => {
+                      actionManager.executeAction(item, "contextMenu");
+                    });
+                  }}
                 >
-                  <div className="context-menu-item__label">{label}</div>
-                  <kbd className="context-menu-item__shortcut">
-                    {actionName
-                      ? getShortcutFromShortcutName(actionName as ShortcutName)
-                      : ""}
-                  </kbd>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </Popover>
+                  <button
+                    type="button"
+                    className={clsx("context-menu-item", {
+                      dangerous: actionName === "deleteSelectedElements",
+                      checkmark: item.checked?.(appState),
+                    })}
+                  >
+                    <div className="context-menu-item__label">{label}</div>
+                    <kbd className="context-menu-item__shortcut">
+                      {actionName
+                        ? getShortcutFromShortcutName(actionName as ShortcutName)
+                        : ""}
+                    </kbd>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </Popover>
+      </div>,
+      document.body,
     );
   },
 );

@@ -11799,11 +11799,8 @@ class App extends React.Component<AppProps, AppState> {
 
     const type = element || isHittingCommonBoundBox ? "element" : "canvas";
 
-    const container = this.excalidrawContainerRef.current!;
-    const { top: offsetTop, left: offsetLeft } =
-      container.getBoundingClientRect();
-    const left = event.clientX - offsetLeft;
-    const top = event.clientY - offsetTop;
+    const left = event.clientX;
+    const top = event.clientY;
 
     trackEvent("contextMenu", "openContextMenu", type);
 
