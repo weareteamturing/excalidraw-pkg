@@ -4371,6 +4371,9 @@ class App extends React.Component<AppProps, AppState> {
       duration?: number;
     } | null,
   ) => {
+    if (toast !== null && this.props.suppressToasts) {
+      return;
+    }
     this.setState({ toast });
   };
 

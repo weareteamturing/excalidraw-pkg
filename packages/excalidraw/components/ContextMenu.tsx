@@ -81,7 +81,8 @@ export const ContextMenu = React.memo(
               if (item === CONTEXT_MENU_SEPARATOR) {
                 if (
                   !filteredItems[idx - 1] ||
-                  filteredItems[idx - 1] === CONTEXT_MENU_SEPARATOR
+                  filteredItems[idx - 1] === CONTEXT_MENU_SEPARATOR ||
+                  !filteredItems.slice(idx + 1).some((i) => i && i !== CONTEXT_MENU_SEPARATOR)
                 ) {
                   return null;
                 }
