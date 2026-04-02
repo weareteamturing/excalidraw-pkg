@@ -58,6 +58,7 @@ export const ContextMenu = React.memo(
         className={clsx("excalidraw", {
           "theme--dark": appState.theme === "dark",
         })}
+        style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 2147483647 }}
       >
         <Popover
           onCloseRequest={() => {

@@ -4,6 +4,7 @@
 .excalidraw {
   .context-menu-popover {
     z-index: var(--zIndex-ui-context-menu);
+    pointer-events: auto;
   }
 
   .context-menu {
