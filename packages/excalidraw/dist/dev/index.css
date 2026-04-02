@@ -3308,6 +3308,7 @@
 /* components/ContextMenu.scss */
 .excalidraw .context-menu-popover {
   z-index: var(--zIndex-ui-context-menu);
+  pointer-events: auto;
 }
 .excalidraw .context-menu {
   position: relative;
