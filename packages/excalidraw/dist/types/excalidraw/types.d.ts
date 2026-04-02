@@ -537,6 +537,8 @@ export interface ExcalidrawProps {
     onElementPostRender?: (element: NonDeletedExcalidrawElement, ctx: CanvasRenderingContext2D, appState: StaticCanvasAppState) => void;
     /** Increment each animation frame to force a StaticCanvas re-render for animation. */
     renderAnimationNonce?: number;
+    /** If true, suppresses all toast notifications. */
+    suppressToasts?: boolean;
 }
 export type SceneData = {
     elements?: ImportedDataState["elements"];
