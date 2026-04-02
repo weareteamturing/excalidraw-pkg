@@ -12,5 +12,5 @@ type ContextMenuProps = {
     onClose: (callback?: () => void) => void;
 };
 export declare const CONTEXT_MENU_SEPARATOR = "separator";
-export declare const ContextMenu: React.MemoExoticComponent<({ actionManager, items, top, left, onClose }: ContextMenuProps) => import("react/jsx-runtime").JSX.Element>;
+export declare const ContextMenu: React.MemoExoticComponent<({ actionManager, items, top, left, onClose }: ContextMenuProps) => React.ReactPortal>;
 export {};
