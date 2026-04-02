@@ -365,23 +365,6 @@ const drawImagePlaceholder = (
 ) => {
   context.fillStyle = theme === THEME.DARK ? "#2E2E2E" : "#E7E7E7";
   context.fillRect(0, 0, element.width, element.height);
-
-  const imageMinWidthOrHeight = Math.min(element.width, element.height);
-
-  const size = Math.min(
-    imageMinWidthOrHeight,
-    Math.min(imageMinWidthOrHeight * 0.4, 100),
-  );
-
-  context.drawImage(
-    element.status === "error"
-      ? IMAGE_ERROR_PLACEHOLDER_IMG
-      : IMAGE_PLACEHOLDER_IMG,
-    element.width / 2 - size / 2,
-    element.height / 2 - size / 2,
-    size,
-    size,
-  );
 };
 
 const drawElementOnCanvas = (
