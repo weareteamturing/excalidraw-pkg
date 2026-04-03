@@ -2195,7 +2195,7 @@ class App extends React.Component<AppProps, AppState> {
                             </ElementCanvasButtons>
                           )}
 
-                        {this.state.toast !== null && (
+                        {this.state.toast !== null && !this.props.suppressToasts && (
                           <Toast
                             message={this.state.toast.message}
                             onClose={this.handleToastClose}
@@ -3275,11 +3275,6 @@ class App extends React.Component<AppProps, AppState> {
 
   componentDidUpdate(prevProps: AppProps, prevState: AppState) {
     this.appStateObserver.flush(prevState);
-
-    if (this.props.suppressToasts && this.state.toast !== null) {
-      this.setState({ toast: null });
-      return;
-    }
 
     if (this.props.bindingGap !== prevProps.bindingGap && this.props.bindingGap !== undefined) {
       setBaseBindingGap(this.props.bindingGap);
