@@ -369,9 +369,13 @@ export const restoreElement = (
       let fontSize = element.fontSize;
       let fontFamily = element.fontFamily;
       if ("font" in element) {
-        const [fontPx, _fontFamily]: [string, string] = (
-          element as any
-        ).font.split(" ");
+        const fontRaw: string = (element as any).font;
+        const pxMatch = fontRaw.match(/(\d+(\.\d+)?)px/);
+        const _splitParts = fontRaw.split(" ");
+        const [fontPx, _fontFamily]: [string, string] = [
+          pxMatch?.[1] ?? _splitParts[0],
+          _splitParts.find((p: string) => !p.match(/^(bold|italic|\d)/)) ?? _splitParts[_splitParts.length - 1],
+        ];
         fontSize = parseFloat(fontPx);
         fontFamily = getFontFamilyByName(_fontFamily);
       }
