@@ -1,5 +1,5 @@
 import React from "react";
-import type { Theme } from "@excalidraw/element/types";
+import type { Theme } from "../../element/src/types";
 export declare const iconFillColor: (theme: Theme) => string;
 type Opts = {
     width?: number;

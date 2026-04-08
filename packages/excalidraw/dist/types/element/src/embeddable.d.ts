@@ -1,5 +1,5 @@
 import type { ExcalidrawProps } from "@excalidraw/excalidraw/types";
-import type { MarkRequired } from "@excalidraw/common/utility-types";
+import type { MarkRequired } from "../../common/src/utility-types";
 import type { ExcalidrawElement, ExcalidrawIframeLikeElement, IframeData } from "./types";
 type IframeDataWithSandbox = MarkRequired<IframeData, "sandbox">;
 export declare const createSrcDoc: (body: string) => string;

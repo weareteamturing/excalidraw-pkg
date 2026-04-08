@@ -23,7 +23,7 @@ declare const MainMenu: React.FC<{
         displayName: string;
         Badge: {
             ({ type, children, }: {
-                type?: import("@excalidraw/common/utility-types").ValueOf<typeof import("../dropdownMenu/DropdownMenuItem").DropDownMenuItemBadgeType>;
+                type?: import("../../../common/src/utility-types").ValueOf<typeof import("../dropdownMenu/DropdownMenuItem").DropDownMenuItemBadgeType>;
                 children: React.ReactNode;
             }): import("react/jsx-runtime").JSX.Element;
             displayName: string;

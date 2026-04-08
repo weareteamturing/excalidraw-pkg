@@ -1,5 +1,5 @@
-import type { ElementsMap, ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
-import type { Scene } from "@excalidraw/element";
+import type { ElementsMap, ExcalidrawElement, NonDeletedExcalidrawElement } from "../../../element/src/types";
+import type { Scene } from "../../../element/src/index";
 import type { AppState } from "../../types";
 export type StatsInputProperty = "x" | "y" | "width" | "height" | "angle" | "fontSize" | "gridStep";
 export declare const SMALLEST_DELTA = 0.01;

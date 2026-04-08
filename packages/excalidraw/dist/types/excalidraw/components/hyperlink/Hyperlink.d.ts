@@ -1,5 +1,5 @@
-import type { Scene } from "@excalidraw/element";
-import type { ElementsMap, ExcalidrawEmbeddableElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { Scene } from "../../../element/src/index";
+import type { ElementsMap, ExcalidrawEmbeddableElement, NonDeletedExcalidrawElement } from "../../../element/src/types";
 import "./Hyperlink.scss";
 import type { AppState, ExcalidrawProps, UIAppState } from "../../types";
 export declare const Hyperlink: ({ element, scene, setAppState, onLinkOpen, setToast, updateEmbedValidationStatus, }: {

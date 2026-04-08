@@ -1,5 +1,5 @@
 import React from "react";
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "../../element/src/types";
 import type { ActionManager } from "../actions/manager";
 import type { AppClassProperties, AppProps, AppState, UIAppState } from "../types";
 import type { JSX } from "react";

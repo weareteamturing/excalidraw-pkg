@@ -6,8 +6,8 @@ export declare const actionSendBackward: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
-        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[];
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
+        elements: readonly import("../../element/src/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
         captureUpdate: "IMMEDIATELY";
     };
@@ -25,8 +25,8 @@ export declare const actionBringForward: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
-        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[];
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, value: unknown, app: import("../types").AppClassProperties) => {
+        elements: readonly import("../../element/src/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
         captureUpdate: "IMMEDIATELY";
     };
@@ -44,8 +44,8 @@ export declare const actionSendToBack: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
-        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[] | import("@excalidraw/element/types").ExcalidrawElement[];
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
+        elements: readonly import("../../element/src/types").ExcalidrawElement[] | import("../../element/src/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
         captureUpdate: "IMMEDIATELY";
     };
@@ -62,8 +62,8 @@ export declare const actionBringToFront: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
-        elements: readonly import("@excalidraw/element/types").ExcalidrawElement[] | import("@excalidraw/element/types").ExcalidrawElement[];
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>) => {
+        elements: readonly import("../../element/src/types").ExcalidrawElement[] | import("../../element/src/types").ExcalidrawElement[];
         appState: Readonly<import("../types").AppState>;
         captureUpdate: "IMMEDIATELY";
     };

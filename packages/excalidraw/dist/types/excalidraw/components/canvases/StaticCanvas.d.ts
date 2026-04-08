@@ -1,5 +1,5 @@
 import React from "react";
-import type { NonDeletedExcalidrawElement, NonDeletedSceneElementsMap } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement, NonDeletedSceneElementsMap } from "../../../element/src/types";
 import type { RenderableElementsMap, StaticCanvasRenderConfig } from "../../scene/types";
 import type { StaticCanvasAppState } from "../../types";
 import type { RoughCanvas } from "roughjs/bin/canvas";

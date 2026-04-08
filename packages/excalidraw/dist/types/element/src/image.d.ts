@@ -10,7 +10,7 @@ export declare const updateImageCache: ({ fileIds, files, imageCache, }: {
 }) => Promise<{
     imageCache: Map<FileId, {
         image: HTMLImageElement | Promise<HTMLImageElement>;
-        mimeType: import("@excalidraw/common/utility-types").ValueOf<typeof import("@excalidraw/common").IMAGE_MIME_TYPES>;
+        mimeType: import("../../common/src/utility-types").ValueOf<typeof import("../../common/src/index").IMAGE_MIME_TYPES>;
     }>;
     /** includes errored files because they cache was updated nonetheless */
     updatedFiles: Map<FileId, true>;

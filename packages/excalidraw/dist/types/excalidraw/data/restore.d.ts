@@ -1,5 +1,5 @@
-import { type CombineBrandsIfNeeded } from "@excalidraw/common";
-import type { ElementsMap, ElementsMapOrArray, ExcalidrawElement, ExcalidrawSelectionElement, OrderedExcalidrawElement } from "@excalidraw/element/types";
+import { type CombineBrandsIfNeeded } from "../../common/src/index";
+import type { ElementsMap, ElementsMapOrArray, ExcalidrawElement, ExcalidrawSelectionElement, OrderedExcalidrawElement } from "../../element/src/types";
 import type { AppState, BinaryFiles, LibraryItem } from "../types";
 import type { ImportedDataState } from "./types";
 type RestoredAppState = Omit<AppState, "offsetTop" | "offsetLeft" | "width" | "height">;

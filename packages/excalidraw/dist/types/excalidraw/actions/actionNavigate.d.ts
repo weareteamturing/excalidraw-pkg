@@ -3,7 +3,7 @@ export declare const actionGoToCollaborator: import("./types").Action<Readonly<{
     button?: "up" | "down";
     selectedElementIds?: import("../types").AppState["selectedElementIds"];
     username?: string | null;
-    userState?: import("@excalidraw/common").UserIdleState;
+    userState?: import("../../common/src/index").UserIdleState;
     color?: {
         background: string;
         stroke: string;
@@ -16,5 +16,5 @@ export declare const actionGoToCollaborator: import("./types").Action<Readonly<{
     isSpeaking?: boolean;
     isMuted?: boolean;
 }>> & {
-    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: import("../types").AppState, elements: readonly import("@excalidraw/element/types").ExcalidrawElement[], app: import("../types").AppClassProperties) => boolean) | undefined;
+    keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: import("../types").AppState, elements: readonly import("../../element/src/types").ExcalidrawElement[], app: import("../types").AppClassProperties) => boolean) | undefined;
 };

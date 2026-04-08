@@ -1,5 +1,5 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
-import type { MaybePromise } from "@excalidraw/common/utility-types";
+import type { ExcalidrawElement } from "../../element/src/types";
+import type { MaybePromise } from "../../common/src/utility-types";
 import type App from "../components/App";
 import type { LibraryItems, ExcalidrawImperativeAPI, LibraryItemsSource, LibraryItems_anyVersion } from "../types";
 export type LibraryPersistedData = {

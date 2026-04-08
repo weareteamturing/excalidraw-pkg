@@ -1,4 +1,4 @@
-import type { ExcalidrawElement, FontFamilyValues } from "@excalidraw/element/types";
+import type { ExcalidrawElement, FontFamilyValues } from "../../element/src/types";
 import type { AppProps, AppState } from "@excalidraw/excalidraw/types";
 export declare const supportsResizeObserver: boolean;
 export declare const APP_NAME = "Excalidraw";

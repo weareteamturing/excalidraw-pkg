@@ -1,6 +1,6 @@
-import { Emitter } from "@excalidraw/common";
+import { Emitter } from "../../common/src/index";
 import type App from "@excalidraw/excalidraw/components/App";
-import type { DTO, ValueOf } from "@excalidraw/common/utility-types";
+import type { DTO, ValueOf } from "../../common/src/utility-types";
 import type { AppState, ObservedAppState } from "@excalidraw/excalidraw/types";
 import { ElementsDelta, AppStateDelta } from "./delta";
 import type { ApplyToOptions } from "./delta";

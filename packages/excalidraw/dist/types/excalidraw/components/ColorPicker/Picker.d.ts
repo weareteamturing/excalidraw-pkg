@@ -1,6 +1,6 @@
 import React from "react";
-import type { ExcalidrawElement } from "@excalidraw/element/types";
-import type { ColorPaletteCustom } from "@excalidraw/common";
+import type { ExcalidrawElement } from "../../../element/src/types";
+import type { ColorPaletteCustom } from "../../../common/src/index";
 import type { ColorPickerType } from "./colorPickerUtils";
 interface PickerProps {
     color: string | null;

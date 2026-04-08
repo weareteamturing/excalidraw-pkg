@@ -1,4 +1,4 @@
-import type { NestedKeyOf } from "@excalidraw/common/utility-types";
+import type { NestedKeyOf } from "../common/src/utility-types";
 import fallbackLangData from "./locales/en.json";
 export interface Language {
     code: string;

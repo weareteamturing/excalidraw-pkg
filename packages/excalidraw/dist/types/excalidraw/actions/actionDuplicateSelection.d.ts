@@ -5,8 +5,8 @@ export declare const actionDuplicateSelection: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, formData: unknown, app: import("../types").AppClassProperties) => false | {
-        elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[];
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<import("../types").AppState>, formData: unknown, app: import("../types").AppClassProperties) => false | {
+        elements: readonly import("../../element/src/types").OrderedExcalidrawElement[];
         appState: import("../types").AppState;
         captureUpdate: "IMMEDIATELY";
     };

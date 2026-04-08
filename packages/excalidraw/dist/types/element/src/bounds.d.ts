@@ -1,5 +1,5 @@
-import { type Bounds } from "@excalidraw/common";
-import type { Degrees, GlobalPoint, LineSegment, LocalPoint } from "@excalidraw/math";
+import { type Bounds } from "../../common/src/index";
+import type { Degrees, GlobalPoint, LineSegment, LocalPoint } from "../../math/src/index";
 import type { AppState } from "@excalidraw/excalidraw/types";
 import type { Drawable, Op } from "roughjs/bin/core";
 import type { Arrowhead, ElementsMap, ElementsMapOrArray, ExcalidrawElement, ExcalidrawFreeDrawElement, ExcalidrawLinearElement, NonDeleted } from "./types";

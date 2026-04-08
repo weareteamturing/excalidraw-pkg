@@ -1,4 +1,4 @@
-import type { Radians } from "@excalidraw/math";
+import type { Radians } from "../../math/src/index";
 export declare const CARTESIAN_BASE_SLOT_WIDTH = 44;
 export declare const CARTESIAN_BAR_SLOT_EXTRA_PER_SERIES = 22;
 export declare const CARTESIAN_BAR_SLOT_EXTRA_MAX = 66;

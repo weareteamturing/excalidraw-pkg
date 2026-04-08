@@ -1,4 +1,4 @@
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "../../element/src/types";
 export type ChartElements = readonly NonDeletedExcalidrawElement[];
 export interface Spreadsheet {
     title: string | null;

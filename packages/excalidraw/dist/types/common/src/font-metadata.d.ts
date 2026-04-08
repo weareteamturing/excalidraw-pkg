@@ -1,4 +1,4 @@
-import type { ExcalidrawTextElement, FontFamilyValues } from "@excalidraw/element/types";
+import type { ExcalidrawTextElement, FontFamilyValues } from "../../element/src/types";
 /**
  * Encapsulates font metrics with additional font metadata.
  * */

@@ -1,4 +1,4 @@
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "../../../../element/src/types";
 import type { BinaryFiles } from "../../../types";
 import type { MermaidToExcalidrawLibProps } from "../types";
 interface UseMermaidRendererProps {

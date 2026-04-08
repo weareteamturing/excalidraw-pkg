@@ -1,4 +1,4 @@
-import type { ExcalidrawElement, ExcalidrawTextElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement, ExcalidrawTextElement } from "../../element/src/types";
 import type App from "../components/App";
 type SubmitHandler = () => void;
 export declare const textWysiwyg: ({ id, onChange, onSubmit, getViewportCoords, element, canvas, excalidrawContainer, app, autoSelect, }: {

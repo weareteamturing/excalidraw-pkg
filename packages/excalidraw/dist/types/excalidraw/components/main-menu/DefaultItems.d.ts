@@ -1,4 +1,4 @@
-import type { Theme } from "@excalidraw/element/types";
+import type { Theme } from "../../../element/src/types";
 import "./DefaultItems.scss";
 export declare const LoadScene: {
     (): import("react/jsx-runtime").JSX.Element | null;

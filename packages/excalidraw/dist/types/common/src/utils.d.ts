@@ -1,5 +1,5 @@
-import type { GlobalCoord } from "@excalidraw/math";
-import type { FontFamilyValues, FontString } from "@excalidraw/element/types";
+import type { GlobalCoord } from "../../math/src/index";
+import type { FontFamilyValues, FontString } from "../../element/src/types";
 import type { ActiveTool, AppState, ToolType, UnsubscribeCallback, Zoom } from "@excalidraw/excalidraw/types";
 import type { MaybePromise, ResolutionType } from "./utility-types";
 import type { EVENT } from "./constants";

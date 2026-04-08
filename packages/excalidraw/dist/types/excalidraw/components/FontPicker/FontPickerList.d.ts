@@ -1,6 +1,6 @@
 import React from "react";
-import { type FontFamilyValues } from "@excalidraw/element/types";
-import type { ValueOf } from "@excalidraw/common/utility-types";
+import { type FontFamilyValues } from "../../../element/src/types";
+import type { ValueOf } from "../../../common/src/utility-types";
 import { DropDownMenuItemBadgeType } from "../dropdownMenu/DropdownMenuItem";
 import type { JSX } from "react";
 export interface FontDescriptor {

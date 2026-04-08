@@ -1,6 +1,6 @@
-import { type FontMetadata } from "@excalidraw/common";
-import type { ExcalidrawElement } from "@excalidraw/element/types";
-import type { Scene } from "@excalidraw/element";
+import { type FontMetadata } from "../../common/src/index";
+import type { ExcalidrawElement } from "../../element/src/types";
+import type { Scene } from "../../element/src/index";
 import { ExcalidrawFontFace } from "./ExcalidrawFontFace";
 export declare class Fonts {
     static readonly loadedFontsCache: Set<string>;

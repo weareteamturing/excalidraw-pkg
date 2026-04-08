@@ -1,5 +1,5 @@
-import { MIME_TYPES } from "@excalidraw/common";
-import type { ExcalidrawElement, ExcalidrawFrameLikeElement, NonDeleted } from "@excalidraw/element/types";
+import { MIME_TYPES } from "../../common/src/index";
+import type { ExcalidrawElement, ExcalidrawFrameLikeElement, NonDeleted } from "../../element/src/types";
 import type { AppState, BinaryFiles } from "@excalidraw/excalidraw/types";
 export { MIME_TYPES };
 type ExportOpts = {

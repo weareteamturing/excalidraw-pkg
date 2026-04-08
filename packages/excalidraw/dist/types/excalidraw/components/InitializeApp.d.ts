@@ -1,5 +1,5 @@
 import React from "react";
-import type { Theme } from "@excalidraw/element/types";
+import type { Theme } from "../../element/src/types";
 import type { Language } from "../i18n";
 interface Props {
     langCode: Language["code"];

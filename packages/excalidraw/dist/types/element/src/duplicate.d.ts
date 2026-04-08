@@ -1,4 +1,4 @@
-import type { Mutable } from "@excalidraw/common/utility-types";
+import type { Mutable } from "../../common/src/utility-types";
 import type { AppState } from "@excalidraw/excalidraw/types";
 import type { ExcalidrawElement, GroupId } from "./types";
 /**

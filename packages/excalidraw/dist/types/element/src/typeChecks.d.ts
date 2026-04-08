@@ -1,5 +1,5 @@
 import type { ElementOrToolType } from "@excalidraw/excalidraw/types";
-import type { MarkNonNullable } from "@excalidraw/common/utility-types";
+import type { MarkNonNullable } from "../../common/src/utility-types";
 import type { ExcalidrawElement, ExcalidrawTextElement, ExcalidrawEmbeddableElement, ExcalidrawLinearElement, ExcalidrawBindableElement, ExcalidrawFreeDrawElement, InitializedExcalidrawImageElement, ExcalidrawImageElement, ExcalidrawTextElementWithContainer, ExcalidrawTextContainer, ExcalidrawFrameElement, RoundnessType, ExcalidrawFrameLikeElement, ExcalidrawElementType, ExcalidrawIframeElement, ExcalidrawIframeLikeElement, ExcalidrawMagicFrameElement, ExcalidrawArrowElement, ExcalidrawElbowArrowElement, ExcalidrawLineElement, ExcalidrawFlowchartNodeElement, ExcalidrawLinearElementSubType } from "./types";
 export declare const isInitializedImageElement: (element: ExcalidrawElement | null) => element is InitializedExcalidrawImageElement;
 export declare const isImageElement: (element: ExcalidrawElement | null) => element is ExcalidrawImageElement;

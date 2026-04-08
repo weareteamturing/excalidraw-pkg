@@ -1,4 +1,4 @@
-import type { ElementsMap, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { ElementsMap, NonDeletedExcalidrawElement } from "../../element/src/types";
 import "./ElementCanvasButtons.scss";
 export declare const ElementCanvasButtons: ({ children, element, elementsMap, }: {
     children: React.ReactNode;

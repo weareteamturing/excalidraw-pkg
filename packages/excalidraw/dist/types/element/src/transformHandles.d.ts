@@ -1,7 +1,7 @@
-import { type EditorInterface } from "@excalidraw/common";
-import type { Radians } from "@excalidraw/math";
+import { type EditorInterface } from "../../common/src/index";
+import type { Radians } from "../../math/src/index";
 import type { InteractiveCanvasAppState, Zoom } from "@excalidraw/excalidraw/types";
-import type { Bounds } from "@excalidraw/common";
+import type { Bounds } from "../../common/src/index";
 import type { ElementsMap, ExcalidrawElement, NonDeletedExcalidrawElement, PointerType } from "./types";
 export type TransformHandleDirection = "n" | "s" | "w" | "e" | "nw" | "ne" | "sw" | "se";
 export type TransformHandleType = TransformHandleDirection | "rotation";

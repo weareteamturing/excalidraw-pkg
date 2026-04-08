@@ -1,4 +1,4 @@
-import { type GlobalPoint, type LocalPoint } from "@excalidraw/math";
+import { type GlobalPoint, type LocalPoint } from "../../math/src/index";
 import { type ElementUpdate } from "./mutateElement";
 import { type ExcalidrawElbowArrowElement, type NonDeletedSceneElementsMap } from "./types";
 import type { FixedPointBinding, FixedSegment } from "./types";

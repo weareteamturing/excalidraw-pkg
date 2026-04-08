@@ -1,5 +1,5 @@
-import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
-import type { Scene } from "@excalidraw/element";
+import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "../../element/src/types";
+import type { Scene } from "../../element/src/index";
 import type { RenderableElementsMap } from "./types";
 import type { AppState } from "../types";
 export declare class Renderer {

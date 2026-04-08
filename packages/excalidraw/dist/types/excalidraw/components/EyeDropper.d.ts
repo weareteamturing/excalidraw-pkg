@@ -1,4 +1,4 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "../../element/src/types";
 import "./EyeDropper.scss";
 import type { ColorPickerType } from "./ColorPicker/colorPickerUtils";
 export type EyeDropperProperties = {

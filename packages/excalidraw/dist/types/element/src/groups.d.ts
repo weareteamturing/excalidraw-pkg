@@ -1,5 +1,5 @@
 import type { AppClassProperties, AppState, InteractiveCanvasAppState } from "@excalidraw/excalidraw/types";
-import type { Mutable } from "@excalidraw/common/utility-types";
+import type { Mutable } from "../../common/src/utility-types";
 import type { GroupId, ExcalidrawElement, NonDeleted, NonDeletedExcalidrawElement, ElementsMapOrArray, ElementsMap } from "./types";
 export declare const selectGroup: (groupId: GroupId, appState: InteractiveCanvasAppState, elements: readonly NonDeleted<ExcalidrawElement>[]) => Pick<InteractiveCanvasAppState, "selectedGroupIds" | "selectedElementIds" | "editingGroupId">;
 export declare const selectGroupsForSelectedElements: {

@@ -1,4 +1,4 @@
-import type { GlobalPoint, LineSegment } from "@excalidraw/math";
+import type { GlobalPoint, LineSegment } from "../../math/src/index";
 import type { FrameNameBounds } from "@excalidraw/excalidraw/types";
 import type { ElementsMap, ExcalidrawArrowElement, ExcalidrawBindableElement, ExcalidrawElement, NonDeleted, NonDeletedExcalidrawElement, NonDeletedSceneElementsMap, Ordered } from "./types";
 export declare const shouldTestInside: (element: ExcalidrawElement) => boolean;

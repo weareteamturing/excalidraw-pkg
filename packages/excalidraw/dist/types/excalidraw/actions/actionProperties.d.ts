@@ -1,5 +1,5 @@
-import { LinearElementEditor } from "@excalidraw/element";
-import type { Arrowhead, ExcalidrawBindableElement, ExcalidrawElement, ExcalidrawLinearElement, FontFamilyValues, TextAlign } from "@excalidraw/element/types";
+import { LinearElementEditor } from "../../element/src/index";
+import type { Arrowhead, ExcalidrawBindableElement, ExcalidrawElement, ExcalidrawLinearElement, FontFamilyValues, TextAlign } from "../../element/src/types";
 import type { AppClassProperties, AppState, Primitive } from "../types";
 export declare const changeProperty: (elements: readonly ExcalidrawElement[], appState: AppState, callback: (element: ExcalidrawElement) => ExcalidrawElement, includeBoundText?: boolean) => ExcalidrawElement[];
 export declare const getFormValue: <T extends Primitive>(elements: readonly ExcalidrawElement[], app: AppClassProperties, getAttribute: (element: ExcalidrawElement) => T, isRelevantElement: true | ((element: ExcalidrawElement) => boolean), defaultValue: T | ((isSomeElementSelected: boolean) => T)) => T;
@@ -9,7 +9,7 @@ export declare const actionChangeStrokeColor: import("./types").Action<Pick<AppS
 export declare const actionChangeBackgroundColor: import("./types").Action<Pick<AppState, "viewBackgroundColor" | "currentItemBackgroundColor">> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: AppClassProperties) => boolean) | undefined;
 };
-export declare const actionChangeFillStyle: import("./types").Action<import("@excalidraw/element/types").FillStyle> & {
+export declare const actionChangeFillStyle: import("./types").Action<import("../../element/src/types").FillStyle> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: AppClassProperties) => boolean) | undefined;
 };
 export declare const actionChangeStrokeWidth: import("./types").Action<number> & {
@@ -18,7 +18,7 @@ export declare const actionChangeStrokeWidth: import("./types").Action<number> &
 export declare const actionChangeSloppiness: import("./types").Action<number> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: AppClassProperties) => boolean) | undefined;
 };
-export declare const actionChangeStrokeStyle: import("./types").Action<import("@excalidraw/element/types").StrokeStyle> & {
+export declare const actionChangeStrokeStyle: import("./types").Action<import("../../element/src/types").StrokeStyle> & {
     keyTest?: ((event: React.KeyboardEvent | KeyboardEvent, appState: AppState, elements: readonly ExcalidrawElement[], app: AppClassProperties) => boolean) | undefined;
 };
 export declare const actionChangeOpacity: import("./types").Action<number> & {
@@ -32,7 +32,7 @@ export declare const actionDecreaseFontSize: {
     label: string;
     icon: import("react/jsx-runtime").JSX.Element;
     trackEvent: false;
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: AppClassProperties) => {
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: AppClassProperties) => {
         elements: ExcalidrawElement[];
         appState: {
             currentItemFontSize: number;
@@ -45,22 +45,22 @@ export declare const actionDecreaseFontSize: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
+                element: import("../../element/src/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
-            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
-            multiElement: import("@excalidraw/element/types").NonDeleted<ExcalidrawLinearElement> | null;
-            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            newElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("../../element/src/types").NonDeleted<ExcalidrawLinearElement> | null;
+            selectionElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: import("@excalidraw/element/types").NonDeleted<ExcalidrawBindableElement> | null;
+            startBoundElement: import("../../element/src/types").NonDeleted<ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: import("@excalidraw/element/types").NonDeleted<ExcalidrawBindableElement>;
-                midPoint?: import("@excalidraw/math").GlobalPoint;
+                element: import("../../element/src/types").NonDeleted<ExcalidrawBindableElement>;
+                midPoint?: import("../../math/src/index").GlobalPoint;
             } | null;
-            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -68,8 +68,8 @@ export declare const actionDecreaseFontSize: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            elementsToHighlight: import("../../element/src/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -97,7 +97,7 @@ export declare const actionDecreaseFontSize: {
             currentItemStartArrowhead: Arrowhead | null;
             currentItemEndArrowhead: Arrowhead | null;
             currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
+            currentItemRoundness: import("../../element/src/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -132,7 +132,7 @@ export declare const actionDecreaseFontSize: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
+            lastPointerDownWith: import("../../element/src/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -150,7 +150,7 @@ export declare const actionDecreaseFontSize: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: import("@excalidraw/element/types").Theme;
+            theme: import("../../element/src/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -158,7 +158,7 @@ export declare const actionDecreaseFontSize: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: import("@excalidraw/element/types").GroupId | null;
+            editingGroupId: import("../../element/src/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -189,7 +189,7 @@ export declare const actionDecreaseFontSize: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: import("@excalidraw/element/types").BindMode;
+            bindMode: import("../../element/src/types").BindMode;
         };
         captureUpdate: "IMMEDIATELY";
     };
@@ -202,7 +202,7 @@ export declare const actionIncreaseFontSize: {
     label: string;
     icon: import("react/jsx-runtime").JSX.Element;
     trackEvent: false;
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: AppClassProperties) => {
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: AppClassProperties) => {
         elements: ExcalidrawElement[];
         appState: {
             currentItemFontSize: number;
@@ -215,22 +215,22 @@ export declare const actionIncreaseFontSize: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
+                element: import("../../element/src/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
-            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
-            multiElement: import("@excalidraw/element/types").NonDeleted<ExcalidrawLinearElement> | null;
-            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            newElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("../../element/src/types").NonDeleted<ExcalidrawLinearElement> | null;
+            selectionElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: import("@excalidraw/element/types").NonDeleted<ExcalidrawBindableElement> | null;
+            startBoundElement: import("../../element/src/types").NonDeleted<ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: import("@excalidraw/element/types").NonDeleted<ExcalidrawBindableElement>;
-                midPoint?: import("@excalidraw/math").GlobalPoint;
+                element: import("../../element/src/types").NonDeleted<ExcalidrawBindableElement>;
+                midPoint?: import("../../math/src/index").GlobalPoint;
             } | null;
-            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -238,8 +238,8 @@ export declare const actionIncreaseFontSize: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            elementsToHighlight: import("../../element/src/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -267,7 +267,7 @@ export declare const actionIncreaseFontSize: {
             currentItemStartArrowhead: Arrowhead | null;
             currentItemEndArrowhead: Arrowhead | null;
             currentHoveredFontFamily: FontFamilyValues | null;
-            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
+            currentItemRoundness: import("../../element/src/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -302,7 +302,7 @@ export declare const actionIncreaseFontSize: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
+            lastPointerDownWith: import("../../element/src/types").PointerType;
             selectedElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -320,7 +320,7 @@ export declare const actionIncreaseFontSize: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: import("@excalidraw/element/types").Theme;
+            theme: import("../../element/src/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -328,7 +328,7 @@ export declare const actionIncreaseFontSize: {
             selectedGroupIds: {
                 [groupId: string]: boolean;
             };
-            editingGroupId: import("@excalidraw/element/types").GroupId | null;
+            editingGroupId: import("../../element/src/types").GroupId | null;
             width: number;
             height: number;
             offsetTop: number;
@@ -359,7 +359,7 @@ export declare const actionIncreaseFontSize: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: import("@excalidraw/element/types").BindMode;
+            bindMode: import("../../element/src/types").BindMode;
         };
         captureUpdate: "IMMEDIATELY";
     };
@@ -392,7 +392,7 @@ export declare const actionChangeArrowProperties: {
     name: "changeArrowProperties";
     label: string;
     trackEvent: false;
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: AppClassProperties) => false;
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, value: unknown, app: AppClassProperties) => false;
     PanelComponent: ({ elements, appState, updateData, app, renderAction }: import("./types").PanelComponentProps) => import("react/jsx-runtime").JSX.Element;
 } & {
     keyTest?: undefined;

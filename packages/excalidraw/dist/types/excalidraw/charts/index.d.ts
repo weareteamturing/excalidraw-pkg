@@ -1,4 +1,4 @@
-import type { ChartType } from "@excalidraw/element/types";
+import type { ChartType } from "../../element/src/types";
 import { tryParseCells, tryParseNumber, tryParseSpreadsheet } from "./charts.parse";
 import type { ChartElements, Spreadsheet } from "./charts.types";
 export { type ParseSpreadsheetResult, type Spreadsheet, type SpreadsheetSeries, type ChartElements, } from "./charts.types";

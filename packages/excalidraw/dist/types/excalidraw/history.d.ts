@@ -1,7 +1,7 @@
-import { Emitter } from "@excalidraw/common";
-import { StoreDelta } from "@excalidraw/element";
-import type { StoreSnapshot, Store } from "@excalidraw/element";
-import type { SceneElementsMap } from "@excalidraw/element/types";
+import { Emitter } from "../common/src/index";
+import { StoreDelta } from "../element/src/index";
+import type { StoreSnapshot, Store } from "../element/src/index";
+import type { SceneElementsMap } from "../element/src/types";
 import type { AppState } from "./types";
 export declare class HistoryDelta extends StoreDelta {
     /**

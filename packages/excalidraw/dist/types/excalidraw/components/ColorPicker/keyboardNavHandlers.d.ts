@@ -1,4 +1,4 @@
-import type { ColorPaletteCustom } from "@excalidraw/common";
+import type { ColorPaletteCustom } from "../../../common/src/index";
 import type { ActiveColorPickerSectionAtomType } from "./colorPickerUtils";
 interface ColorPickerKeyNavHandlerProps {
     event: React.KeyboardEvent;

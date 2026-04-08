@@ -1,5 +1,5 @@
 import type { AppClassProperties, AppState, StaticCanvasAppState } from "@excalidraw/excalidraw/types";
-import type { ReadonlySetLike } from "@excalidraw/common/utility-types";
+import type { ReadonlySetLike } from "../../common/src/utility-types";
 import type { ExcalidrawElementsIncludingDeleted } from "./Scene";
 import type { ElementsMap, ElementsMapOrArray, ExcalidrawElement, ExcalidrawFrameLikeElement, NonDeleted, NonDeletedExcalidrawElement } from "./types";
 export declare const bindElementsToFramesAfterDuplication: (nextElements: readonly ExcalidrawElement[], origElements: readonly ExcalidrawElement[], origIdToDuplicateId: Map<ExcalidrawElement["id"], ExcalidrawElement["id"]>) => void;

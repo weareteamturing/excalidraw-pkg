@@ -1,5 +1,5 @@
-import type { ExcalidrawElement, OrderedExcalidrawElement } from "@excalidraw/element/types";
-import type { CaptureUpdateActionType } from "@excalidraw/element";
+import type { ExcalidrawElement, OrderedExcalidrawElement } from "../../element/src/types";
+import type { CaptureUpdateActionType } from "../../element/src/index";
 import type { AppClassProperties, AppState, ExcalidrawProps, BinaryFiles, UIAppState } from "../types";
 import type React from "react";
 export type ActionSource = "ui" | "keyboard" | "contextMenu" | "api" | "commandPalette";

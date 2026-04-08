@@ -1,5 +1,5 @@
 import React from "react";
-import type { FontFamilyValues } from "@excalidraw/element/types";
+import type { FontFamilyValues } from "../../../element/src/types";
 import "./FontPicker.scss";
 export declare const DEFAULT_FONTS: {
     value: number;

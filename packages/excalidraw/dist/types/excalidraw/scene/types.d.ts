@@ -1,6 +1,6 @@
-import type { UserIdleState, EditorInterface } from "@excalidraw/common";
-import type { ExcalidrawElement, NonDeletedElementsMap, NonDeletedExcalidrawElement, NonDeletedSceneElementsMap } from "@excalidraw/element/types";
-import type { MakeBrand } from "@excalidraw/common/utility-types";
+import type { UserIdleState, EditorInterface } from "../../common/src/index";
+import type { ExcalidrawElement, NonDeletedElementsMap, NonDeletedExcalidrawElement, NonDeletedSceneElementsMap } from "../../element/src/types";
+import type { MakeBrand } from "../../common/src/utility-types";
 import type { AppClassProperties, AppState, EmbedsValidationStatus, ElementsPendingErasure, InteractiveCanvasAppState, StaticCanvasAppState, SocketId, PendingExcalidrawElements } from "../types";
 import type { RoughCanvas } from "roughjs/bin/canvas";
 import type { Drawable } from "roughjs/bin/core";

@@ -1,4 +1,4 @@
-import type { MarkOptional } from "@excalidraw/common/utility-types";
+import type { MarkOptional } from "../../common/src/utility-types";
 import "../components/dropdownMenu/DropdownMenu.scss";
 import type { SidebarProps, SidebarTriggerProps } from "./Sidebar/common";
 export declare const DefaultSidebar: import("react").FC<Omit<MarkOptional<Omit<{

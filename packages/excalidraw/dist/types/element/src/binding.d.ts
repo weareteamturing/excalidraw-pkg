@@ -1,7 +1,7 @@
-import { type GlobalPoint } from "@excalidraw/math";
-import type { LineSegment, LocalPoint } from "@excalidraw/math";
+import { type GlobalPoint } from "../../math/src/index";
+import type { LineSegment, LocalPoint } from "../../math/src/index";
 import type { AppState } from "@excalidraw/excalidraw/types";
-import type { Bounds } from "@excalidraw/common";
+import type { Bounds } from "../../common/src/index";
 import { type Heading } from "./heading";
 import type { Scene } from "./Scene";
 import type { ElementUpdate } from "./mutateElement";

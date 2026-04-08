@@ -1,4 +1,4 @@
-import type { ColorPaletteCustom } from "@excalidraw/common";
+import type { ColorPaletteCustom } from "../../../common/src/index";
 interface ShadeListProps {
     color: string | null;
     onChange: (color: string) => void;

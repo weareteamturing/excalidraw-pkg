@@ -1,7 +1,7 @@
-import { type GlobalPoint, type LocalPoint } from "@excalidraw/math";
-import { type Store } from "@excalidraw/element";
+import { type GlobalPoint, type LocalPoint } from "../../math/src/index";
+import { type Store } from "./index";
 import type { AppState, PointerCoords, InteractiveCanvasAppState, AppClassProperties, NullableGridSize, Zoom } from "@excalidraw/excalidraw/types";
-import type { Bounds } from "@excalidraw/common";
+import type { Bounds } from "../../common/src/index";
 import type { Scene } from "./Scene";
 import type { NonDeleted, ExcalidrawLinearElement, ExcalidrawElement, ExcalidrawTextElementWithContainer, ElementsMap, NonDeletedSceneElementsMap, FixedPointBinding, ExcalidrawElbowArrowElement, PointsPositionUpdates } from "./types";
 export declare class LinearElementEditor {

@@ -1,4 +1,4 @@
-import type { Mutable } from "@excalidraw/common/utility-types";
+import type { Mutable } from "../../common/src/utility-types";
 import type { ElementsMap, ExcalidrawElement } from "./types";
 export type ElementUpdate<TElement extends ExcalidrawElement> = Omit<Partial<TElement>, "id" | "updated">;
 /**

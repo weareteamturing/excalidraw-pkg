@@ -1,4 +1,4 @@
-import type { ExcalidrawElement, OrderedExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement, OrderedExcalidrawElement } from "../../element/src/types";
 import type { AppClassProperties, AppState } from "../types";
 export declare const actionGroup: {
     name: "group";
@@ -25,22 +25,22 @@ export declare const actionGroup: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
+                element: import("../../element/src/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
-            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
-            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
-            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            newElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
+            startBoundElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
-                midPoint?: import("@excalidraw/math").GlobalPoint;
+                element: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawBindableElement>;
+                midPoint?: import("../../math/src/index").GlobalPoint;
             } | null;
-            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -48,8 +48,8 @@ export declare const actionGroup: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            elementsToHighlight: import("../../element/src/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -72,13 +72,13 @@ export declare const actionGroup: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
+            currentItemFontFamily: import("../../element/src/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
-            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
-            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
-            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
-            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
+            currentItemTextAlign: import("../../element/src/types").TextAlign;
+            currentItemStartArrowhead: import("../../element/src/types").Arrowhead | null;
+            currentItemEndArrowhead: import("../../element/src/types").Arrowhead | null;
+            currentHoveredFontFamily: import("../../element/src/types").FontFamilyValues | null;
+            currentItemRoundness: import("../../element/src/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -113,7 +113,7 @@ export declare const actionGroup: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
+            lastPointerDownWith: import("../../element/src/types").PointerType;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -128,7 +128,7 @@ export declare const actionGroup: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: import("@excalidraw/element/types").Theme;
+            theme: import("../../element/src/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -144,7 +144,7 @@ export declare const actionGroup: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: import("../../element/src/index").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -163,7 +163,7 @@ export declare const actionGroup: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: import("@excalidraw/element/types").BindMode;
+            bindMode: import("../../element/src/types").BindMode;
         };
         elements: OrderedExcalidrawElement[];
         captureUpdate: "IMMEDIATELY";
@@ -199,22 +199,22 @@ export declare const actionUngroup: {
             isLoading: boolean;
             errorMessage: React.ReactNode;
             activeEmbeddable: {
-                element: import("@excalidraw/element/types").NonDeletedExcalidrawElement;
+                element: import("../../element/src/types").NonDeletedExcalidrawElement;
                 state: "hover" | "active";
             } | null;
-            newElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawNonSelectionElement> | null;
-            resizingElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
-            multiElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawLinearElement> | null;
-            selectionElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            newElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawNonSelectionElement> | null;
+            resizingElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
+            multiElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawLinearElement> | null;
+            selectionElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             isBindingEnabled: boolean;
             bindingPreference: "enabled" | "disabled";
             isMidpointSnappingEnabled: boolean;
-            startBoundElement: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement> | null;
+            startBoundElement: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawBindableElement> | null;
             suggestedBinding: {
-                element: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawBindableElement>;
-                midPoint?: import("@excalidraw/math").GlobalPoint;
+                element: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawBindableElement>;
+                midPoint?: import("../../math/src/index").GlobalPoint;
             } | null;
-            frameToHighlight: import("@excalidraw/element/types").NonDeleted<import("@excalidraw/element/types").ExcalidrawFrameLikeElement> | null;
+            frameToHighlight: import("../../element/src/types").NonDeleted<import("../../element/src/types").ExcalidrawFrameLikeElement> | null;
             frameRendering: {
                 enabled: boolean;
                 name: boolean;
@@ -222,8 +222,8 @@ export declare const actionUngroup: {
                 clip: boolean;
             };
             editingFrame: string | null;
-            elementsToHighlight: import("@excalidraw/element/types").NonDeleted<ExcalidrawElement>[] | null;
-            editingTextElement: import("@excalidraw/element/types").NonDeletedExcalidrawElement | null;
+            elementsToHighlight: import("../../element/src/types").NonDeleted<ExcalidrawElement>[] | null;
+            editingTextElement: import("../../element/src/types").NonDeletedExcalidrawElement | null;
             activeTool: {
                 lastActiveTool: import("../types").ActiveTool | null;
                 locked: boolean;
@@ -246,13 +246,13 @@ export declare const actionUngroup: {
             currentItemStrokeStyle: ExcalidrawElement["strokeStyle"];
             currentItemRoughness: number;
             currentItemOpacity: number;
-            currentItemFontFamily: import("@excalidraw/element/types").FontFamilyValues;
+            currentItemFontFamily: import("../../element/src/types").FontFamilyValues;
             currentItemFontSize: number;
-            currentItemTextAlign: import("@excalidraw/element/types").TextAlign;
-            currentItemStartArrowhead: import("@excalidraw/element/types").Arrowhead | null;
-            currentItemEndArrowhead: import("@excalidraw/element/types").Arrowhead | null;
-            currentHoveredFontFamily: import("@excalidraw/element/types").FontFamilyValues | null;
-            currentItemRoundness: import("@excalidraw/element/types").StrokeRoundness;
+            currentItemTextAlign: import("../../element/src/types").TextAlign;
+            currentItemStartArrowhead: import("../../element/src/types").Arrowhead | null;
+            currentItemEndArrowhead: import("../../element/src/types").Arrowhead | null;
+            currentHoveredFontFamily: import("../../element/src/types").FontFamilyValues | null;
+            currentItemRoundness: import("../../element/src/types").StrokeRoundness;
             currentItemArrowType: "sharp" | "round" | "elbow";
             viewBackgroundColor: string;
             scrollX: number;
@@ -287,7 +287,7 @@ export declare const actionUngroup: {
                 rawText: string;
             };
             defaultSidebarDockedPreference: boolean;
-            lastPointerDownWith: import("@excalidraw/element/types").PointerType;
+            lastPointerDownWith: import("../../element/src/types").PointerType;
             hoveredElementIds: Readonly<{
                 [id: string]: true;
             }>;
@@ -302,7 +302,7 @@ export declare const actionUngroup: {
                 duration?: number;
             } | null;
             zenModeEnabled: boolean;
-            theme: import("@excalidraw/element/types").Theme;
+            theme: import("../../element/src/types").Theme;
             gridSize: number;
             gridStep: number;
             gridModeEnabled: boolean;
@@ -318,7 +318,7 @@ export declare const actionUngroup: {
                 panels: number;
             };
             showHyperlinkPopup: false | "info" | "editor";
-            selectedLinearElement: import("@excalidraw/element").LinearElementEditor | null;
+            selectedLinearElement: import("../../element/src/index").LinearElementEditor | null;
             snapLines: readonly import("../snapping").SnapLine[];
             originSnapOffset: {
                 x: number;
@@ -337,7 +337,7 @@ export declare const actionUngroup: {
             lockedMultiSelections: {
                 [groupId: string]: true;
             };
-            bindMode: import("@excalidraw/element/types").BindMode;
+            bindMode: import("../../element/src/types").BindMode;
         };
         elements: OrderedExcalidrawElement[];
         captureUpdate: "IMMEDIATELY";

@@ -31,7 +31,7 @@ declare const DropdownMenu: {
         displayName: string;
         Badge: {
             ({ type, children, }: {
-                type?: import("@excalidraw/common/utility-types").ValueOf<typeof import("./DropdownMenuItem").DropDownMenuItemBadgeType>;
+                type?: import("../../../common/src/utility-types").ValueOf<typeof import("./DropdownMenuItem").DropDownMenuItemBadgeType>;
                 children: React.ReactNode;
             }): import("react/jsx-runtime").JSX.Element;
             displayName: string;

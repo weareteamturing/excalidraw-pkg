@@ -1,5 +1,5 @@
 import React from "react";
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "../../element/src/types";
 import "./LayerUI.scss";
 import "./Toolbar.scss";
 import type { ActionManager } from "../actions/manager";

@@ -1,5 +1,5 @@
 import type { AppState } from "@excalidraw/excalidraw/types";
-import type { GlobalPoint } from "@excalidraw/math";
+import type { GlobalPoint } from "../../math/src/index";
 import type { Scene } from "./Scene";
 import type { ExcalidrawArrowElement, ExcalidrawElement, NonDeletedExcalidrawElement, NonDeletedSceneElementsMap, Ordered, OrderedExcalidrawElement } from "./types";
 /**

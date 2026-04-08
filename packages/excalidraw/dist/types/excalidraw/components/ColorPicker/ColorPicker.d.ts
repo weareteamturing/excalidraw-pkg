@@ -1,5 +1,5 @@
-import type { ColorTuple, ColorPaletteCustom } from "@excalidraw/common";
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ColorTuple, ColorPaletteCustom } from "../../../common/src/index";
+import type { ExcalidrawElement } from "../../../element/src/types";
 import "./ColorPicker.scss";
 import type { ColorPickerType } from "./colorPickerUtils";
 import type { AppState } from "../../types";

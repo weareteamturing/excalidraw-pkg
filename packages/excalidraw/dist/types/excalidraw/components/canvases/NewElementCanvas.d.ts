@@ -1,4 +1,4 @@
-import type { NonDeletedSceneElementsMap } from "@excalidraw/element/types";
+import type { NonDeletedSceneElementsMap } from "../../../element/src/types";
 import type { RenderableElementsMap, StaticCanvasRenderConfig } from "../../scene/types";
 import type { AppState } from "../../types";
 import type { RoughCanvas } from "roughjs/bin/canvas";

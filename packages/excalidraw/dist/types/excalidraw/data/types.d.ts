@@ -1,5 +1,5 @@
-import type { VERSIONS } from "@excalidraw/common";
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { VERSIONS } from "../../common/src/index";
+import type { ExcalidrawElement } from "../../element/src/types";
 import type { cleanAppStateForExport } from "../appState";
 import type { AppState, BinaryFiles, LibraryItem, LibraryItems, LibraryItems_anyVersion } from "../types";
 export interface ExportedDataState {

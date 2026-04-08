@@ -1,4 +1,4 @@
-import type { ExcalidrawElement, NonDeletedElementsMap, NonDeletedSceneElementsMap } from "@excalidraw/element/types";
+import type { ExcalidrawElement, NonDeletedElementsMap, NonDeletedSceneElementsMap } from "../../element/src/types";
 import "./Actions.scss";
 import type { AppClassProperties, AppProps, UIAppState, Zoom, AppState } from "../types";
 import type { ActionManager } from "../actions/manager";

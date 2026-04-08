@@ -1,10 +1,10 @@
-import type { IMAGE_MIME_TYPES, UserIdleState, throttleRAF, MIME_TYPES, EditorInterface } from "@excalidraw/common";
-import type { LinearElementEditor } from "@excalidraw/element";
-import type { MaybeTransformHandleType } from "@excalidraw/element";
-import type { PointerType, ExcalidrawLinearElement, NonDeletedExcalidrawElement, NonDeleted, TextAlign, ExcalidrawElement, GroupId, ExcalidrawBindableElement, Arrowhead, FontFamilyValues, FileId, Theme, StrokeRoundness, ExcalidrawEmbeddableElement, ExcalidrawMagicFrameElement, ExcalidrawFrameLikeElement, ExcalidrawElementType, ExcalidrawIframeLikeElement, OrderedExcalidrawElement, ExcalidrawNonSelectionElement, BindMode } from "@excalidraw/element/types";
-import type { Merge, MaybePromise, ValueOf, MakeBrand } from "@excalidraw/common/utility-types";
-import type { CaptureUpdateActionType, DurableIncrement, EphemeralIncrement } from "@excalidraw/element";
-import type { GlobalPoint } from "@excalidraw/math";
+import type { IMAGE_MIME_TYPES, UserIdleState, throttleRAF, MIME_TYPES, EditorInterface } from "../common/src/index";
+import type { LinearElementEditor } from "../element/src/index";
+import type { MaybeTransformHandleType } from "../element/src/index";
+import type { PointerType, ExcalidrawLinearElement, NonDeletedExcalidrawElement, NonDeleted, TextAlign, ExcalidrawElement, GroupId, ExcalidrawBindableElement, Arrowhead, FontFamilyValues, FileId, Theme, StrokeRoundness, ExcalidrawEmbeddableElement, ExcalidrawMagicFrameElement, ExcalidrawFrameLikeElement, ExcalidrawElementType, ExcalidrawIframeLikeElement, OrderedExcalidrawElement, ExcalidrawNonSelectionElement, BindMode } from "../element/src/types";
+import type { Merge, MaybePromise, ValueOf, MakeBrand } from "../common/src/utility-types";
+import type { CaptureUpdateActionType, DurableIncrement, EphemeralIncrement } from "../element/src/index";
+import type { GlobalPoint } from "../math/src/index";
 import type { Action } from "./actions/types";
 import type { Spreadsheet } from "./charts";
 import type { ClipboardData } from "./clipboard";

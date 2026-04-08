@@ -1,4 +1,4 @@
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "../../../element/src/types";
 import "./Stats.scss";
 import type { AppClassProperties, AppState, ExcalidrawProps } from "../../types";
 interface StatsProps {

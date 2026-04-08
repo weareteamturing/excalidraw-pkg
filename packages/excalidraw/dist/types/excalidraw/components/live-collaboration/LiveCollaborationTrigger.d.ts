@@ -1,4 +1,4 @@
-import { type EditorInterface } from "@excalidraw/common";
+import { type EditorInterface } from "../../../common/src/index";
 import "./LiveCollaborationTrigger.scss";
 declare const LiveCollaborationTrigger: {
     ({ isCollaborating, onSelect, editorInterface, ...rest }: {

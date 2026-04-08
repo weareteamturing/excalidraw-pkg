@@ -1,4 +1,4 @@
-import type { ExcalidrawFrameLikeElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawFrameLikeElement, NonDeletedExcalidrawElement } from "../../element/src/types";
 import type { AppState, BinaryFiles } from "../types";
 export declare const exportToCanvas: (elements: readonly NonDeletedExcalidrawElement[], appState: AppState, files: BinaryFiles, { exportBackground, exportPadding, viewBackgroundColor, exportingFrame, }: {
     exportBackground: boolean;

@@ -1,5 +1,5 @@
-import type { ExcalidrawElement, Ordered, OrderedExcalidrawElement, SceneElementsMap } from "@excalidraw/element/types";
-import type { DTO, ValueOf } from "@excalidraw/common/utility-types";
+import type { ExcalidrawElement, Ordered, OrderedExcalidrawElement, SceneElementsMap } from "./types";
+import type { DTO, ValueOf } from "../../common/src/utility-types";
 import type { AppState, ObservedAppState } from "@excalidraw/excalidraw/types";
 import { StoreSnapshot } from "./store";
 /**

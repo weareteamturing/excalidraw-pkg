@@ -1,4 +1,4 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "../../element/src/types";
 import type { AppClassProperties, AppState } from "../types";
 export declare const actionFlipHorizontal: {
     name: "flipHorizontal";
@@ -7,7 +7,7 @@ export declare const actionFlipHorizontal: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         elements: ExcalidrawElement[];
         appState: Readonly<AppState>;
         captureUpdate: "IMMEDIATELY";
@@ -23,7 +23,7 @@ export declare const actionFlipVertical: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         elements: ExcalidrawElement[];
         appState: Readonly<AppState>;
         captureUpdate: "IMMEDIATELY";

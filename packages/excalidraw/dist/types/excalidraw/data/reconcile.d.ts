@@ -1,5 +1,5 @@
-import type { OrderedExcalidrawElement } from "@excalidraw/element/types";
-import type { MakeBrand } from "@excalidraw/common/utility-types";
+import type { OrderedExcalidrawElement } from "../../element/src/types";
+import type { MakeBrand } from "../../common/src/utility-types";
 import type { AppState } from "../types";
 export type ReconciledExcalidrawElement = OrderedExcalidrawElement & MakeBrand<"ReconciledElement">;
 export type RemoteExcalidrawElement = OrderedExcalidrawElement & MakeBrand<"RemoteExcalidrawElement">;

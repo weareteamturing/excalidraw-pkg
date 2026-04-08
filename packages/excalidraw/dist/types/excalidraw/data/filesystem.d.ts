@@ -1,5 +1,5 @@
 import { supported as nativeFileSystemSupported } from "browser-fs-access";
-import { MIME_TYPES } from "@excalidraw/common";
+import { MIME_TYPES } from "../../common/src/index";
 import type { FileSystemHandle } from "browser-fs-access";
 type FILE_EXTENSION = Exclude<keyof typeof MIME_TYPES, "binary">;
 export declare const fileOpen: <M extends boolean | undefined = false>(opts: {

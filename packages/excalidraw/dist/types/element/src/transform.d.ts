@@ -1,4 +1,4 @@
-import type { MarkOptional } from "@excalidraw/common/utility-types";
+import type { MarkOptional } from "../../common/src/utility-types";
 import { type ElementConstructorOpts } from "./newElement";
 import type { ExcalidrawBindableElement, ExcalidrawElement, ExcalidrawFrameElement, ExcalidrawFreeDrawElement, ExcalidrawGenericElement, ExcalidrawIframeLikeElement, ExcalidrawImageElement, ExcalidrawLinearElement, ExcalidrawMagicFrameElement, ExcalidrawSelectionElement, ExcalidrawTextElement, FileId, FontFamilyValues, TextAlign, VerticalAlign } from "./types";
 export type ValidLinearElement = {

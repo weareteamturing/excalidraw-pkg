@@ -1,5 +1,5 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
-import type { ColorPickerColor, ColorPaletteCustom } from "@excalidraw/common";
+import type { ExcalidrawElement } from "../../../element/src/types";
+import type { ColorPickerColor, ColorPaletteCustom } from "../../../common/src/index";
 export declare const getColorNameAndShadeFromColor: ({ palette, color, }: {
     palette: ColorPaletteCustom;
     color: string | null;

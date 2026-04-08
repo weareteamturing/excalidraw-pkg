@@ -1,5 +1,5 @@
 import React from "react";
-import type { ExcalidrawElement, NonDeleted } from "@excalidraw/element/types";
+import type { ExcalidrawElement, NonDeleted } from "../../element/src/types";
 import type { SvgCache } from "../hooks/useLibraryItemSvg";
 import type { LibraryItem } from "../types";
 import type { ReactNode } from "react";

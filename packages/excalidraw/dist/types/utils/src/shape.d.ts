@@ -1,6 +1,6 @@
-import { type GlobalPoint, type LocalPoint } from "@excalidraw/math";
-import type { ElementsMap, ExcalidrawBindableElement, ExcalidrawDiamondElement, ExcalidrawElement, ExcalidrawEllipseElement, ExcalidrawEmbeddableElement, ExcalidrawFrameLikeElement, ExcalidrawFreeDrawElement, ExcalidrawIframeElement, ExcalidrawImageElement, ExcalidrawLinearElement, ExcalidrawRectangleElement, ExcalidrawSelectionElement, ExcalidrawTextElement } from "@excalidraw/element/types";
-import type { Curve, LineSegment, Polygon, Radians } from "@excalidraw/math";
+import { type GlobalPoint, type LocalPoint } from "../../math/src/index";
+import type { ElementsMap, ExcalidrawBindableElement, ExcalidrawDiamondElement, ExcalidrawElement, ExcalidrawEllipseElement, ExcalidrawEmbeddableElement, ExcalidrawFrameLikeElement, ExcalidrawFreeDrawElement, ExcalidrawIframeElement, ExcalidrawImageElement, ExcalidrawLinearElement, ExcalidrawRectangleElement, ExcalidrawSelectionElement, ExcalidrawTextElement } from "../../element/src/types";
+import type { Curve, LineSegment, Polygon, Radians } from "../../math/src/index";
 import type { Drawable, Op } from "roughjs/bin/core";
 export type Polyline<Point extends GlobalPoint | LocalPoint> = LineSegment<Point>[];
 export type Polycurve<Point extends GlobalPoint | LocalPoint> = Curve<Point>[];
@@ -54,5 +54,5 @@ export declare const ellipseAxes: <Point extends LocalPoint | GlobalPoint>(ellip
     minorAxis: number;
 };
 export declare const ellipseFocusToCenter: <Point extends LocalPoint | GlobalPoint>(ellipse: Ellipse<Point>) => number;
-export declare const ellipseExtremes: <Point extends LocalPoint | GlobalPoint>(ellipse: Ellipse<Point>) => import("@excalidraw/math").Vector[];
+export declare const ellipseExtremes: <Point extends LocalPoint | GlobalPoint>(ellipse: Ellipse<Point>) => import("../../math/src/index").Vector[];
 export {};

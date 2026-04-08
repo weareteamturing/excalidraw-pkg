@@ -1,5 +1,5 @@
-import { type GlobalPoint, type LocalPoint } from "@excalidraw/math";
-import type { Bounds } from "@excalidraw/common";
+import { type GlobalPoint, type LocalPoint } from "../../math/src/index";
+import type { Bounds } from "../../common/src/index";
 export type LineSegment<P extends LocalPoint | GlobalPoint> = [P, P];
 export declare function getBBox<P extends LocalPoint | GlobalPoint>(line: LineSegment<P>): Bounds;
 export declare function doBBoxesIntersect(a: Bounds, b: Bounds): boolean;

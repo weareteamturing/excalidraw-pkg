@@ -1,6 +1,6 @@
-import type { LocalPoint, Radians } from "@excalidraw/math";
-import type { FONT_FAMILY, ROUNDNESS, TEXT_ALIGN, THEME, VERTICAL_ALIGN } from "@excalidraw/common";
-import type { MakeBrand, MarkNonNullable, Merge, ValueOf } from "@excalidraw/common/utility-types";
+import type { LocalPoint, Radians } from "../../math/src/index";
+import type { FONT_FAMILY, ROUNDNESS, TEXT_ALIGN, THEME, VERTICAL_ALIGN } from "../../common/src/index";
+import type { MakeBrand, MarkNonNullable, Merge, ValueOf } from "../../common/src/utility-types";
 export type ChartType = "bar" | "line" | "radar";
 export type FillStyle = "hachure" | "cross-hatch" | "solid" | "zigzag";
 export type FontFamilyKeys = keyof typeof FONT_FAMILY;

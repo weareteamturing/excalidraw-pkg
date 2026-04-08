@@ -1,4 +1,4 @@
-import type { Theme } from "@excalidraw/element/types";
+import type { Theme } from "../../element/src/types";
 import "./ToolIcon.scss";
 export declare const DarkModeToggle: (props: {
     value: Theme;

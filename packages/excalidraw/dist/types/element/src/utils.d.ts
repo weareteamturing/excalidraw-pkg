@@ -1,5 +1,5 @@
-import { type GlobalPoint } from "@excalidraw/math";
-import type { Curve, LineSegment } from "@excalidraw/math";
+import { type GlobalPoint } from "../../math/src/index";
+import type { Curve, LineSegment } from "../../math/src/index";
 import type { AppState, Zoom } from "@excalidraw/excalidraw/types";
 import type { ElementsMap, ExcalidrawArrowElement, ExcalidrawBindableElement, ExcalidrawDiamondElement, ExcalidrawElement, ExcalidrawFreeDrawElement, ExcalidrawLinearElement, ExcalidrawRectanguloidElement } from "./types";
 /**

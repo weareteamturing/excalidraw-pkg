@@ -1,5 +1,5 @@
-import { type Bounds } from "@excalidraw/common";
-import type { LocalPoint, GlobalPoint, Vector } from "@excalidraw/math";
+import { type Bounds } from "../../common/src/index";
+import type { LocalPoint, GlobalPoint, Vector } from "../../math/src/index";
 import type { ExcalidrawBindableElement } from "./types";
 export declare const HEADING_RIGHT: Heading;
 export declare const HEADING_DOWN: Heading;

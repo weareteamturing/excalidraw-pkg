@@ -1,5 +1,5 @@
-import type { ElementsMap, ExcalidrawElement } from "@excalidraw/element/types";
-import type { Scene } from "@excalidraw/element";
+import type { ElementsMap, ExcalidrawElement } from "../../../element/src/types";
+import type { Scene } from "../../../element/src/index";
 import type { AppState } from "../../types";
 interface PositionProps {
     property: "x" | "y";

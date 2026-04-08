@@ -1,5 +1,5 @@
 import React from "react";
-import type { PointerType } from "@excalidraw/element/types";
+import type { PointerType } from "../../element/src/types";
 import "./ToolIcon.scss";
 import type { CSSProperties } from "react";
 export type ToolButtonSize = "small" | "medium";

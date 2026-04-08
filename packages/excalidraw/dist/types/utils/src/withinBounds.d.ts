@@ -1,5 +1,5 @@
-import { type Bounds } from "@excalidraw/common";
-import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import { type Bounds } from "../../common/src/index";
+import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "../../element/src/types";
 type Element = NonDeletedExcalidrawElement;
 type Elements = readonly NonDeletedExcalidrawElement[];
 export declare const isElementInsideBBox: (element: Element, bbox: Bounds, eitherDirection?: boolean) => boolean;

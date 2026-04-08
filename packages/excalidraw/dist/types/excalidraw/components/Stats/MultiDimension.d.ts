@@ -1,5 +1,5 @@
-import type { ExcalidrawElement, NonDeletedSceneElementsMap } from "@excalidraw/element/types";
-import type { Scene } from "@excalidraw/element";
+import type { ExcalidrawElement, NonDeletedSceneElementsMap } from "../../../element/src/types";
+import type { Scene } from "../../../element/src/index";
 import type { AtomicUnit } from "./utils";
 import type { AppState } from "../../types";
 interface MultiDimensionProps {

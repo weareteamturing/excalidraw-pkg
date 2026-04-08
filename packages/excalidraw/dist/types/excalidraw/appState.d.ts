@@ -2,7 +2,7 @@ import type { AppState, NormalizedZoomValue } from "./types";
 export declare const getDefaultAppState: () => Omit<AppState, "offsetTop" | "offsetLeft" | "width" | "height">;
 export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>) => {
     viewBackgroundColor?: string | undefined;
-    theme?: import("@excalidraw/element/types").Theme | undefined;
+    theme?: import("../element/src/types").Theme | undefined;
     name?: string | null | undefined;
     zoom?: Readonly<{
         value: NormalizedZoomValue;
@@ -21,14 +21,14 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
     selectedGroupIds?: {
         [groupId: string]: boolean;
     } | undefined;
-    selectedLinearElement?: import("@excalidraw/element").LinearElementEditor | null | undefined;
+    selectedLinearElement?: import("../element/src/index").LinearElementEditor | null | undefined;
     isBindingEnabled?: boolean | undefined;
     isMidpointSnappingEnabled?: boolean | undefined;
     zenModeEnabled?: boolean | undefined;
     shouldCacheIgnoreZoom?: boolean | undefined;
     exportScale?: number | undefined;
     currentItemArrowType?: "round" | "sharp" | "elbow" | undefined;
-    bindMode?: import("@excalidraw/element/types").BindMode | undefined;
+    bindMode?: import("../element/src/types").BindMode | undefined;
     gridSize?: number | undefined;
     showWelcomeScreen?: boolean | undefined;
     bindingPreference?: "enabled" | "disabled" | undefined;
@@ -43,17 +43,17 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
     exportWithDarkMode?: boolean | undefined;
     currentItemStrokeColor?: string | undefined;
     currentItemBackgroundColor?: string | undefined;
-    currentItemFillStyle?: import("@excalidraw/element/types").FillStyle | undefined;
+    currentItemFillStyle?: import("../element/src/types").FillStyle | undefined;
     currentItemStrokeWidth?: number | undefined;
-    currentItemStrokeStyle?: import("@excalidraw/element/types").StrokeStyle | undefined;
+    currentItemStrokeStyle?: import("../element/src/types").StrokeStyle | undefined;
     currentItemRoughness?: number | undefined;
     currentItemOpacity?: number | undefined;
     currentItemFontFamily?: number | undefined;
     currentItemFontSize?: number | undefined;
     currentItemTextAlign?: string | undefined;
-    currentItemStartArrowhead?: import("@excalidraw/element/types").Arrowhead | null | undefined;
-    currentItemEndArrowhead?: import("@excalidraw/element/types").Arrowhead | null | undefined;
-    currentItemRoundness?: import("@excalidraw/element/types").StrokeRoundness | undefined;
+    currentItemStartArrowhead?: import("../element/src/types").Arrowhead | null | undefined;
+    currentItemEndArrowhead?: import("../element/src/types").Arrowhead | null | undefined;
+    currentItemRoundness?: import("../element/src/types").StrokeRoundness | undefined;
     cursorButton?: "up" | "down" | undefined;
     scrolledOutside?: boolean | undefined;
     openMenu?: "canvas" | null | undefined;
@@ -62,7 +62,7 @@ export declare const clearAppStateForLocalStorage: (appState: Partial<AppState>)
         tab?: import("./types").SidebarTabName;
     } | null | undefined;
     defaultSidebarDockedPreference?: boolean | undefined;
-    lastPointerDownWith?: import("@excalidraw/element/types").PointerType | undefined;
+    lastPointerDownWith?: import("../element/src/types").PointerType | undefined;
     previousSelectedElementIds?: {
         [id: string]: true;
     } | undefined;

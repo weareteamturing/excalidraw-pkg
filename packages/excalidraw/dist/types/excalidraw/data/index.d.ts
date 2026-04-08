@@ -1,4 +1,4 @@
-import type { ExcalidrawElement, ExcalidrawFrameLikeElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement, ExcalidrawFrameLikeElement, NonDeletedExcalidrawElement } from "../../element/src/types";
 import type { FileSystemHandle } from "./filesystem";
 import type { ExportType } from "../scene/types";
 import type { AppState, BinaryFiles } from "../types";

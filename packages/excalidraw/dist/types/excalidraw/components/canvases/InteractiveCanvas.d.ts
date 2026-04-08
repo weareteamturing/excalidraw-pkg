@@ -1,7 +1,7 @@
 import React from "react";
-import { type EditorInterface } from "@excalidraw/common";
+import { type EditorInterface } from "../../../common/src/index";
 import type { RenderableElementsMap, RenderInteractiveSceneCallback } from "@excalidraw/excalidraw/scene/types";
-import type { NonDeletedExcalidrawElement, NonDeletedSceneElementsMap } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement, NonDeletedSceneElementsMap } from "../../../element/src/types";
 import type { AppClassProperties, InteractiveCanvasAppState } from "../../types";
 import type { DOMAttributes } from "react";
 type InteractiveCanvasProps = {

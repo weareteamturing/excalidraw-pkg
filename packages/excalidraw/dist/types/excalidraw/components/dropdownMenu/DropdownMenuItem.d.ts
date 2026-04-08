@@ -1,5 +1,5 @@
 import React from "react";
-import type { ValueOf } from "@excalidraw/common/utility-types";
+import type { ValueOf } from "../../../common/src/utility-types";
 import type { JSX } from "react";
 export type DropdownMenuItemProps = {
     icon?: JSX.Element;

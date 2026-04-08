@@ -1,7 +1,7 @@
-import { ALLOWED_PASTE_MIME_TYPES } from "@excalidraw/common";
-import type { ValueOf } from "@excalidraw/common/utility-types";
-import type { IMAGE_MIME_TYPES, STRING_MIME_TYPES } from "@excalidraw/common";
-import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import { ALLOWED_PASTE_MIME_TYPES } from "../common/src/index";
+import type { ValueOf } from "../common/src/utility-types";
+import type { IMAGE_MIME_TYPES, STRING_MIME_TYPES } from "../common/src/index";
+import type { ExcalidrawElement, NonDeletedExcalidrawElement } from "../element/src/types";
 import type { FileSystemHandle } from "./data/filesystem";
 import type { BinaryFiles } from "./types";
 export type PastedMixedContent = {

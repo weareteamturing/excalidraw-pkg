@@ -1,4 +1,4 @@
-import type { EditorInterface } from "@excalidraw/common";
+import type { EditorInterface } from "../../common/src/index";
 import "./HintViewer.scss";
 import type { AppClassProperties, UIAppState } from "../types";
 interface HintViewerProps {

@@ -1,4 +1,4 @@
-import { type GlobalPoint } from "@excalidraw/math";
+import { type GlobalPoint } from "../../../math/src/index";
 import type { AppState, NullableGridSize } from "@excalidraw/excalidraw/types";
 import { LinearElementEditor } from "../linearElementEditor";
 import type { ElementsMap, ExcalidrawArrowElement, ExcalidrawBindableElement, NonDeletedSceneElementsMap } from "../types";

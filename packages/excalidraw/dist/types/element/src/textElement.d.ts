@@ -1,6 +1,6 @@
-import { type Radians } from "@excalidraw/math";
+import { type Radians } from "../../math/src/index";
 import type { AppState } from "@excalidraw/excalidraw/types";
-import type { ExtractSetType } from "@excalidraw/common/utility-types";
+import type { ExtractSetType } from "../../common/src/utility-types";
 import type { Scene } from "./Scene";
 import type { MaybeTransformHandleType } from "./transformHandles";
 import type { ElementsMap, ExcalidrawElement, ExcalidrawElementType, ExcalidrawTextContainer, ExcalidrawTextElement, ExcalidrawTextElementWithContainer, NonDeletedExcalidrawElement } from "./types";

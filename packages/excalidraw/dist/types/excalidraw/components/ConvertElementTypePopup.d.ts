@@ -1,5 +1,5 @@
-import type { ConvertibleTypes, ExcalidrawElement, ExcalidrawTextContainer, ExcalidrawTextElementWithContainer } from "@excalidraw/element/types";
-import type { Scene } from "@excalidraw/element";
+import type { ConvertibleTypes, ExcalidrawElement, ExcalidrawTextContainer, ExcalidrawTextElementWithContainer } from "../../element/src/types";
+import type { Scene } from "../../element/src/index";
 import "./ConvertElementTypePopup.scss";
 import type App from "./App";
 export declare const convertElementTypePopupAtom: import("jotai/vanilla/atom").PrimitiveAtom<{

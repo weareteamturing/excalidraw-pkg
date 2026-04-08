@@ -1,4 +1,4 @@
-import type { ExcalidrawFrameLikeElement } from "@excalidraw/element/types";
+import type { ExcalidrawFrameLikeElement } from "../../element/src/types";
 import type { StaticCanvasRenderConfig, StaticSceneRenderConfig } from "../scene/types";
 import type { StaticCanvasAppState } from "../types";
 export declare const frameClip: (frame: ExcalidrawFrameLikeElement, context: CanvasRenderingContext2D, renderConfig: StaticCanvasRenderConfig, appState: StaticCanvasAppState) => void;

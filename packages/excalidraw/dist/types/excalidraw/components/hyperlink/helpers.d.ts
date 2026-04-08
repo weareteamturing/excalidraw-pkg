@@ -1,6 +1,6 @@
-import type { GlobalPoint, Radians } from "@excalidraw/math";
-import type { Bounds } from "@excalidraw/common";
-import type { ElementsMap, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { GlobalPoint, Radians } from "../../../math/src/index";
+import type { Bounds } from "../../../common/src/index";
+import type { ElementsMap, NonDeletedExcalidrawElement } from "../../../element/src/types";
 import type { AppState, UIAppState } from "../../types";
 export declare const DEFAULT_LINK_SIZE = 12;
 export declare const EXTERNAL_LINK_IMG: HTMLImageElement;

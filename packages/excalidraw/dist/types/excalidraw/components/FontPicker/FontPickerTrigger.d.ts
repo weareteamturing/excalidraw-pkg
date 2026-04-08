@@ -1,4 +1,4 @@
-import type { FontFamilyValues } from "@excalidraw/element/types";
+import type { FontFamilyValues } from "../../../element/src/types";
 interface FontPickerTriggerProps {
     selectedFontFamily: FontFamilyValues | null;
     isOpened?: boolean;

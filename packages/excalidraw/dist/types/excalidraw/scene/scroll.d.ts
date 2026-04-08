@@ -1,4 +1,4 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "../../element/src/types";
 import type { AppState, Offsets, PointerCoords, Zoom } from "../types";
 export declare const centerScrollOn: ({ scenePoint, viewportDimensions, zoom, offsets, }: {
     scenePoint: PointerCoords;

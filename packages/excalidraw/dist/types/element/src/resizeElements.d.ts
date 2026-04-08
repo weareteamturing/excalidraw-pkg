@@ -1,4 +1,4 @@
-import { type LocalPoint } from "@excalidraw/math";
+import { type LocalPoint } from "../../math/src/index";
 import type { PointerDownState } from "@excalidraw/excalidraw/types";
 import type { Scene } from "./Scene";
 import type { BoundingBox } from "./bounds";

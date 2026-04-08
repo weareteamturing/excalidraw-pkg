@@ -1,6 +1,6 @@
-import { type GeometricShape } from "@excalidraw/utils/shape";
-import { type LocalPoint } from "@excalidraw/math";
-import type { GlobalPoint } from "@excalidraw/math";
+import { type GeometricShape } from "../../utils/src/shape";
+import { type LocalPoint } from "../../math/src/index";
+import type { GlobalPoint } from "../../math/src/index";
 import type { AppState, EmbedsValidationStatus } from "@excalidraw/excalidraw/types";
 import type { ElementShape, ElementShapes } from "@excalidraw/excalidraw/scene/types";
 import type { ExcalidrawElement, ExcalidrawSelectionElement, ExcalidrawLinearElement, ExcalidrawFreeDrawElement, ElementsMap, ExcalidrawLineElement } from "./types";

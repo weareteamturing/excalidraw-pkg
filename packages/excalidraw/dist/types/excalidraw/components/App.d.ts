@@ -1,8 +1,8 @@
 import React from "react";
-import { type EXPORT_IMAGE_TYPES, Emitter, type EditorInterface, type StylesPanelMode } from "@excalidraw/common";
-import { LinearElementEditor, FlowChartCreator, Scene, Store, type ElementUpdate, StoreDelta, type ApplyToOptions } from "@excalidraw/element";
-import type { ExcalidrawElement, NonDeleted, NonDeletedExcalidrawElement, ExcalidrawFrameLikeElement, ExcalidrawIframeElement, ExcalidrawEmbeddableElement, SceneElementsMap } from "@excalidraw/element/types";
-import type { Mutable } from "@excalidraw/common/utility-types";
+import { type EXPORT_IMAGE_TYPES, Emitter, type EditorInterface, type StylesPanelMode } from "../../common/src/index";
+import { LinearElementEditor, FlowChartCreator, Scene, Store, type ElementUpdate, StoreDelta, type ApplyToOptions } from "../../element/src/index";
+import type { ExcalidrawElement, NonDeleted, NonDeletedExcalidrawElement, ExcalidrawFrameLikeElement, ExcalidrawIframeElement, ExcalidrawEmbeddableElement, SceneElementsMap } from "../../element/src/types";
+import type { Mutable } from "../../common/src/utility-types";
 import { ActionManager } from "../actions/manager";
 import { AnimationFrameHandler } from "../animation-frame-handler";
 import { History } from "../history";
@@ -138,7 +138,7 @@ declare class App extends React.Component<AppProps, AppState> {
         };
         originalElements: Map<string, NonDeleted<ExcalidrawElement>>;
         resize: {
-            handleType: import("@excalidraw/element").MaybeTransformHandleType;
+            handleType: import("../../element/src/index").MaybeTransformHandleType;
             isResizing: boolean;
             offset: {
                 x: number;
@@ -171,7 +171,7 @@ declare class App extends React.Component<AppProps, AppState> {
             blockDragging: boolean;
         };
         eventListeners: {
-            onMove: null | ReturnType<typeof import("@excalidraw/common").throttleRAF>;
+            onMove: null | ReturnType<typeof import("../../common/src/index").throttleRAF>;
             onUp: null | ((event: PointerEvent) => void);
             onKeyDown: null | ((event: KeyboardEvent) => void);
             onKeyUp: null | ((event: KeyboardEvent) => void);
@@ -200,7 +200,7 @@ declare class App extends React.Component<AppProps, AppState> {
         };
         originalElements: Map<string, NonDeleted<ExcalidrawElement>>;
         resize: {
-            handleType: import("@excalidraw/element").MaybeTransformHandleType;
+            handleType: import("../../element/src/index").MaybeTransformHandleType;
             isResizing: boolean;
             offset: {
                 x: number;
@@ -233,7 +233,7 @@ declare class App extends React.Component<AppProps, AppState> {
             blockDragging: boolean;
         };
         eventListeners: {
-            onMove: null | ReturnType<typeof import("@excalidraw/common").throttleRAF>;
+            onMove: null | ReturnType<typeof import("../../common/src/index").throttleRAF>;
             onUp: null | ((event: PointerEvent) => void);
             onKeyDown: null | ((event: KeyboardEvent) => void);
             onKeyUp: null | ((event: KeyboardEvent) => void);
@@ -276,7 +276,7 @@ declare class App extends React.Component<AppProps, AppState> {
     private toggleOverscrollBehavior;
     render(): import("react/jsx-runtime").JSX.Element;
     focusContainer: AppClassProperties["focusContainer"];
-    getSceneElementsIncludingDeleted: () => readonly import("@excalidraw/element/types").OrderedExcalidrawElement[];
+    getSceneElementsIncludingDeleted: () => readonly import("../../element/src/types").OrderedExcalidrawElement[];
     getSceneElementsMapIncludingDeleted: () => SceneElementsMap;
     getSceneElements: () => readonly NonDeletedExcalidrawElement[];
     onInsertElements: (elements: readonly ExcalidrawElement[]) => void;

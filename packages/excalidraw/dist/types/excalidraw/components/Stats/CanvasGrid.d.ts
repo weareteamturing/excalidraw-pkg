@@ -1,4 +1,4 @@
-import type { Scene } from "@excalidraw/element";
+import type { Scene } from "../../../element/src/index";
 import type { AppState } from "../../types";
 interface PositionProps {
     property: "gridStep";

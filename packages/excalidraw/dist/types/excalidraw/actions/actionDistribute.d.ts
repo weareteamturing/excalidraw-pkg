@@ -1,4 +1,4 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "../../element/src/types";
 import type { AppClassProperties, AppState } from "../types";
 export declare const distributeHorizontally: {
     name: "distributeHorizontally";
@@ -6,7 +6,7 @@ export declare const distributeHorizontally: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
         elements: ExcalidrawElement[];
         captureUpdate: "IMMEDIATELY";
@@ -22,7 +22,7 @@ export declare const distributeVertically: {
     trackEvent: {
         category: "element";
     };
-    perform: (elements: readonly import("@excalidraw/element/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
+    perform: (elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: AppClassProperties) => {
         appState: Readonly<AppState>;
         elements: ExcalidrawElement[];
         captureUpdate: "IMMEDIATELY";

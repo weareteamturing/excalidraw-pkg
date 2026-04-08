@@ -1,5 +1,5 @@
 import type { AppState, NormalizedZoomValue, NullableGridSize, PointerDownState } from "@excalidraw/excalidraw/types";
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement } from "./types";
 import type { Scene } from "./Scene";
 export declare const dragSelectedElements: (pointerDownState: PointerDownState, _selectedElements: NonDeletedExcalidrawElement[], offset: {
     x: number;

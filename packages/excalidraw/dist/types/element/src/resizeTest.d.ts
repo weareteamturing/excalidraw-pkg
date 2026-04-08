@@ -1,7 +1,7 @@
-import { type EditorInterface } from "@excalidraw/common";
-import type { GlobalPoint, LocalPoint } from "@excalidraw/math";
+import { type EditorInterface } from "../../common/src/index";
+import type { GlobalPoint, LocalPoint } from "../../math/src/index";
 import type { AppState, Zoom } from "@excalidraw/excalidraw/types";
-import type { Bounds } from "@excalidraw/common";
+import type { Bounds } from "../../common/src/index";
 import type { MaybeTransformHandleType } from "./transformHandles";
 import type { ExcalidrawElement, PointerType, NonDeletedExcalidrawElement, ElementsMap } from "./types";
 export declare const resizeTest: <Point extends GlobalPoint | LocalPoint>(element: NonDeletedExcalidrawElement, elementsMap: ElementsMap, appState: AppState, x: number, y: number, zoom: Zoom, pointerType: PointerType, editorInterface: EditorInterface) => MaybeTransformHandleType;

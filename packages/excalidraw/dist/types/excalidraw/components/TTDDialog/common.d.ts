@@ -1,4 +1,4 @@
-import type { NonDeletedExcalidrawElement, Theme } from "@excalidraw/element/types";
+import type { NonDeletedExcalidrawElement, Theme } from "../../../element/src/types";
 import type { MermaidToExcalidrawLibProps } from "./types";
 import type { AppClassProperties, BinaryFiles } from "../../types";
 export declare const resetPreview: ({ canvasRef, setError, }: {

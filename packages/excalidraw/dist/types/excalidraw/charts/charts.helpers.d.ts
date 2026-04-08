@@ -1,6 +1,6 @@
-import { getFontString } from "@excalidraw/common";
-import type { ChartType } from "@excalidraw/element/types";
-import type { NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import { getFontString } from "../../common/src/index";
+import type { ChartType } from "../../element/src/types";
+import type { NonDeletedExcalidrawElement } from "../../element/src/types";
 import { type CartesianChartLayout, type CartesianChartType } from "./charts.constants";
 import type { ChartElements, Spreadsheet, SpreadsheetSeries } from "./charts.types";
 export declare const isSpreadsheetValidForChartType: (spreadsheet: Spreadsheet | null, chartType: ChartType) => boolean;

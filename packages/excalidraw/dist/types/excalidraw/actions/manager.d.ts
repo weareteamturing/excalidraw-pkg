@@ -1,5 +1,5 @@
 import React from "react";
-import type { OrderedExcalidrawElement } from "@excalidraw/element/types";
+import type { OrderedExcalidrawElement } from "../../element/src/types";
 import type { AppClassProperties, AppState } from "../types";
 import type { Action, UpdaterFn, ActionName, ActionResult, PanelComponentProps, ActionSource } from "./types";
 export declare class ActionManager {

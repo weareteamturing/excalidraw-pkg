@@ -1,8 +1,8 @@
-import { type GlobalPoint } from "@excalidraw/math";
-import type { InclusiveRange } from "@excalidraw/math";
-import type { Bounds } from "@excalidraw/common";
-import type { MaybeTransformHandleType } from "@excalidraw/element";
-import type { ElementsMap, ExcalidrawElement, NonDeletedExcalidrawElement } from "@excalidraw/element/types";
+import { type GlobalPoint } from "../math/src/index";
+import type { InclusiveRange } from "../math/src/index";
+import type { Bounds } from "../common/src/index";
+import type { MaybeTransformHandleType } from "../element/src/index";
+import type { ElementsMap, ExcalidrawElement, NonDeletedExcalidrawElement } from "../element/src/types";
 import type { AppClassProperties, AppState, KeyboardModifiersObject } from "./types";
 export declare const getSnapDistance: (zoomValue: number) => number;
 type Vector2D = {

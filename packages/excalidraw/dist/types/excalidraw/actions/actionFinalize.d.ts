@@ -1,4 +1,4 @@
-import type { ExcalidrawElement } from "@excalidraw/element/types";
+import type { ExcalidrawElement } from "../../element/src/types";
 import type { AppState } from "../types";
 type FormData = {
     event: PointerEvent;
