@@ -93,17 +93,21 @@ export const actionFinalize = register<FormData>({
             ? [element.points.length - 1] // New arrow creation
             : appState.selectedLinearElement.selectedPointsIndices;
 
+        const angleLocked = shouldRotateWithDiscreteAngle(event);
+
         const draggedPoints: PointsPositionUpdates =
           selectedPointsIndices.reduce((map, index) => {
             map.set(index, {
-              point: LinearElementEditor.pointFromAbsoluteCoords(
-                element,
-                pointFrom<GlobalPoint>(
-                  sceneCoords.x - linearElementEditor.pointerOffset.x,
-                  sceneCoords.y - linearElementEditor.pointerOffset.y,
-                ),
-                elementsMap,
-              ),
+              point: angleLocked
+                ? element.points[index]
+                : LinearElementEditor.pointFromAbsoluteCoords(
+                    element,
+                    pointFrom<GlobalPoint>(
+                      sceneCoords.x - linearElementEditor.pointerOffset.x,
+                      sceneCoords.y - linearElementEditor.pointerOffset.y,
+                    ),
+                    elementsMap,
+                  ),
             });
 
             return map;
@@ -118,7 +122,7 @@ export const actionFinalize = register<FormData>({
           {
             newArrow,
             altKey: event.altKey,
-            angleLocked: shouldRotateWithDiscreteAngle(event),
+            angleLocked,
           },
         );
       } else if (isLineElement(element)) {

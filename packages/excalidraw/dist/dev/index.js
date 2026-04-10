@@ -83203,9 +83203,10 @@ var actionFinalize = register({
       if (isBindingElement(element2) && !appState.selectedLinearElement.segmentMidPointHoveredCoords) {
         const newArrow = !!appState.newElement;
         const selectedPointsIndices = newArrow || !appState.selectedLinearElement.selectedPointsIndices ? [element2.points.length - 1] : appState.selectedLinearElement.selectedPointsIndices;
+        const angleLocked = shouldRotateWithDiscreteAngle(event);
         const draggedPoints = selectedPointsIndices.reduce((map, index) => {
           map.set(index, {
-            point: LinearElementEditor.pointFromAbsoluteCoords(
+            point: angleLocked ? element2.points[index] : LinearElementEditor.pointFromAbsoluteCoords(
               element2,
               pointFrom(
                 sceneCoords.x - linearElementEditor.pointerOffset.x,
@@ -83226,7 +83227,7 @@ var actionFinalize = register({
           {
             newArrow,
             altKey: event.altKey,
-            angleLocked: shouldRotateWithDiscreteAngle(event)
+            angleLocked
           }
         );
       } else if (isLineElement(element2)) {
