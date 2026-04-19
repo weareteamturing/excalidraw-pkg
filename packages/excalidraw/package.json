@@ -72,7 +72,8 @@
   "scripts": {
     "gen:types": "rimraf dist/types && tsc && tsc-alias -p tsconfig.json",
     "build:esm": "rimraf dist && node ../../scripts/buildPackage.js && yarn gen:types",
-    "build:watch": "node ../../scripts/watchAll.js"
+    "build:watch": "node ../../scripts/watchAll.js",
+    "prepublishOnly": "test -f LICENSE || (echo 'ERROR: LICENSE file missing. Copy from repo root: cp ../../LICENSE ./' && exit 1)"
   },
   "peerDependencies": {
     "react": "^17.0.2 || ^18.2.0 || ^19.0.0",
