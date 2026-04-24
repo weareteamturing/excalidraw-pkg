@@ -82748,6 +82748,7 @@ var actionZoomIn = register({
   icon: ZoomInIcon,
   trackEvent: { category: "canvas" },
   perform: (_elements, appState, _, app) => {
+    app.resetShouldCacheIgnoreZoomDebounced();
     return {
       appState: {
         ...appState,
@@ -82759,6 +82760,7 @@ var actionZoomIn = register({
           },
           appState
         ),
+        shouldCacheIgnoreZoom: true,
         userToFollow: null
       },
       captureUpdate: CaptureUpdateAction.EVENTUALLY
@@ -82787,6 +82789,7 @@ var actionZoomOut = register({
   viewMode: true,
   trackEvent: { category: "canvas" },
   perform: (_elements, appState, _, app) => {
+    app.resetShouldCacheIgnoreZoomDebounced();
     return {
       appState: {
         ...appState,
@@ -82798,6 +82801,7 @@ var actionZoomOut = register({
           },
           appState
         ),
+        shouldCacheIgnoreZoom: true,
         userToFollow: null
       },
       captureUpdate: CaptureUpdateAction.EVENTUALLY
@@ -101237,8 +101241,10 @@ var App = class _App extends React35.Component {
             nextZoom: getNormalizedZoom(value)
           },
           this.state
-        )
+        ),
+        shouldCacheIgnoreZoom: true
       });
+      this.resetShouldCacheIgnoreZoomDebounced();
     });
     __publicField(this, "cancelInProgressAnimation", null);
     __publicField(this, "scrollToContent", (target = this.scene.getNonDeletedElements(), opts) => {
@@ -102201,8 +102207,10 @@ var App = class _App extends React35.Component {
               nextZoom: getNormalizedZoom(initialScale * event.scale)
             },
             state
-          )
+          ),
+          shouldCacheIgnoreZoom: true
         }));
+        this.resetShouldCacheIgnoreZoomDebounced();
       }
     }));
     // fires only on Safari
@@ -105234,7 +105242,7 @@ var App = class _App extends React35.Component {
       if (!this.unmounted) {
         this.setState({ shouldCacheIgnoreZoom: false });
       }
-    }, 300));
+    }, 150));
     __publicField(this, "updateDOMRect", (cb) => {
       if (this.excalidrawContainerRef?.current) {
         const excalidrawContainer = this.excalidrawContainerRef.current;
@@ -106959,25 +106967,20 @@ var App = class _App extends React35.Component {
   }) {
     const elementsMap = this.scene.getElementsMapIncludingDeleted();
     const updateElement = (nextOriginalText, isDeleted) => {
-      this.scene.replaceAllElements([
-        // Not sure why we include deleted elements as well hence using deleted elements map
-        ...this.scene.getElementsIncludingDeleted().map((_element) => {
-          if (_element.id === element.id && isTextElement(_element)) {
-            return newElementWith(_element, {
-              originalText: nextOriginalText,
-              isDeleted: isDeleted ?? _element.isDeleted,
-              // returns (wrapped) text and new dimensions
-              ...refreshTextDimensions(
-                _element,
-                getContainerElement(_element, elementsMap),
-                elementsMap,
-                nextOriginalText
-              )
-            });
-          }
-          return _element;
-        })
-      ]);
+      if (!isTextElement(element)) {
+        return;
+      }
+      this.scene.mutateElement(element, {
+        originalText: nextOriginalText,
+        isDeleted,
+        // returns (wrapped) text and new dimensions
+        ...refreshTextDimensions(
+          element,
+          getContainerElement(element, elementsMap),
+          elementsMap,
+          nextOriginalText
+        )
+      });
     };
     textWysiwyg({
       id: element.id,

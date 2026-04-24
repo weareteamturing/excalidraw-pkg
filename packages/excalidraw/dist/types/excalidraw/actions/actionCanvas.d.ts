@@ -183,6 +183,7 @@ export declare const actionZoomIn: {
     };
     perform: (_elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
+            shouldCacheIgnoreZoom: true;
             userToFollow: null;
             scrollX: number;
             scrollY: number;
@@ -294,7 +295,6 @@ export declare const actionZoomIn: {
                 [id: string]: true;
             };
             selectedElementsAreBeingDragged: boolean;
-            shouldCacheIgnoreZoom: boolean;
             toast: {
                 message: string;
                 closable?: boolean;
@@ -358,6 +358,7 @@ export declare const actionZoomOut: {
     };
     perform: (_elements: readonly import("../../element/src/types").OrderedExcalidrawElement[], appState: Readonly<AppState>, _: unknown, app: import("../types").AppClassProperties) => {
         appState: {
+            shouldCacheIgnoreZoom: true;
             userToFollow: null;
             scrollX: number;
             scrollY: number;
@@ -469,7 +470,6 @@ export declare const actionZoomOut: {
                 [id: string]: true;
             };
             selectedElementsAreBeingDragged: boolean;
-            shouldCacheIgnoreZoom: boolean;
             toast: {
                 message: string;
                 closable?: boolean;

@@ -138,6 +138,7 @@ export const actionZoomIn = register({
   icon: ZoomInIcon,
   trackEvent: { category: "canvas" },
   perform: (_elements, appState, _, app) => {
+    app.resetShouldCacheIgnoreZoomDebounced();
     return {
       appState: {
         ...appState,
@@ -149,6 +150,7 @@ export const actionZoomIn = register({
           },
           appState,
         ),
+        shouldCacheIgnoreZoom: true,
         userToFollow: null,
       },
       captureUpdate: CaptureUpdateAction.EVENTUALLY,
@@ -179,6 +181,7 @@ export const actionZoomOut = register({
   viewMode: true,
   trackEvent: { category: "canvas" },
   perform: (_elements, appState, _, app) => {
+    app.resetShouldCacheIgnoreZoomDebounced();
     return {
       appState: {
         ...appState,
@@ -190,6 +193,7 @@ export const actionZoomOut = register({
           },
           appState,
         ),
+        shouldCacheIgnoreZoom: true,
         userToFollow: null,
       },
       captureUpdate: CaptureUpdateAction.EVENTUALLY,

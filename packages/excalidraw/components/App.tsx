@@ -4202,7 +4202,9 @@ class App extends React.Component<AppProps, AppState> {
         },
         this.state,
       ),
+      shouldCacheIgnoreZoom: true,
     });
+    this.resetShouldCacheIgnoreZoomDebounced();
   };
 
   private cancelInProgressAnimation: (() => void) | null = null;
@@ -5595,7 +5597,9 @@ class App extends React.Component<AppProps, AppState> {
           },
           state,
         ),
+        shouldCacheIgnoreZoom: true,
       }));
+      this.resetShouldCacheIgnoreZoomDebounced();
     }
   });
 
@@ -5626,25 +5630,20 @@ class App extends React.Component<AppProps, AppState> {
     const elementsMap = this.scene.getElementsMapIncludingDeleted();
 
     const updateElement = (nextOriginalText: string, isDeleted: boolean) => {
-      this.scene.replaceAllElements([
-        // Not sure why we include deleted elements as well hence using deleted elements map
-        ...this.scene.getElementsIncludingDeleted().map((_element) => {
-          if (_element.id === element.id && isTextElement(_element)) {
-            return newElementWith(_element, {
-              originalText: nextOriginalText,
-              isDeleted: isDeleted ?? _element.isDeleted,
-              // returns (wrapped) text and new dimensions
-              ...refreshTextDimensions(
-                _element,
-                getContainerElement(_element, elementsMap),
-                elementsMap,
-                nextOriginalText,
-              ),
-            });
-          }
-          return _element;
-        }),
-      ]);
+      if (!isTextElement(element)) {
+        return;
+      }
+      this.scene.mutateElement(element, {
+        originalText: nextOriginalText,
+        isDeleted,
+        // returns (wrapped) text and new dimensions
+        ...refreshTextDimensions(
+          element,
+          getContainerElement(element, elementsMap),
+          elementsMap,
+          nextOriginalText,
+        ),
+      });
     };
 
     textWysiwyg({
@@ -12431,11 +12430,11 @@ class App extends React.Component<AppProps, AppState> {
     });
   };
 
-  private resetShouldCacheIgnoreZoomDebounced = debounce(() => {
+  resetShouldCacheIgnoreZoomDebounced = debounce(() => {
     if (!this.unmounted) {
       this.setState({ shouldCacheIgnoreZoom: false });
     }
-  }, 300);
+  }, 150);
 
   private updateDOMRect = (cb?: () => void) => {
     if (this.excalidrawContainerRef?.current) {

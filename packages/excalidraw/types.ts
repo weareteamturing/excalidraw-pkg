@@ -810,6 +810,7 @@ export type AppClassProperties = {
 
   lastPointerMoveCoords: App["lastPointerMoveCoords"];
   bindModeHandler: App["bindModeHandler"];
+  resetShouldCacheIgnoreZoomDebounced: App["resetShouldCacheIgnoreZoomDebounced"];
 };
 
 export type PointerDownState = Readonly<{

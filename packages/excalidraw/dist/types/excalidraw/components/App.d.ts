@@ -558,7 +558,11 @@ declare class App extends React.Component<AppProps, AppState> {
     private handleWheel;
     private getTextWysiwygSnappedToCenterPosition;
     private savePointer;
-    private resetShouldCacheIgnoreZoomDebounced;
+    resetShouldCacheIgnoreZoomDebounced: {
+        (): void;
+        flush(): void;
+        cancel(): void;
+    };
     private updateDOMRect;
     refresh: () => void;
     private getCanvasOffsets;
