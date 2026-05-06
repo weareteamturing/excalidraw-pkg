@@ -363,7 +363,7 @@ const drawImagePlaceholder = (
   context: CanvasRenderingContext2D,
   theme: StaticCanvasRenderConfig["theme"],
 ) => {
-  context.fillStyle = theme === THEME.DARK ? "#2E2E2E" : "#E7E7E7";
+  context.fillStyle = theme === THEME.DARK ? "#2E2E2E" : "#F3F4F6";
   context.fillRect(0, 0, element.width, element.height);
 };
 
