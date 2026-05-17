@@ -130,8 +130,6 @@ import { isBrowserStorageStateNewer } from "./data/tabSync";
 import { ShareDialog, shareDialogStateAtom } from "./share/ShareDialog";
 import CollabError, { collabErrorIndicatorAtom } from "./collab/CollabError";
 import { useHandleAppTheme } from "./useHandleAppTheme";
-import { getPreferredLanguage } from "./app-language/language-detector";
-import { useAppLangCode } from "./app-language/language-state";
 import DebugCanvas, {
   debugRenderer,
   isVisualDebuggerEnabled,
@@ -374,8 +372,6 @@ const ExcalidrawWrapper = () => {
 
   const { editorTheme, appTheme, setAppTheme } = useHandleAppTheme();
 
-  const [langCode, setLangCode] = useAppLangCode();
-
   const editorInterface = useEditorInterface();
 
   // initial state
@@ -549,7 +545,6 @@ const ExcalidrawWrapper = () => {
         if (isBrowserStorageStateNewer(STORAGE_KEYS.VERSION_DATA_STATE)) {
           const localDataState = importFromLocalStorage();
           const username = importUsernameFromLocalStorage();
-          setLangCode(getPreferredLanguage());
           excalidrawAPI.updateScene({
             ...localDataState,
             captureUpdate: CaptureUpdateAction.NEVER,
@@ -628,7 +623,7 @@ const ExcalidrawWrapper = () => {
         false,
       );
     };
-  }, [isCollabDisabled, collabAPI, excalidrawAPI, setLangCode]);
+  }, [isCollabDisabled, collabAPI, excalidrawAPI]);
 
   useEffect(() => {
     const unloadHandler = (event: BeforeUnloadEvent) => {
@@ -876,7 +871,6 @@ const ExcalidrawWrapper = () => {
             },
           },
         }}
-        langCode={langCode}
         renderCustomStats={renderCustomStats}
         detectScroll={false}
         handleKeyboardGlobally={true}
