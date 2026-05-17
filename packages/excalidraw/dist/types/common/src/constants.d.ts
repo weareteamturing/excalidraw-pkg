@@ -93,7 +93,6 @@ export declare const FONT_SIZES: {
     readonly lg: 28;
     readonly xl: 36;
 };
-export declare const CJK_HAND_DRAWN_FALLBACK_FONT = "Xiaolai";
 export declare const WINDOWS_EMOJI_FALLBACK_FONT = "Segoe UI Emoji";
 /**
  * // TODO: shouldn't be really `const`, likely neither have integers as values, due to value for the custom fonts, which should likely be some hash.
@@ -124,7 +123,6 @@ export declare const FONT_FAMILY_FALLBACKS: {
     "Segoe UI Emoji": number;
     "sans-serif": number;
     monospace: number;
-    Xiaolai: number;
 };
 export declare function getGenericFontFamilyFallback(fontFamily: number): keyof typeof FONT_FAMILY_GENERIC_FALLBACKS;
 export declare const getFontFamilyFallbacks: (fontFamily: number) => Array<keyof typeof FONT_FAMILY_FALLBACKS>;

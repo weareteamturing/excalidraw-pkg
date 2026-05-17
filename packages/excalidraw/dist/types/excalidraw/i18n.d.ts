@@ -6,10 +6,7 @@ export interface Language {
     rtl?: boolean;
 }
 export type TranslationKeys = NestedKeyOf<typeof fallbackLangData>;
-export declare const defaultLang: {
-    code: string;
-    label: string;
-};
+export declare const defaultLang: Language;
 export declare const languages: Language[];
 export declare const setLanguage: (lang: Language) => Promise<void>;
 export declare const getLanguage: () => Language;
