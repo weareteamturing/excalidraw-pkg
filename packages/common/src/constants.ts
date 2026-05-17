@@ -116,7 +116,6 @@ export const FONT_SIZES = {
   xl: 36,
 } as const;
 
-export const CJK_HAND_DRAWN_FALLBACK_FONT = "Xiaolai";
 export const WINDOWS_EMOJI_FALLBACK_FONT = "Segoe UI Emoji";
 
 /**
@@ -151,7 +150,6 @@ export const FONT_FAMILY_GENERIC_FALLBACKS = {
 };
 
 export const FONT_FAMILY_FALLBACKS = {
-  [CJK_HAND_DRAWN_FALLBACK_FONT]: 100,
   ...FONT_FAMILY_GENERIC_FALLBACKS,
   [WINDOWS_EMOJI_FALLBACK_FONT]: 1000,
 };
@@ -173,17 +171,7 @@ export const getFontFamilyFallbacks = (
   fontFamily: number,
 ): Array<keyof typeof FONT_FAMILY_FALLBACKS> => {
   const genericFallbackFont = getGenericFontFamilyFallback(fontFamily);
-
-  switch (fontFamily) {
-    case FONT_FAMILY.Excalifont:
-      return [
-        CJK_HAND_DRAWN_FALLBACK_FONT,
-        genericFallbackFont,
-        WINDOWS_EMOJI_FALLBACK_FONT,
-      ];
-    default:
-      return [genericFallbackFont, WINDOWS_EMOJI_FALLBACK_FONT];
-  }
+  return [genericFallbackFont, WINDOWS_EMOJI_FALLBACK_FONT];
 };
 
 export const THEME = {
