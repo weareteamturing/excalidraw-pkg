@@ -602,6 +602,8 @@ export interface ExcalidrawProps {
   zenModeEnabled?: boolean;
   gridModeEnabled?: boolean;
   objectsSnapModeEnabled?: boolean;
+  /** whether double-click / Enter on an image enters the crop editor. @default true */
+  imageCropEnabled?: boolean;
   libraryReturnUrl?: string;
   theme?: Theme;
   // @TODO come with better API before v0.18.0
@@ -754,6 +756,7 @@ export type AppProps = Merge<
     isCollaborating: boolean;
     children?: React.ReactNode;
     aiEnabled: boolean;
+    imageCropEnabled: boolean;
   }
 >;
 

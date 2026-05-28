@@ -6127,6 +6127,9 @@ class App extends React.Component<AppProps, AppState> {
   };
 
   private startImageCropping = (image: ExcalidrawImageElement) => {
+    if (this.props.imageCropEnabled === false) {
+      return;
+    }
     this.store.scheduleCapture();
     this.setState({
       croppingElementId: image.id,

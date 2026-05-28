@@ -54,6 +54,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
     validateEmbeddable,
     renderEmbeddable,
     aiEnabled,
+    imageCropEnabled,
     showDeprecatedFonts,
     renderScrollbars,
     showRotationHandle,
@@ -159,6 +160,7 @@ const ExcalidrawBase = (props: ExcalidrawProps) => {
           validateEmbeddable={validateEmbeddable}
           renderEmbeddable={renderEmbeddable}
           aiEnabled={aiEnabled !== false}
+          imageCropEnabled={imageCropEnabled !== false}
           showDeprecatedFonts={showDeprecatedFonts}
           renderScrollbars={renderScrollbars}
           showRotationHandle={showRotationHandle}
