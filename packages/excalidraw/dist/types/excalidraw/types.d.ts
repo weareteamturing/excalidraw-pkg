@@ -478,6 +478,8 @@ export interface ExcalidrawProps {
     zenModeEnabled?: boolean;
     gridModeEnabled?: boolean;
     objectsSnapModeEnabled?: boolean;
+    /** whether double-click / Enter on an image enters the crop editor. @default true */
+    imageCropEnabled?: boolean;
     libraryReturnUrl?: string;
     theme?: Theme;
     name?: string;
@@ -585,6 +587,7 @@ export type AppProps = Merge<ExcalidrawProps, {
     isCollaborating: boolean;
     children?: React.ReactNode;
     aiEnabled: boolean;
+    imageCropEnabled: boolean;
 }>;
 /** A subset of App class properties that we need to use elsewhere
  * in the app, eg Manager. Factored out into a separate type to keep DRY. */

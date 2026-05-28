@@ -58858,6 +58858,9 @@ var App = class _App extends React35.Component {
       }
     });
     __publicField(this, "startImageCropping", (image) => {
+      if (this.props.imageCropEnabled === false) {
+        return;
+      }
       this.store.scheduleCapture();
       this.setState({
         croppingElementId: image.id
@@ -71361,6 +71364,7 @@ var ExcalidrawBase = (props) => {
     validateEmbeddable,
     renderEmbeddable,
     aiEnabled,
+    imageCropEnabled,
     showDeprecatedFonts,
     renderScrollbars,
     showRotationHandle,
@@ -71445,6 +71449,7 @@ var ExcalidrawBase = (props) => {
       validateEmbeddable,
       renderEmbeddable,
       aiEnabled: aiEnabled !== false,
+      imageCropEnabled: imageCropEnabled !== false,
       showDeprecatedFonts,
       renderScrollbars,
       showRotationHandle,
